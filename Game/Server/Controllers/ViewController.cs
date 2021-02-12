@@ -1,6 +1,7 @@
 ﻿using BackEnd.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Game.Server.Controllers
@@ -25,16 +26,31 @@ namespace Game.Server.Controllers
             return Ok(result);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("Building/UpgradeCost")]
-        public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage) 
+        public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage)
         {
             var result = await _viewService.GetBuildingUpgradeCost(buildingName, buildingStage);
 
-            if (result.IsSuccess)
-                return Ok(result);
+            return Ok(result);
+        }
 
-            return NotFound();
+        [Authorize]
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetCityNamesOfUser(string username, [FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        {
+            var result = await _viewService.GetCityNamesOfUser(username, pageNumber, pageSize);
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("Units")]
+        public async Task<IActionResult> GetUnitTypes ([FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        {
+            var result = await _viewService.GetUnitTypes(pageNumber, pageSize);
+
+            return Ok(result);
         }
     }
 }

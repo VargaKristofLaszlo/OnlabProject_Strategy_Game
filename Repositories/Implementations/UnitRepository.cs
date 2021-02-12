@@ -1,0 +1,34 @@
+﻿using BackEnd.Models.Models;
+using Microsoft.EntityFrameworkCore;
+using Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repositories.Implementations
+{
+    public class UnitRepository : IUnitRepository
+    {
+        private readonly ApplicationDbContext _db;
+
+        public UnitRepository(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+
+        public async Task<Unit> FindUnitByName(string name)
+        {
+            return await _db.Units.FirstOrDefaultAsync(unit => unit.Name.Equals(name));
+        }
+
+        public async Task<(IEnumerable<Unit> Units, int Count)> GetAllUnitsAsync(int pageNumber, int pageSize)
+        {
+            return (await _db.Units
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(), _db.Units.ToListAsync().Result.Count());
+        }
+    }
+}

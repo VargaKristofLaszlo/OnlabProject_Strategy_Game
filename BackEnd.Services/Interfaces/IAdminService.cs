@@ -1,13 +1,15 @@
-﻿using Shared.Models.Request;
-using Shared.Models.Response;
+﻿using Game.Shared.Models.Request;
+using Shared.Models.Request;
 using System.Threading.Tasks;
 
 namespace BackEnd.Services.Interfaces
 {
     public interface IAdminService 
     {        
-        Task<OperationResponse> CreateBuildingUpgradeCostAsync(UpgradeCostCreationRequest request);
-        Task<OperationResponse> ModifyBuildingUpgradeCostAsync(UpgradeCostCreationRequest request);
-        Task<OperationResponse> BanUserAsync(UserBanRequest banRequest);
+        Task CreateBuildingUpgradeCostAsync(UpgradeCostCreationRequest request);
+        Task ModifyBuildingUpgradeCostAsync(UpgradeCostCreationRequest request);
+        Task BanUserAsync(UserBanRequest banRequest);
+        Task ModerateCityNameAsync(CityNameModerationRequest request);
+        Task ModifyUnitCostAsync(UnitCostModificationRequest request);
     }
 }

@@ -7,7 +7,7 @@ namespace BackEnd.Models.Models
     {
         [Required]
         public Resources UpgradeCost { get; set; }
-        
+
         [Required]
         public TimeSpan UpgradeTime { get; set; }
       

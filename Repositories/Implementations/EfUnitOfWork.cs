@@ -1,6 +1,8 @@
 ﻿using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Repositories.Implementations;
+using Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace BackEnd.Repositories.Implementations
@@ -11,6 +13,7 @@ namespace BackEnd.Repositories.Implementations
         private readonly ApplicationDbContext _db;
         private IUsersRepository _users;
         private IUpgradeCostRepository _upgradeCosts;
+        private IUnitRepository _units;
 
         public EfUnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
@@ -38,6 +41,17 @@ namespace BackEnd.Repositories.Implementations
                     _upgradeCosts = new UpgradeCostRepository(_db);
 
                 return _upgradeCosts;
+            }
+        }
+
+        public IUnitRepository Units 
+        {
+            get 
+            {
+                if (_units == null)
+                    _units = new UnitRepository(_db);
+
+                return _units;
             }
         }
 

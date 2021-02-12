@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Repositories.Interfaces;
+using System.Threading.Tasks;
 
 namespace BackEnd.Repositories.Interfaces
 {
@@ -7,6 +8,8 @@ namespace BackEnd.Repositories.Interfaces
         IUsersRepository Users { get; }
 
         IUpgradeCostRepository UpgradeCosts { get; }
+
+        IUnitRepository Units { get; }
 
         Task CommitChangesAsync();
     }

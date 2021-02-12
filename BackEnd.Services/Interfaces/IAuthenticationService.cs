@@ -7,14 +7,14 @@ namespace BackEnd.Services.Interfaces
     public interface IAuthenticationService
     {
         Task<LoginResponse> LoginAsync(UserLoginRequest request);
-        Task<OperationResponse> RegisterUserAsync(UserCreationRequest request);        
-        Task<OperationResponse> ConfirmEmailAsync(string userId, string token);
-        Task<OperationResponse> ForgetPasswordAsync(string email);
-        Task<OperationResponse> ResetPasswordAsync(PasswordResetRequest resetRequest);
-        Task<OperationResponse> UpdatePasswordAsync(string currentPassword, string newPassword);
-        Task<OperationResponse> SendEmailUpdateConfirmationAsync(string newEmailAddress);
-        Task<OperationResponse> UpdateEmailAddressAsync(string username, string newEmail, string token);
-        Task<OperationResponse> DeleteAccountAsync(string username);
-        Task<OperationResponse> SendAccountDeletionConfirmationAsync();
+        Task RegisterUserAsync(UserCreationRequest request);        
+        Task ConfirmEmailAsync(string userId, string token);
+        Task ForgetPasswordAsync(string email);
+        Task ResetPasswordAsync(PasswordResetRequest resetRequest);
+        Task UpdatePasswordAsync(string currentPassword, string newPassword);
+        Task SendEmailUpdateConfirmationAsync(string newEmailAddress);
+        Task UpdateEmailAddressAsync(string username, string newEmail, string token);
+        Task DeleteAccountAsync(string username);
+        Task SendAccountDeletionConfirmationAsync();
     }
 }

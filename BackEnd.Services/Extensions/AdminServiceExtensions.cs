@@ -1,5 +1,6 @@
 ﻿using BackEnd.Models.Models;
 using Shared.Models.Request;
+using System;
 
 namespace BackEnd.Services.Extensions
 {
@@ -7,11 +8,11 @@ namespace BackEnd.Services.Extensions
     {
         public static BuildingUpgradeCost ModifyValues(this BuildingUpgradeCost previousCost, UpgradeCostCreationRequest newCost)
         {
-            previousCost.UpgradeCost.Wood = newCost.Wood;
-            previousCost.UpgradeCost.Silver = newCost.Silver;
-            previousCost.UpgradeCost.Stone = newCost.Stone;
-            previousCost.UpgradeCost.Population = newCost.Population;
-
+            previousCost.UpgradeCost.Wood = newCost.UpgradeCost.Wood;
+            previousCost.UpgradeCost.Silver = newCost.UpgradeCost.Silver;
+            previousCost.UpgradeCost.Stone = newCost.UpgradeCost.Stone;
+            previousCost.UpgradeCost.Population = newCost.UpgradeCost.Population;
+            previousCost.UpgradeTime = TimeSpan.FromSeconds(newCost.UpgradeTimeInSeconds);
             return previousCost;
         }
 

@@ -38,12 +38,12 @@ namespace BackEnd.Repositories.Implementations
             return roles.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(int pageNumber, int pageSize)
+        public async Task<(IEnumerable<ApplicationUser> Users, int Count)> GetAllUsersAsync(int pageNumber, int pageSize)
         {
-            return  await _db.Users
+            return (  await _db.Users
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(), _db.Users.ToListAsync().Result.Count);
         }
 
 

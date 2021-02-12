@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 
-namespace BackEnd.Models.DataSeeding
+namespace Models.DataSeeding
 {
     public class UserSeeding
     {
@@ -15,7 +15,7 @@ namespace BackEnd.Models.DataSeeding
             _roleManager = roleManager;
         }
 
-        public async Task SeedData() 
+        public async Task SeedUserData() 
         {
             if (await _roleManager.FindByNameAsync("Admin") != null)
                 return;

@@ -1,4 +1,5 @@
 ﻿using BackEnd.Services.Interfaces;
+using Game.Shared.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Models.Request;
 using Shared.Models.Response;
@@ -13,35 +14,49 @@ namespace Game.Server.Controllers
         private readonly IAdminService _adminService;
         public AdminController(IAdminService adminService)
         {
-            _adminService = adminService;     
+            _adminService = adminService;
         }
 
 
 
         [HttpPost("Ban")]
-        public async Task<IActionResult> BanUser([FromBody] UserBanRequest banRequest) 
+        public async Task<IActionResult> BanUser([FromBody] UserBanRequest banRequest)
         {
-            var result = await _adminService.BanUserAsync(banRequest);
+            await _adminService.BanUserAsync(banRequest);
 
-            if (result.IsSuccess)
-                return Ok(result);
-
-            return BadRequest(result);
+            return Ok();
         }
 
         [HttpPost("Create/UpgradeCost")]
-        public async Task<IActionResult> CreateBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request) 
+        public async Task<IActionResult> CreateBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request)
         {
-            if (ModelState.IsValid) 
-            {
-                var result = await _adminService.CreateBuildingUpgradeCostAsync(request);
+            await _adminService.CreateBuildingUpgradeCostAsync(request);
 
-                if (result.IsSuccess)
-                    return Ok(result);
+            return Ok();
+        }
 
-                return BadRequest(result);
-            }
-            return BadRequest(OperationResponse<string>.Failed("Some properties are not valid"));
+        [HttpPut("Modify/UpgradeCost")]
+        public async Task<IActionResult> ModifyBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request) 
+        {
+            await _adminService.ModifyBuildingUpgradeCostAsync(request);
+
+            return Ok();
+        }
+
+        [HttpPut("Moderate/Cityname")]
+        public async Task<IActionResult> ModerateCityName([FromBody] CityNameModerationRequest request) 
+        {
+            await _adminService.ModerateCityNameAsync(request);
+
+            return Ok();
+        }
+
+        [HttpPut("Modify/UnitCost")]
+        public async Task<IActionResult> ModifyUnitCost([FromBody] UnitCostModificationRequest request) 
+        {
+            await _adminService.ModifyUnitCostAsync(request);
+
+            return Ok();
         }
     }
 }

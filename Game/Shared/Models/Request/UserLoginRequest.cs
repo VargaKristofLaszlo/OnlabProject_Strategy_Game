@@ -4,7 +4,7 @@ namespace Shared.Models.Request
 {
     public class UserLoginRequest
     {
-        [Required]       
+        [Required]    
         public string Username { get; set; }
 
 

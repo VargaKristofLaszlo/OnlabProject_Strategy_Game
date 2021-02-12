@@ -1,0 +1,23 @@
+﻿using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models.Profiles
+{
+    public class UnitProfile : Profile
+    {
+        public UnitProfile()
+        {
+            CreateMap<BackEnd.Models.Models.Unit, Game.Shared.Models.Unit>()
+               .ForMember(backendModel => backendModel.Name, map => map.MapFrom(sharedModel => sharedModel.Name))
+               .ForMember(backendModel => backendModel.AttackPoint, map => map.MapFrom(sharedModel => sharedModel.AttackPoint))
+               .ForMember(backendModel => backendModel.DefensePoint, map => map.MapFrom(sharedModel => sharedModel.DefensePoint))
+               .ForMember(backendModel => backendModel.CarryingCapacity, map => map.MapFrom(sharedModel => sharedModel.CarryingCapacity))
+               .ForMember(backendModel => backendModel.MinBarrackStage, map => map.MapFrom(sharedModel => sharedModel.MinBarrackStage))
+               .ForMember(backendModel => backendModel.UnitCost, map => map.MapFrom(sharedModel => sharedModel.UnitCost)).ReverseMap();  
+        }
+    }
+}

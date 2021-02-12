@@ -1,6 +1,7 @@
 ﻿using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BackEnd.Repositories.Implementations
@@ -17,6 +18,22 @@ namespace BackEnd.Repositories.Implementations
         public async Task CreateAsync(BuildingUpgradeCost upgradeCost)
         {
             await _db.BuildingUpgradeCosts.AddAsync(upgradeCost);
+            var previousMaxStage = await _db.MaxBuildingStages
+                .FirstOrDefaultAsync(cost => cost.BuildingName.Equals(upgradeCost.BuildingName));
+
+            if (previousMaxStage != null)
+                previousMaxStage.MaxStage += 1;
+
+            else
+            {
+                previousMaxStage = new MaxBuildingStage
+                {
+                    BuildingName = upgradeCost.BuildingName,
+                    MaxStage = 1
+                };
+
+                await _db.MaxBuildingStages.AddAsync(previousMaxStage);
+            }
         }
 
         public async Task<int?> FindMaxStage(string buildingName)
