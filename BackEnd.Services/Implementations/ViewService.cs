@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Services.Exceptions;
 using AutoMapper;
 using Game.Shared.Models;
+using BackEnd.Infrastructure;
 
 namespace BackEnd.Services.Implementations
 {
@@ -15,11 +16,13 @@ namespace BackEnd.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IdentityOptions _identityOptions;
 
-        public ViewService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ViewService(IUnitOfWork unitOfWork, IMapper mapper, IdentityOptions identityOptions)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _identityOptions = identityOptions;
         }
 
         private int CalculatePageCount(int modelCount, int pageSize)
@@ -29,7 +32,7 @@ namespace BackEnd.Services.Implementations
             if (modelCount % pageSize != 0)
                 return pagesCount + 1;
 
-            return  pagesCount;
+            return pagesCount;
         }
 
         public async Task<BuildingUpgradeCost> GetBuildingUpgradeCost(string buildingName, int buildingStage)
@@ -63,7 +66,7 @@ namespace BackEnd.Services.Implementations
             return new CollectionResponse<string>
             {
                 Records = cityNameListForPage,
-                PagingInformations = new PagingInformations 
+                PagingInformations = new PagingInformations
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
@@ -87,7 +90,7 @@ namespace BackEnd.Services.Implementations
             return new CollectionResponse<Credentials>
             {
                 Records = credentialListForPage,
-                PagingInformations = new PagingInformations 
+                PagingInformations = new PagingInformations
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
@@ -110,13 +113,25 @@ namespace BackEnd.Services.Implementations
             return new CollectionResponse<Unit>
             {
                 Records = unitListForPage,
-                PagingInformations = new PagingInformations 
+                PagingInformations = new PagingInformations
                 {
                     PageNumber = pageNumber,
                     PageSize = pageSize,
                     PagesCount = CalculatePageCount(unitList.Count, pageSize)
                 }
             };
+        }
+
+        public async Task<CityDetails> GetCityDetails(int cityIndex)
+        {
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+
+            if (user == null)
+                throw new NotFoundException();
+
+            var city = await _unitOfWork.Cities.FindCityById(user.Cities[cityIndex].Id);
+
+            return _mapper.Map<CityDetails>(city);
         }
     }
 }

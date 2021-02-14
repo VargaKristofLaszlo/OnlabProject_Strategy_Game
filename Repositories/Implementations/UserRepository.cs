@@ -40,13 +40,18 @@ namespace BackEnd.Repositories.Implementations
 
         public async Task<(IEnumerable<ApplicationUser> Users, int Count)> GetAllUsersAsync(int pageNumber, int pageSize)
         {
-            return (  await _db.Users
+            return (await _db.Users
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(), _db.Users.ToListAsync().Result.Count);
         }
 
-
+        public async Task<ApplicationUser> GetUserWithCities(string userId) 
+        {
+            return await _db.Users
+                .Include(user => user.Cities)
+                .FirstOrDefaultAsync(user => user.Id.Equals(userId));
+        }
 
         public async Task<UsermanagerResponse> UpdateEmailAddressAsync(ApplicationUser user, string token, string newEmailAddress)
         {
@@ -168,9 +173,9 @@ namespace BackEnd.Repositories.Implementations
             return UsermanagerResponse.TaskFailed(errors);
         }
 
-        public async Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user) 
+        public async Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user)
         {
-            var result = await  _userManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user);
 
             if (result.Succeeded)
                 return UsermanagerResponse.TaskCompletedSuccessfully();
@@ -179,5 +184,6 @@ namespace BackEnd.Repositories.Implementations
 
             return UsermanagerResponse.TaskFailed(errors);
         }
+
     }
 }

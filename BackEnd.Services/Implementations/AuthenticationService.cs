@@ -97,6 +97,64 @@ namespace BackEnd.Services.Implementations
 
             if (usermanagerResponse.IsSuccess == false)
                 throw new OperationFailedException(usermanagerResponse.Errors.First());
+           
+            City city = await CreateCity(user);
+            user.Cities.Add(city);
+            await _unitOfWork.CommitChangesAsync();
+        }
+
+        private async Task<City> CreateCity(ApplicationUser user) 
+        {
+            //Get the upgrade costs which will be used to create the buildings
+            BuildingUpgradeCost warehouseCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Warehouse", 1);
+            BuildingUpgradeCost silverMineCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("SilverMine", 1);
+            BuildingUpgradeCost stoneMineCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("StoneMine", 1);
+            BuildingUpgradeCost lumberCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Lumber", 1);
+            BuildingUpgradeCost farmCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Farm", 1);
+            BuildingUpgradeCost cityWallCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("CityWall", 1);
+            BuildingUpgradeCost cityhallCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("CityHall", 1);
+            BuildingUpgradeCost barrackCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Barrack", 1);
+
+            //Create the buildings
+            Warehouse warehouse = Warehouse.Create(warehouseCost);
+            ResourceProduction silverMine = ResourceProduction.CreateResourceProductionBuilding(silverMineCost);
+            ResourceProduction stoneMine = ResourceProduction.CreateResourceProductionBuilding(stoneMineCost);
+            ResourceProduction lumber = ResourceProduction.CreateResourceProductionBuilding(lumberCost);
+            Farm farm = Farm.Create(farmCost);
+            CityWall cityWall = CityWall.Create(cityWallCost);
+            CityHall cityHall = CityHall.Create(cityhallCost);
+            Barrack barrack = Barrack.Create(barrackCost);
+
+            //Add the buildings to the city
+            return new City
+            {
+                CityName = $"{user.UserName}'s city",
+                Resources = new Resources
+                {
+                    Wood = 1000,
+                    Stone = 1000,
+                    Silver = 1000,
+                    Population = 100
+                },
+                UserId = user.Id,
+                User = user,
+                SilverProductionId = silverMine.Id,
+                SilverProduction = silverMine,
+                StoneProductionId = stoneMine.Id,
+                StoneProduction = stoneMine,
+                WoodProductionId = lumber.Id,
+                WoodProduction = lumber,
+                BarrackId = barrack.Id,
+                Barrack = barrack,
+                FarmId = farm.Id,
+                Farm = farm,
+                CityWallId = cityWall.Id,
+                CityWall = cityWall,
+                CityHallId = cityHall.Id,
+                CityHall = cityHall,
+                WarehouseId = warehouse.Id,
+                Warehouse = warehouse
+            };
         }
 
         public async Task ForgetPasswordAsync(string email)

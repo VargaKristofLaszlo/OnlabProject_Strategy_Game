@@ -13,6 +13,7 @@ namespace BackEnd.Repositories.Interfaces
         Task<ApplicationUser> FindUserByUsernameOrNullAsync(string username);
         Task<string> FindUserRoleAsync(ApplicationUser user);
         Task<(IEnumerable<ApplicationUser> Users, int Count)> GetAllUsersAsync(int pageNumber, int pageSize);
+        Task<ApplicationUser> GetUserWithCities(string userId);        
 
         //Update methods      
         Task<UsermanagerResponse> UpdateEmailAddressAsync(ApplicationUser user, string token, string newEmailAddress);

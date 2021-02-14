@@ -24,17 +24,17 @@ namespace BackEnd.Models.Models
         [ForeignKey(nameof(SilverProduction))]
         public string SilverProductionId { get; set; }
         [Required]
-        ResourceProduction SilverProduction { get; set; }
+        public ResourceProduction SilverProduction { get; set; }
 
         [ForeignKey(nameof(StoneProduction))]
         public string StoneProductionId { get; set; }
         [Required]
-        ResourceProduction StoneProduction { get; set; }
+        public ResourceProduction StoneProduction { get; set; }
 
         [ForeignKey(nameof(WoodProduction))]
         public string WoodProductionId { get; set; }
         [Required]
-        ResourceProduction WoodProduction { get; set; }
+        public ResourceProduction WoodProduction { get; set; }
 
         [ForeignKey(nameof(Barrack))]
         public string BarrackId { get; set; }

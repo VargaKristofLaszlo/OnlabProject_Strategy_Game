@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210210183327_init")]
+    [Migration("20210213205852_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,10 +158,12 @@ namespace Game.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SilverProductionId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("StoneProductionId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -172,7 +174,8 @@ namespace Game.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("WoodProductionId")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -184,9 +187,18 @@ namespace Game.Server.Migrations
 
                     b.HasIndex("FarmId");
 
+                    b.HasIndex("SilverProductionId")
+                        .IsUnique();
+
+                    b.HasIndex("StoneProductionId")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("WarehouseId");
+
+                    b.HasIndex("WoodProductionId")
+                        .IsUnique();
 
                     b.ToTable("Cities");
                 });
@@ -573,10 +585,12 @@ namespace Game.Server.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -613,10 +627,12 @@ namespace Game.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -692,6 +708,18 @@ namespace Game.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BackEnd.Models.Models.ResourceProduction", "SilverProduction")
+                        .WithOne()
+                        .HasForeignKey("BackEnd.Models.Models.City", "SilverProductionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BackEnd.Models.Models.ResourceProduction", "StoneProduction")
+                        .WithOne()
+                        .HasForeignKey("BackEnd.Models.Models.City", "StoneProductionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("BackEnd.Models.Models.ApplicationUser", "User")
                         .WithMany("Cities")
                         .HasForeignKey("UserId")
@@ -702,6 +730,12 @@ namespace Game.Server.Migrations
                         .WithMany()
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BackEnd.Models.Models.ResourceProduction", "WoodProduction")
+                        .WithOne()
+                        .HasForeignKey("BackEnd.Models.Models.City", "WoodProductionId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.OwnsOne("BackEnd.Models.Models.Resources", "Resources", b1 =>
@@ -740,9 +774,15 @@ namespace Game.Server.Migrations
                     b.Navigation("Resources")
                         .IsRequired();
 
+                    b.Navigation("SilverProduction");
+
+                    b.Navigation("StoneProduction");
+
                     b.Navigation("User");
 
                     b.Navigation("Warehouse");
+
+                    b.Navigation("WoodProduction");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Models.CityHall", b =>

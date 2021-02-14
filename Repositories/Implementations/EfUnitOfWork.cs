@@ -14,6 +14,8 @@ namespace BackEnd.Repositories.Implementations
         private IUsersRepository _users;
         private IUpgradeCostRepository _upgradeCosts;
         private IUnitRepository _units;
+        private ICityRepository _cities;
+        
 
         public EfUnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
@@ -33,9 +35,9 @@ namespace BackEnd.Repositories.Implementations
             }
         }
 
-        public IUpgradeCostRepository UpgradeCosts 
+        public IUpgradeCostRepository UpgradeCosts
         {
-            get 
+            get
             {
                 if (_upgradeCosts == null)
                     _upgradeCosts = new UpgradeCostRepository(_db);
@@ -44,14 +46,24 @@ namespace BackEnd.Repositories.Implementations
             }
         }
 
-        public IUnitRepository Units 
+        public IUnitRepository Units
         {
-            get 
+            get
             {
                 if (_units == null)
                     _units = new UnitRepository(_db);
 
                 return _units;
+            }
+        }
+
+        public ICityRepository Cities 
+        {
+            get 
+            {
+                if (_cities == null)
+                    _cities = new CityRepository(_db);
+                return _cities;
             }
         }
 

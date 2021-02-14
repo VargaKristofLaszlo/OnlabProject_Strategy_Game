@@ -30,5 +30,12 @@ namespace Repositories.Implementations
                 .Take(pageSize)
                 .ToListAsync(), _db.Units.ToListAsync().Result.Count());
         }
+
+        public async Task<IEnumerable<Unit>> GetProducibleUnitTypes(int stage)
+        {
+            return await _db.Units
+                .Where(type => type.MinBarrackStage <= stage)
+                .ToListAsync();
+        }
     }
 }

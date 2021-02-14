@@ -13,6 +13,19 @@ namespace BackEnd.Models.Models
         [Required]
         public int ProductionAmount { get; set; }
 
+        public static ResourceProduction CreateResourceProductionBuilding(BuildingUpgradeCost upgradeCost)
+        {
+            return new ResourceProduction
+            {
+                ResourceType = ResourceType.silver,
+                ProductionAmount = 100,
+                BuildingName = upgradeCost.BuildingName,
+                Stage = 0,
+                UpgradeCost = upgradeCost,
+                BuildingCostId = upgradeCost.Id
+            };
+        }
+
        
     }
 }

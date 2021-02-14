@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace BackEnd.Models.Models
 {
@@ -18,8 +16,6 @@ namespace BackEnd.Models.Models
 
         [ForeignKey(nameof(UpgradeCost))]
         public string BuildingCostId { get; set; }        
-        public BuildingUpgradeCost UpgradeCost { get; set; }
-
-        
+        public BuildingUpgradeCost UpgradeCost { get; set; }       
     }
 }

@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Models.Profiles;
 using Services.Exceptions;
+using Services.Implementations;
+using Services.Interfaces;
 using System;
 using System.Net.Http;
 using System.Security.Claims;
@@ -28,6 +30,7 @@ namespace Game.Server.Extensions
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IViewService, ViewService>();
+            services.AddScoped<IGameService, GameService>();
 
             return services;
         }
@@ -91,6 +94,7 @@ namespace Game.Server.Extensions
                 config.AddProfile(new BuildingUpgradeCostProfile());
                 config.AddProfile(new ResourceMapper());
                 config.AddProfile(new UnitProfile());
+                config.AddProfile(new CityProfile());
             }).CreateMapper());
 
             return services;

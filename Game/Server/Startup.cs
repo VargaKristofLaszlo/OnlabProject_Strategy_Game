@@ -2,27 +2,14 @@ using BackEnd.Infrastructure;
 using BackEnd.Models.Models;
 using BackEnd.Repositories.Implementations;
 using BackEnd.Repositories.Interfaces;
-using BackEnd.Services.Implementations;
-using BackEnd.Services.Interfaces;
 using Game.Server.Extensions;
 using Hellang.Middleware.ProblemDetails;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Models.Profiles;
-using Services.Exceptions;
-using System;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Text;
 
 namespace Game.Server
 {

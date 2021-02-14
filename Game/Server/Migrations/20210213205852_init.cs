@@ -183,8 +183,8 @@ namespace Game.Server.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -228,8 +228,8 @@ namespace Game.Server.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -406,9 +406,9 @@ namespace Game.Server.Migrations
                     Resources_Silver = table.Column<int>(type: "int", nullable: false),
                     Resources_Population = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SilverProductionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StoneProductionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WoodProductionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SilverProductionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StoneProductionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    WoodProductionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     BarrackId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FarmId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CityWallId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -447,6 +447,24 @@ namespace Game.Server.Migrations
                         principalTable: "Farms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cities_ResourceProductions_SilverProductionId",
+                        column: x => x.SilverProductionId,
+                        principalTable: "ResourceProductions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cities_ResourceProductions_StoneProductionId",
+                        column: x => x.StoneProductionId,
+                        principalTable: "ResourceProductions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cities_ResourceProductions_WoodProductionId",
+                        column: x => x.WoodProductionId,
+                        principalTable: "ResourceProductions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Cities_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
@@ -520,6 +538,18 @@ namespace Game.Server.Migrations
                 column: "FarmId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_SilverProductionId",
+                table: "Cities",
+                column: "SilverProductionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cities_StoneProductionId",
+                table: "Cities",
+                column: "StoneProductionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Cities_UserId",
                 table: "Cities",
                 column: "UserId");
@@ -528,6 +558,12 @@ namespace Game.Server.Migrations
                 name: "IX_Cities_WarehouseId",
                 table: "Cities",
                 column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cities_WoodProductionId",
+                table: "Cities",
+                column: "WoodProductionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CityHalls_BuildingCostId",
@@ -621,9 +657,6 @@ namespace Game.Server.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "ResourceProductions");
-
-            migrationBuilder.DropTable(
                 name: "UnitsInCities");
 
             migrationBuilder.DropTable(
@@ -640,6 +673,9 @@ namespace Game.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Farms");
+
+            migrationBuilder.DropTable(
+                name: "ResourceProductions");
 
             migrationBuilder.DropTable(
                 name: "Warehouses");
