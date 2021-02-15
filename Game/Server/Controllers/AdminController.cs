@@ -24,7 +24,7 @@ namespace Game.Server.Controllers
         {
             await _adminService.BanUserAsync(banRequest);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPost("Create/UpgradeCost")]
@@ -32,7 +32,7 @@ namespace Game.Server.Controllers
         {
             await _adminService.CreateBuildingUpgradeCostAsync(request);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPut("Modify/UpgradeCost")]
@@ -40,7 +40,7 @@ namespace Game.Server.Controllers
         {
             await _adminService.ModifyBuildingUpgradeCostAsync(request);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPut("Moderate/Cityname")]
@@ -48,7 +48,7 @@ namespace Game.Server.Controllers
         {
             await _adminService.ModerateCityNameAsync(request);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPut("Modify/UnitCost")]
@@ -56,7 +56,7 @@ namespace Game.Server.Controllers
         {
             await _adminService.ModifyUnitCostAsync(request);
 
-            return Ok();
+            return NoContent();
         }
     }
 }

@@ -9,6 +9,7 @@ using Services.Exceptions;
 using AutoMapper;
 using Game.Shared.Models;
 using BackEnd.Infrastructure;
+using System.Collections.Generic;
 
 namespace BackEnd.Services.Implementations
 {
@@ -132,6 +133,15 @@ namespace BackEnd.Services.Implementations
             var city = await _unitOfWork.Cities.FindCityById(user.Cities[cityIndex].Id);
 
             return _mapper.Map<CityDetails>(city);
+        }
+
+        public async Task<IEnumerable<Unit>> GetProducibleUnitTypes(int cityIndex)
+        {
+            CityDetails cityDetails = await GetCityDetails(cityIndex);
+
+            var producibleUnits = await _unitOfWork.Units.GetProducibleUnitTypes(cityDetails.BarrackStage);
+
+            return producibleUnits.ToList().Select(unit => _mapper.Map<Unit>(unit));
         }
     }
 }

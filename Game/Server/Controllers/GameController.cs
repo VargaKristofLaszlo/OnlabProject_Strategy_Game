@@ -28,7 +28,7 @@ namespace Game.Server.Controllers
         {
             await _gameService.UpgradeBuilding(cityIndex, buildingName, newStage);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpPatch("{buildingName}/Downgrade")]
@@ -36,7 +36,7 @@ namespace Game.Server.Controllers
         {
             await _gameService.DowngradeBuilding(cityIndex, buildingName, newStage);
 
-            return Ok();
+            return NoContent();
         }
 
 

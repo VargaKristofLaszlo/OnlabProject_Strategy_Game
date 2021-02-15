@@ -1,6 +1,7 @@
 ﻿using Game.Shared.Models;
 using Shared.Models;
 using Shared.Models.Response;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BackEnd.Services.Interfaces
@@ -12,5 +13,6 @@ namespace BackEnd.Services.Interfaces
         Task<BuildingUpgradeCost> GetBuildingUpgradeCost(string buildingName, int buildingStage);
         Task<CollectionResponse<Unit>> GetUnitTypes(int pageNumber = 1, int pageSize = 10);
         Task<CityDetails> GetCityDetails(int cityIndex);
+        Task<IEnumerable<Unit>> GetProducibleUnitTypes(int cityIndex);
     }
 }

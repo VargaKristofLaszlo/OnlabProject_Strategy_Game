@@ -61,5 +61,14 @@ namespace Game.Server.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpGet("Units/Producible")]
+        public async Task<IActionResult> GetProducibleUnits([FromQuery] int cityIndex) 
+        {
+            var result = await _viewService.GetProducibleUnitTypes(cityIndex);
+
+            return Ok(result);
+        }
     }
 }

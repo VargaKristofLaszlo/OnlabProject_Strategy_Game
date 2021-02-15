@@ -84,7 +84,7 @@ namespace Game.Server.Controllers
         {
             await _userService.UpdatePasswordAsync(request.CurrentPassword, request.NewPassword);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("VerifyEmailUpdate")]
