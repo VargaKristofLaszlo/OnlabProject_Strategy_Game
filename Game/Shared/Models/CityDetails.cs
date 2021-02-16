@@ -8,6 +8,7 @@ namespace Game.Shared.Models
 {
     public class CityDetails
     {
+        public DateTime LastResourceQueryTime { get; set; }
         public string CityName { get; set; }
         public int BarrackStage { get; set; }
         public Resources BarrackUpgradeCost { get; set; }

@@ -14,5 +14,6 @@ namespace BackEnd.Services.Interfaces
         Task<CollectionResponse<Unit>> GetUnitTypes(int pageNumber = 1, int pageSize = 10);
         Task<CityDetails> GetCityDetails(int cityIndex);
         Task<IEnumerable<Unit>> GetProducibleUnitTypes(int cityIndex);
+        Task<CityResources> GetResourcesOfCity(int cityIndex);        
     }
 }

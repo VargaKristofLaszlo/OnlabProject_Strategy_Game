@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,6 +13,8 @@ namespace BackEnd.Models.Models
 
         [Required]      
         public Resources Resources { get; set; }
+
+        public DateTime LastResourceQueryTime { get; set; } = DateTime.UtcNow;
 
         //Foreign keys        
 

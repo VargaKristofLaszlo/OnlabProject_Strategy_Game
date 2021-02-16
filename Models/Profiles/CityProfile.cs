@@ -30,7 +30,8 @@ namespace Models.Profiles
                 .ForMember(detail => detail.StoneMineStage, map => map.MapFrom(city => city.StoneProduction.Stage))
                 .ForMember(detail => detail.StoneMineUpgradeCost, map => map.MapFrom(city => city.StoneProduction.UpgradeCost.UpgradeCost))
                 .ForMember(detail => detail.WarehouseStage, map => map.MapFrom(city => city.Warehouse.Stage))
-                .ForMember(detail => detail.WarehouseUpgradeCost, map => map.MapFrom(city => city.Warehouse.UpgradeCost.UpgradeCost));
+                .ForMember(detail => detail.WarehouseUpgradeCost, map => map.MapFrom(city => city.Warehouse.UpgradeCost.UpgradeCost))
+                .ForMember(detail => detail.LastResourceQueryTime, map => map.MapFrom(city => city.LastResourceQueryTime));
         }
     }
 }

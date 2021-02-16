@@ -5,13 +5,13 @@ namespace Game.Shared.Models
     public class Resources
     {
         [Required]
-        public int Wood { get; set; }
+        public int Wood { get; set; }      
 
         [Required]
-        public int Stone { get; set; }
+        public int Stone { get; set; }       
 
         [Required]
-        public int Silver { get; set; }
+        public int Silver { get; set; }      
 
         [Required]
         public int Population { get; set; }

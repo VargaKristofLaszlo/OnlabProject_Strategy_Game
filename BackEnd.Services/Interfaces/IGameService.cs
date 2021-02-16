@@ -1,4 +1,5 @@
 ﻿using BackEnd.Models.Models;
+using Game.Shared.Models.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Services.Interfaces
     {
         Task UpgradeBuilding(int cityIndex, string buildingName, int newStage);
         Task DowngradeBuilding(int cityIndex, string buildingName, int newStage);
+        Task ProduceUnits(UnitProductionRequest request);
+        Task SendResourcesToOtherPlayer(SendResourceToOtherPlayerRequest request);
     }
 }

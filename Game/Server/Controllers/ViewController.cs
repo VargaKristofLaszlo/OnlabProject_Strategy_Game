@@ -70,5 +70,14 @@ namespace Game.Server.Controllers
 
             return Ok(result);
         }
+    
+        //Call this when we need to refresh the resources of the city
+        [HttpGet("City/Resources")]
+        public async Task<IActionResult> Test([FromQuery] int cityIndex) 
+        {
+            var result = await _viewService.GetResourcesOfCity(cityIndex);
+
+            return Ok(result);
+        }
     }
 }

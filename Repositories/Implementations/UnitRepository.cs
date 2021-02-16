@@ -34,8 +34,21 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<Unit>> GetProducibleUnitTypes(int stage)
         {
             return await _db.Units
+                .Include(unit => unit.UnitCost)
                 .Where(type => type.MinBarrackStage <= stage)
                 .ToListAsync();
+        }
+
+        public async Task<UnitsInCity> GetUnitsInCityByUnitId(string unitId)
+        {
+            return await _db.UnitsInCities
+                .Where(entity => entity.UnitId.Equals(unitId))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task InsertNewEntryToUnitsInCity(UnitsInCity unitsInCity) 
+        {
+            await _db.UnitsInCities.AddAsync(unitsInCity);
         }
     }
 }

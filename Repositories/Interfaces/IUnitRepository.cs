@@ -12,5 +12,7 @@ namespace Repositories.Interfaces
         Task<Unit> FindUnitByName(string name);
         Task<(IEnumerable<Unit> Units, int Count)> GetAllUnitsAsync(int pageNumber, int pageSize);
         Task<IEnumerable<Unit>> GetProducibleUnitTypes(int stage);
+        Task<UnitsInCity> GetUnitsInCityByUnitId(string unitId);
+        Task InsertNewEntryToUnitsInCity(UnitsInCity unitsInCity);
     }
 }

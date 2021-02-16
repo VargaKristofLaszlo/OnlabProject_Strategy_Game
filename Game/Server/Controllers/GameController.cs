@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Game.Shared.Models.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Implementations;
@@ -39,6 +40,21 @@ namespace Game.Server.Controllers
             return NoContent();
         }
 
+        [HttpPost("ProduceUnit")]
+        public async Task<IActionResult> ProduceUnits([FromBody] UnitProductionRequest request) 
+        {
+            await _gameService.ProduceUnits(request);
+
+            return Ok();
+        }
+
+        [HttpPost("Resources/SendTo/{username}")]
+        public async Task<IActionResult> SendResourcesToOtherPlayer(string username, [FromBody] SendResourceToOtherPlayerRequest request) 
+        {
+            await _gameService.SendResourcesToOtherPlayer(request);
+
+            return Ok();
+        }
 
     }
 }

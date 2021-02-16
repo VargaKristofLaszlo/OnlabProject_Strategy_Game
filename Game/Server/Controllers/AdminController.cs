@@ -31,8 +31,8 @@ namespace Game.Server.Controllers
         public async Task<IActionResult> CreateBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request)
         {
             await _adminService.CreateBuildingUpgradeCostAsync(request);
-
-            return NoContent();
+         
+            return StatusCode(205);          
         }
 
         [HttpPut("Modify/UpgradeCost")]
@@ -41,6 +41,8 @@ namespace Game.Server.Controllers
             await _adminService.ModifyBuildingUpgradeCostAsync(request);
 
             return NoContent();
+
+
         }
 
         [HttpPut("Moderate/Cityname")]

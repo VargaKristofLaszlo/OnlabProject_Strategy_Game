@@ -10,6 +10,8 @@ using AutoMapper;
 using Game.Shared.Models;
 using BackEnd.Infrastructure;
 using System.Collections.Generic;
+using System;
+
 
 namespace BackEnd.Services.Implementations
 {
@@ -123,7 +125,7 @@ namespace BackEnd.Services.Implementations
             };
         }
 
-        public async Task<CityDetails> GetCityDetails(int cityIndex)
+        public async Task<Models.Models.City> GetCityData(int cityIndex)
         {
             var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
 
@@ -132,16 +134,66 @@ namespace BackEnd.Services.Implementations
 
             var city = await _unitOfWork.Cities.FindCityById(user.Cities[cityIndex].Id);
 
-            return _mapper.Map<CityDetails>(city);
+            return city;
         }
+
+        public async Task<CityDetails> GetCityDetails(int cityIndex)
+        {
+            return _mapper.Map<CityDetails>(await GetCityData(cityIndex));
+        }
+
 
         public async Task<IEnumerable<Unit>> GetProducibleUnitTypes(int cityIndex)
         {
-            CityDetails cityDetails = await GetCityDetails(cityIndex);
+            CityDetails cityDetails = _mapper.Map<CityDetails>(await GetCityData(cityIndex));
 
             var producibleUnits = await _unitOfWork.Units.GetProducibleUnitTypes(cityDetails.BarrackStage);
 
             return producibleUnits.ToList().Select(unit => _mapper.Map<Unit>(unit));
+        }
+
+        public async Task<CityResources> GetResourcesOfCity(int cityIndex) 
+        {
+            var city = await GetCityData(cityIndex);
+
+            int hourDifference = (int)(DateTime.UtcNow - city.LastResourceQueryTime).TotalHours;
+
+            int stoneAmount = city.Resources.Stone;
+            int silverAmount = city.Resources.Silver;
+            int woodAmount = city.Resources.Wood;
+
+            if (hourDifference > 0) 
+            {
+                stoneAmount = city.Resources.Stone += city.StoneProduction.ProductionAmount * hourDifference;
+                silverAmount = city.Resources.Silver += city.SilverProduction.ProductionAmount * hourDifference;
+                woodAmount = city.Resources.Wood += city.WoodProduction.ProductionAmount * hourDifference;
+                city.LastResourceQueryTime = DateTime.UtcNow;
+
+                CheckWarehouseCapacity(ref stoneAmount,ref silverAmount,ref woodAmount, city.Warehouse);
+
+                await _unitOfWork.CommitChangesAsync();
+            }
+            return new CityResources
+            {
+                StoneAmount = stoneAmount,
+                StoneProductionPerHour = city.StoneProduction.ProductionAmount,
+                SilverAmount = silverAmount,
+                SilverProductionPerHour = city.SilverProduction.ProductionAmount,
+                WoodAmount = woodAmount,
+                WoodProductionPerHour = city.WoodProduction.ProductionAmount
+            };
+        }
+
+        private void CheckWarehouseCapacity(ref int stoneAmount, ref int silverAmount, ref int woodAmount, Models.Models.Warehouse warehouse) 
+        {
+            if (stoneAmount > warehouse.MaxStoneStorageCapacity)
+                stoneAmount = warehouse.MaxStoneStorageCapacity;
+
+            if (silverAmount > warehouse.MaxSilverStorageCapacity)
+                silverAmount = warehouse.MaxSilverStorageCapacity;
+
+            if (woodAmount > warehouse.MaxWoodStorageCapacity)
+                woodAmount = warehouse.MaxWoodStorageCapacity;
         }
     }
 }
