@@ -98,13 +98,22 @@ namespace BackEnd.Repositories.Implementations
             return WebEncoders.Base64UrlEncode(encodedPasswordResetToken);
         }
 
-        public async Task<string> GenerateEmailUpdateToken(ApplicationUser user, string newEmail)
+        public async Task<string> GenerateEmailUpdateTokenAsync(ApplicationUser user, string newEmail)
         {
             var emaiUpdateToken = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
 
             var encodedEmailUpdateToken = Encoding.UTF8.GetBytes(emaiUpdateToken);
 
             return WebEncoders.Base64UrlEncode(encodedEmailUpdateToken);
+        }
+
+        public async Task<string> GenerateAccountDeletionTokenAsync(ApplicationUser user) 
+        {
+            var userDeletionToken =  await _userManager.GenerateUserTokenAsync(user, "AccountDeletion", "Deleting the user");
+
+            var encodedUserDeletionToken = Encoding.UTF8.GetBytes(userDeletionToken);
+
+            return WebEncoders.Base64UrlEncode(encodedUserDeletionToken);
         }
 
         public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
@@ -173,8 +182,15 @@ namespace BackEnd.Repositories.Implementations
             return UsermanagerResponse.TaskFailed(errors);
         }
 
-        public async Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user)
+        public async Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user, string token)
         {
+            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var tokenVerification = await _userManager.VerifyUserTokenAsync(user, "AccountDeletion", "Deleting the user", normalToken);
+            if (tokenVerification == false)
+                return UsermanagerResponse.TaskFailed(new List<string>{ "Invalid token"});
+
             var result = await _userManager.DeleteAsync(user);
 
             if (result.Succeeded)

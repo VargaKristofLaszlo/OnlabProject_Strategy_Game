@@ -30,7 +30,7 @@ namespace Services.Implementations
 
             //Check if the building is upgradeable
             if (await IsUpgradeable(buildingName, newStage) == false)
-                return;
+                throw new BadRequestException("The building is not upgradeable");
 
             //Get the city which contains the upgradeable building
             var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
@@ -41,7 +41,7 @@ namespace Services.Implementations
 
             //Check if the city has enough resources to upgrade the building
             if (HasEnoughResources(city, upgradeCost) == false)
-                return;
+                throw new BadRequestException("The city does not have enough resources");
 
             //Upgrade the building
             buildingBehaviour.Upgrade(city, upgradeCost);
@@ -69,7 +69,7 @@ namespace Services.Implementations
         public async Task DowngradeBuilding(int cityIndex, string buildingName, int newStage)
         {
             if (newStage < 2)
-                return;
+                throw new BadRequestException("The building can not be downgraded any further");
 
             var buildingBehaviour = CreateConcreteBuildingBehaviour(buildingName);
 
@@ -130,7 +130,7 @@ namespace Services.Implementations
             };
 
             if (CheckIfCityHasEnoughResources(city, productionCost) == false)
-                return;
+                throw new BadRequestException("The city does not have enough resources");
 
             PayTheCost(city, productionCost);
 
@@ -208,7 +208,7 @@ namespace Services.Implementations
             var sentResources = _mapper.Map<Resources>(request);
 
             if (CheckIfCityHasEnoughResources(senderCity, sentResources) == false)
-                return;
+                throw new BadRequestException("The city does not have enough resources");
 
             var silverAmount = receivingCity.Resources.Silver + sentResources.Silver;
             var stoneAmount = receivingCity.Resources.Stone + sentResources.Stone;

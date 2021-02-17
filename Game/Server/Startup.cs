@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace Game.Server
 {
@@ -54,8 +55,23 @@ namespace Game.Server
             services.AddAutoMapperConfig();
             services.AddProblemDetailsConfig();
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", 
+                    new OpenApiInfo 
+                    {
+                        Title = "StrategyGame Api", 
+                        Description = "StrategyGame is a project made for my independent laboratory work",
+                        Version = "v1.0" 
+                    });
+                options.EnableAnnotations();
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +89,11 @@ namespace Game.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "StrategyGame Web API V1");
+            });
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();

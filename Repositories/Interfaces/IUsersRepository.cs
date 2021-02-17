@@ -23,7 +23,8 @@ namespace BackEnd.Repositories.Interfaces
         //Token generation methods
         Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);
         Task<string> GeneratePasswordResetTokenAsnyc(ApplicationUser user);
-        Task<string> GenerateEmailUpdateToken(ApplicationUser user, string newEmail);
+        Task<string> GenerateEmailUpdateTokenAsync(ApplicationUser user, string newEmail);
+        Task<string> GenerateAccountDeletionTokenAsync(ApplicationUser user);
 
         //Confirmation methods
         Task<UsermanagerResponse> ConfirmEmailAsync(ApplicationUser user, string token);
@@ -34,7 +35,7 @@ namespace BackEnd.Repositories.Interfaces
         Task<UsermanagerResponse> CreateUserAsync(ApplicationUser user, string password, string role);
 
         //Delete method
-        Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user);
+        Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user, string token);
 
     }
 }

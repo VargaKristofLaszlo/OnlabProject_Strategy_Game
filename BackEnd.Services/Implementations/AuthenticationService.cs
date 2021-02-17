@@ -198,11 +198,13 @@ namespace BackEnd.Services.Implementations
         public async Task SendEmailUpdateConfirmationAsync(string newEmailAddress)
         {
             var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identity.UserId);
+            if (user == null)
+                throw new NotFoundException();
 
             if (_identity.Email.Equals(newEmailAddress))
                 throw new OperationFailedException("Choose a new email address");
 
-            string token = await _unitOfWork.Users.GenerateEmailUpdateToken(user, newEmailAddress);
+            string token = await _unitOfWork.Users.GenerateEmailUpdateTokenAsync(user, newEmailAddress);
 
             string url = $"{_authOptions.AppUrl}/api/auth/VerifyEmailUpdate?username={_identity.Username}&email={newEmailAddress}&token={token}";
 
@@ -224,17 +226,17 @@ namespace BackEnd.Services.Implementations
                 throw new OperationFailedException(usermanagerResponse.Errors.First());
         }
 
-        public async Task DeleteAccountAsync(string username)
+        public async Task DeleteAccountAsync(string username, string token)
         {
             var user = await _unitOfWork.Users.FindUserByUsernameOrNullAsync(username);
 
             if (user == null)
                 throw new NotFoundException();
 
-            var result = await _unitOfWork.Users.DeleteUserAsync(user);
+            var result = await _unitOfWork.Users.DeleteUserAsync(user, token);
 
             if (result.IsSuccess == false)
-                throw new NotFoundException();
+                throw new BadRequestException("Account deletion failed");
         }
 
         public async Task SendAccountDeletionConfirmationAsync()
@@ -244,7 +246,9 @@ namespace BackEnd.Services.Implementations
             if (user == null)
                 throw new NotFoundException();
 
-            string url = $"{_authOptions.AppUrl}/Api/Auth/Delete/Action?username={_identity.Username}";
+            var accountDeletionToken = await _unitOfWork.Users.GenerateAccountDeletionTokenAsync(user);
+
+            string url = $"{_authOptions.AppUrl}/Api/Auth/Delete/Action?username={_identity.Username}&token={accountDeletionToken}";
 
             _mailService.SendEmail(user.Email, "Account deletion", $"<h1>We received a request to delete your account</h1>" +
                     $"<p>To confirm it please click <a href={url}>here</a> </p>");

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Models.Profiles;
+using Repositories.Implementations;
 using Services.Exceptions;
 using Services.Implementations;
 using Services.Interfaces;
@@ -119,6 +120,7 @@ namespace Game.Server.Extensions
                 opt.MapToStatusCode<BannedUserException>(StatusCodes.Status403Forbidden);
                 opt.MapToStatusCode<NotConfirmedAccountException>(StatusCodes.Status422UnprocessableEntity);
                 opt.MapToStatusCode<OperationFailedException>(StatusCodes.Status500InternalServerError);
+                opt.MapToStatusCode<BadRequestException>(StatusCodes.Status400BadRequest);
 
                 // This will map HttpRequestException to the 503 Service Unavailable status code.
                 opt.MapToStatusCode<HttpRequestException>(StatusCodes.Status503ServiceUnavailable);
@@ -139,6 +141,7 @@ namespace Game.Server.Extensions
                 options.SignIn.RequireConfirmedAccount = true;
             }).AddRoles<IdentityRole>()
               .AddDefaultTokenProviders()
+              .AddTokenProvider<DeletionTokenProvider<ApplicationUser>>("AccountDeletion")
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -146,6 +149,5 @@ namespace Game.Server.Extensions
 
             return services;
         }
-
     }
 }

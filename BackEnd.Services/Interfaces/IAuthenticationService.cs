@@ -14,7 +14,7 @@ namespace BackEnd.Services.Interfaces
         Task UpdatePasswordAsync(string currentPassword, string newPassword);
         Task SendEmailUpdateConfirmationAsync(string newEmailAddress);
         Task UpdateEmailAddressAsync(string username, string newEmail, string token);
-        Task DeleteAccountAsync(string username);
+        Task DeleteAccountAsync(string username, string token);
         Task SendAccountDeletionConfirmationAsync();
     }
 }
