@@ -39,7 +39,6 @@ namespace Game.Server.Controllers
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
             var loginResult = await _userService.LoginAsync(request);
-
             return Ok(loginResult);
         }
 

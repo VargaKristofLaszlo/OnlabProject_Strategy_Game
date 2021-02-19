@@ -32,13 +32,13 @@ namespace Game.Server.Controllers
             "and find the building which needs to upgraded using it's name." +
             "<b>Using this end-point requires the user to log in<b>"            
         )]
-        [SwaggerResponse(204, "The upgrade was successful")]
-        [SwaggerResponse(404, "The building was not found")]
+        [SwaggerResponse(204, "The upgrade was successful")]        
         [SwaggerResponse(400, "The upgrade failed")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [SwaggerResponse(404, "The building was not found")]
         public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage) 
         {
             await _gameService.UpgradeBuilding(cityIndex, buildingName, newStage);
-
             return NoContent();
         }
 
@@ -50,12 +50,12 @@ namespace Game.Server.Controllers
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(204, "The downgrade was successful")]
-        [SwaggerResponse(404, "The building was not found")]
         [SwaggerResponse(400, "The downgrade failed")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [SwaggerResponse(404, "The building was not found")]        
         public async Task<IActionResult> DowngradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
             await _gameService.DowngradeBuilding(cityIndex, buildingName, newStage);
-
             return NoContent();
         }
 
@@ -64,27 +64,28 @@ namespace Game.Server.Controllers
             Summary = "Produces units in the city",
             Description = "Finds the city where to units need to be produced, checks if the city has enough resources, then produces the units." +
             "<b>Using this end-point requires the user to log in<b>"
-        )]
-        [SwaggerResponse(404, "The unit type could not be found")]
+        )]        
         [SwaggerResponse(200, "The unit production was successful")]
         [SwaggerResponse(400, "The unit production failed")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [SwaggerResponse(404, "The unit type could not be found")]
         public async Task<IActionResult> ProduceUnits([FromBody] UnitProductionRequest request) 
         {
             await _gameService.ProduceUnits(request);
             return Ok();
         }
 
-        [HttpPost("Resources/SendTo/{username}")]
+        [HttpPost("Resources/Send")]
         [SwaggerOperation(
             Summary = "Sends resources to an other user",
             Description = "Takes the resources from the sender's city and gives them to the receiver"
         )]
         [SwaggerResponse(200, "The resources were sent to the other player")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(400, "The resources could not be sent to the other player")]
-        public async Task<IActionResult> SendResourcesToOtherPlayer(string username, [FromBody] SendResourceToOtherPlayerRequest request) 
+        public async Task<IActionResult> SendResourcesToOtherPlayer([FromBody] SendResourceToOtherPlayerRequest request) 
         {
             await _gameService.SendResourcesToOtherPlayer(request);
-
             return Ok();
         }
 

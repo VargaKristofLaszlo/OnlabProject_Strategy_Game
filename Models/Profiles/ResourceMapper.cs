@@ -19,10 +19,7 @@ namespace Models.Profiles
               .ForMember(dto => dto.Wood, model => model.MapFrom(cost => cost.Wood)).ReverseMap();
 
             CreateMap<BackEnd.Models.Models.Resources, Game.Shared.Models.Request.SendResourceToOtherPlayerRequest>()
-                .ForMember(request => request.WoodAmount, map => map.MapFrom(recipient => recipient.Wood))
-                .ForMember(request => request.StoneAmount, map => map.MapFrom(recipient => recipient.Stone))
-                .ForMember(request => request.SilverAmount, map => map.MapFrom(recipient => recipient.Silver))
-                .ForMember(null , map => map.MapFrom(recipient => recipient.Population)).ReverseMap();
+                .ReverseMap();
 
         }
     }

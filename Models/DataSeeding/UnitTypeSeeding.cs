@@ -24,7 +24,10 @@ namespace Models.DataSeeding
             {
                 Name = "Spearman",
                 AttackPoint = 10,
-                DefensePoint = 25,
+                InfantryDefensePoint = 25,
+                CavalryDefensePoint = 45,
+                ArcherDefensePoint = 10,
+                UnitType = Models.UnitType.Infantry,
                 MinBarrackStage = 1,
                 CarryingCapacity = 25,
                 UnitCost = new Resources
@@ -34,12 +37,15 @@ namespace Models.DataSeeding
                     Silver = 20,
                     Population = 1
                 }
-            };
-            Swordsman = new Unit
+            }; 
+             Swordsman = new Unit
             {
                 Name = "Swordsman",
                 AttackPoint = 25,
-                DefensePoint = 55,
+                InfantryDefensePoint = 55,
+                CavalryDefensePoint = 5,
+                ArcherDefensePoint = 30,
+                UnitType = Models.UnitType.Infantry,
                 MinBarrackStage = 3,
                 CarryingCapacity = 15,
                 UnitCost = new Resources
@@ -54,7 +60,10 @@ namespace Models.DataSeeding
             {
                 Name = "Axe Fighter",
                 AttackPoint = 45,
-                DefensePoint = 10,
+                InfantryDefensePoint= 10,
+                CavalryDefensePoint = 5,
+                ArcherDefensePoint = 10,
+                UnitType = Models.UnitType.Infantry,
                 MinBarrackStage = 5,
                 CarryingCapacity = 20,
                 UnitCost = new Resources
@@ -64,12 +73,15 @@ namespace Models.DataSeeding
                     Silver = 40,
                     Population = 1
                 }
-            };
+            }; 
             Archer = new Unit
             {
                 Name = "Archer",
                 AttackPoint = 25,
-                DefensePoint = 50,
+                InfantryDefensePoint = 10,
+                CavalryDefensePoint = 30,
+                ArcherDefensePoint = 60,
+                UnitType = Models.UnitType.Archer,
                 MinBarrackStage = 9,
                 CarryingCapacity = 10,
                 UnitCost = new Resources
@@ -80,11 +92,14 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             };
-            LightCavalry = new Unit
+             LightCavalry = new Unit
             {
                 Name = "Light Cavalry",
                 AttackPoint = 130,
-                DefensePoint = 40,
+                InfantryDefensePoint = 30,
+                CavalryDefensePoint = 40,
+                ArcherDefensePoint = 30,
+                UnitType = Models.UnitType.Cavalry,
                 MinBarrackStage = 11,
                 CarryingCapacity = 50,
                 UnitCost = new Resources
@@ -94,12 +109,15 @@ namespace Models.DataSeeding
                     Silver = 250,
                     Population = 4
                 }
-            };
+            }; 
             MountedArcher = new Unit
             {
                 Name = "Mounted Archer",
                 AttackPoint = 150,
-                DefensePoint = 50,
+                InfantryDefensePoint = 40,
+                CavalryDefensePoint = 30,
+                ArcherDefensePoint = 50,
+                UnitType = Models.UnitType.Archer,
                 MinBarrackStage = 13,
                 CarryingCapacity = 50,
                 UnitCost = new Resources
@@ -109,12 +127,15 @@ namespace Models.DataSeeding
                     Silver = 100,
                     Population = 5
                 }
-            };
-            HeavyCavalry = new Unit
+            }; 
+             HeavyCavalry = new Unit
             {
                 Name = "Heavy Cavalry",
                 AttackPoint = 150,
-                DefensePoint = 200,
+                InfantryDefensePoint = 200,
+                CavalryDefensePoint = 160,
+                ArcherDefensePoint = 180,
+                UnitType = Models.UnitType.Cavalry,
                 MinBarrackStage = 21,
                 CarryingCapacity = 50,
                 UnitCost = new Resources

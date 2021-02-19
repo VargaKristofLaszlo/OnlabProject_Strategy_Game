@@ -63,7 +63,6 @@ namespace BackEnd.Services.Implementations
             if (user.IsBanned)
                 throw new BannedUserException("Your account has been banned");
 
-
             var userRole = await _unitOfWork.Users.FindUserRoleAsync(user);
 
             var claims = new Claim[]

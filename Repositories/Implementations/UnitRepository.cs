@@ -30,6 +30,12 @@ namespace Repositories.Implementations
                 .Take(pageSize)
                 .ToListAsync(), _db.Units.ToListAsync().Result.Count());
         }
+        public async Task<IEnumerable<Unit>> GetAllUnitsAsync() 
+        {
+            return await _db.Units
+                .ToListAsync();
+        }
+
 
         public async Task<IEnumerable<Unit>> GetProducibleUnitTypes(int stage)
         {
@@ -39,12 +45,23 @@ namespace Repositories.Implementations
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<UnitsInCity>> GetUnitsInCityByBarrackId(string barrackId)
+        {
+            return await _db.UnitsInCities
+                .Include(u => u.Unit)
+                .Where(u => u.BarrackId.Equals(barrackId))
+                .ToListAsync();
+        }
+
         public async Task<UnitsInCity> GetUnitsInCityByUnitId(string unitId)
         {
             return await _db.UnitsInCities
                 .Where(entity => entity.UnitId.Equals(unitId))
                 .FirstOrDefaultAsync();
         }
+
+
+
 
         public async Task InsertNewEntryToUnitsInCity(UnitsInCity unitsInCity) 
         {

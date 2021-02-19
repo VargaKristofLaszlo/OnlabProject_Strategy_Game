@@ -45,12 +45,12 @@ namespace BackEnd.Services.Implementations
             {
                 // Only be able to create an upgrade cost for the next stage
                 if (previousMaxStage.Value + 1 != request.BuildingStage)
-                    throw new OperationFailedException("You can only creat an upgrade cost for the next stage");
+                    throw new BadRequestException("You can only creat an upgrade cost for the next stage");
             }
             else
             {
                 if (request.BuildingStage != 1)
-                    throw new OperationFailedException("If you want to create an upgrade cost for a new building" +
+                    throw new BadRequestException("If you want to create an upgrade cost for a new building" +
                         " create a cost for stage 1 first");
             }
 

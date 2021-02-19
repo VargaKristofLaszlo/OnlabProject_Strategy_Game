@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Models.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,7 +14,16 @@ namespace BackEnd.Models.Models
         public int AttackPoint { get; set; }
 
         [Required]
-        public int DefensePoint { get; set; }
+        public int InfantryDefensePoint { get; set; }
+
+        [Required]
+        public int CavalryDefensePoint { get; set; }
+
+        [Required]
+        public int ArcherDefensePoint { get; set; }
+
+        [Required]
+        public UnitType UnitType { get; set; } 
 
         [Required]
         public int MinBarrackStage { get; set; }

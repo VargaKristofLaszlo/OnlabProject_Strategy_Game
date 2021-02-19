@@ -26,11 +26,13 @@ namespace Game.Server.Controllers
         [Authorize(Roles = "Admin")]
         [HttpGet("Credentials")]
         [SwaggerOperation(
-            Summary = "Gets the credentials of the users for a page",
-            Description = "Returns the informations about the registered users using paging." +
+            Summary = "Returns a list containing user informations for the admins",
+            Description = "Returns the informations about the registered users via paging." +
             "<b>Using this end-point requires the user to log in as an admin<b>"
         )]
         [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Credentials>))]
+        [SwaggerResponse(403, "Only a logged in admin user can use this endpoint")]
+        [SwaggerResponse(401, "Only a logged in admin user can use this endpoint")]
         public async Task<IActionResult> GetAllCredentials([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             var result = await _viewService.GetUserCredentialsAsync(pageNumber, pageSize);
@@ -40,12 +42,14 @@ namespace Game.Server.Controllers
         
         [HttpGet("Building/UpgradeCost")]
         [SwaggerOperation(
-            Summary = "Gets the upgrade cost of a building",
+            Summary = "Returns the upgrade cost of a building",
             Description = "Returns the upgrade cost of a building." +
+            "Can be used to get an upgrade cost selecting the name/stage from a list." +
             "<b>Using this end-point requires the user to log in<b>"            
         )]
         [SwaggerResponse(404, "The upgrade cost could not be found")]
         [SwaggerResponse(200, "The request was successful",typeof(BuildingUpgradeCost))]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage)
         {
             var result = await _viewService.GetBuildingUpgradeCost(buildingName, buildingStage);
@@ -53,17 +57,19 @@ namespace Game.Server.Controllers
         }
 
        
-        [HttpGet("{username}")]
+        [HttpGet("CityNames")]
         [SwaggerOperation(
-            Summary = "Gets the name of the cities",
-            Description = "Returns the names of the cities of a user." +
+            Summary = "Returns a list containing the name of the cities",
+            Description = "Returns a list containing the name of the cities." +
+            "Can be used to either list the names for the admin or in-game for a user" +
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(404, "The user could not be found")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<string>))]
-        public async Task<IActionResult> GetCityNamesOfUser(string username, [FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        public async Task<IActionResult> GetCityNamesOfUser([FromQuery] int pageNumber, [FromQuery] int pageSize) 
         {
-            var result = await _viewService.GetCityNamesOfUser(username, pageNumber, pageSize);
+            var result = await _viewService.GetCityNamesOfUser(pageNumber, pageSize);
 
             return Ok(result);
         }
@@ -71,11 +77,12 @@ namespace Game.Server.Controllers
         
         [HttpGet("Units")]
         [SwaggerOperation(
-            Summary = "Gets the unit types",
-            Description = "Returns the informations about the unit types using paging." +
+            Summary = "Returns a list containing informations about the unit types",
+            Description = "Returns a list containing informations about the unit types via paging" +
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Unit>))]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         public async Task<IActionResult> GetUnitTypes ([FromQuery] int pageNumber, [FromQuery] int pageSize) 
         {
             var result = await _viewService.GetUnitTypes(pageNumber, pageSize);
@@ -86,10 +93,13 @@ namespace Game.Server.Controllers
         [HttpGet("City")]
         [SwaggerOperation(
             Summary = "Returns information about a city",
-            Description = "Returns the buildings and their stages and upgrade costs of a user's city." +
+            Description = "Usign this endpoint returns the following: <b>Name of the city, Building stages and their upgrade cost," +
+            "and the last time the resources of the city was updated.<b>" +
+            "This endpoint can be used to get data for a page where you'd want to selec witch building to upgrade." +
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(404, "The city could not be found")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CityDetails))]
         public async Task<IActionResult> GetCity([FromQuery] int cityIndex) 
         {
@@ -100,11 +110,13 @@ namespace Game.Server.Controllers
 
         [HttpGet("Units/Producible")]
         [SwaggerOperation(
-            Summary = "Returns the producible units",
-            Description = "Returns the producible units of the user's city." +
+            Summary = "Returns a list containing information about the producible units",
+            Description = "Returns a list containing information about the producible units" +
+            "Use this endpoint to get the data for a page where you can select a unit for production" +
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(404, "The city could not be found")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<Unit>))]
         public async Task<IActionResult> GetProducibleUnits([FromQuery] int cityIndex) 
         {
@@ -115,14 +127,15 @@ namespace Game.Server.Controllers
         //Call this when we need to refresh the resources of the city
         [HttpGet("City/Resources")]
         [SwaggerOperation(
-            Summary = "Returns the resources of the city",
+            Summary = "Updates the resources of a city",
             Description = "Returns the updated resources of the city." +
             "<b>Call this method when the resources of the city needs to be refreshed<b>." +
             "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(404, "The city could not be found")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CityResources))]
-        public async Task<IActionResult> Test([FromQuery] int cityIndex) 
+        public async Task<IActionResult> ResourceUpdate([FromQuery] int cityIndex) 
         {
             var result = await _viewService.GetResourcesOfCity(cityIndex);
 

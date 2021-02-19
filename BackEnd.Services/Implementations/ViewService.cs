@@ -48,16 +48,13 @@ namespace BackEnd.Services.Implementations
             return _mapper.Map<BuildingUpgradeCost>(result);
         }
 
-        public async Task<CollectionResponse<string>> GetCityNamesOfUser(string username, int pageNumber = 1, int pageSize = 10)
+        public async Task<CollectionResponse<string>> GetCityNamesOfUser(int pageNumber = 1, int pageSize = 10)
         {
             //Validation
             pageNumber.ValidatePageNumber();
             pageSize.ValideatePageSize();
 
-            var user = await _unitOfWork.Users.FindUserByUsernameOrNullAsync(username);
-
-            if (user == null)
-                throw new NotFoundException();
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
 
             var cityNameList = user.Cities.Select(city => city.CityName);
             int cityNameListCount = cityNameList.Count();
@@ -125,7 +122,7 @@ namespace BackEnd.Services.Implementations
             };
         }
 
-        public async Task<Models.Models.City> GetCityData(int cityIndex)
+        private async Task<Models.Models.City> GetCityData(int cityIndex)
         {
             var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
 
@@ -164,12 +161,18 @@ namespace BackEnd.Services.Implementations
 
             if (hourDifference > 0) 
             {
-                stoneAmount = city.Resources.Stone += city.StoneProduction.ProductionAmount * hourDifference;
-                silverAmount = city.Resources.Silver += city.SilverProduction.ProductionAmount * hourDifference;
-                woodAmount = city.Resources.Wood += city.WoodProduction.ProductionAmount * hourDifference;
+                //introducing local variables since we need to use ref
+                stoneAmount = city.Resources.Stone + city.StoneProduction.ProductionAmount * hourDifference;
+                silverAmount = city.Resources.Silver + city.SilverProduction.ProductionAmount * hourDifference;
+                woodAmount = city.Resources.Wood + city.WoodProduction.ProductionAmount * hourDifference;
                 city.LastResourceQueryTime = DateTime.UtcNow;
 
                 CheckWarehouseCapacity(ref stoneAmount,ref silverAmount,ref woodAmount, city.Warehouse);
+
+                //updating the resources if the city with the storable amount
+                city.Resources.Stone = stoneAmount;
+                city.Resources.Silver = silverAmount;
+                city.Resources.Wood = woodAmount;
 
                 await _unitOfWork.CommitChangesAsync();
             }

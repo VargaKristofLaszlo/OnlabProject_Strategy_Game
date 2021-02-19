@@ -14,5 +14,6 @@ namespace Services.Interfaces
         Task DowngradeBuilding(int cityIndex, string buildingName, int newStage);
         Task ProduceUnits(UnitProductionRequest request);
         Task SendResourcesToOtherPlayer(SendResourceToOtherPlayerRequest request);
+        Task AttackOtherCity(AttackRequest request);
     }
 }
