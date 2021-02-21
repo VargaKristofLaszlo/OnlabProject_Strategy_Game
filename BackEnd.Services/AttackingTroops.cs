@@ -64,12 +64,21 @@ namespace Services
         public void Fight(ref Dictionary<BackEnd.Models.Models.Unit, int> attackingTroops, ref Dictionary<BackEnd.Models.Models.Unit, int> defendingTroops,
             int attackValue, int defenseValue)
         {
-            double casualtyRatio = Math.Sqrt(attackValue / defenseValue) / (defenseValue / attackValue);
+            double casualtyRatio;
+            double DefenseDivAttack = (double)defenseValue / attackValue;
+            double AttackDivDefense = (double)attackValue / defenseValue;
 
             if (attackValue > defenseValue)
             {
+                casualtyRatio = Math.Sqrt(DefenseDivAttack) / (AttackDivDefense);
+                if (double.IsInfinity(casualtyRatio))
+                    casualtyRatio = 0;
+
                 // The attackers won the first phase all of the defending units are lost, the attackers have casualties
-                defendingTroops = null;
+                foreach (var item in defendingTroops)
+                {
+                    defendingTroops[item.Key] = 0;
+                }
 
                 foreach (var item in attackingTroops)
                     attackingTroops[item.Key] = attackingTroops[item.Key] - (int)Math.Ceiling(attackingTroops[item.Key] * casualtyRatio);
@@ -77,8 +86,15 @@ namespace Services
                 return;
             }
 
+            casualtyRatio = Math.Sqrt(AttackDivDefense) / (DefenseDivAttack);
+            if (double.IsInfinity(casualtyRatio))
+                casualtyRatio = 0;
+
             // The defenders won, they have casualties and the attackers lost everything            
-            attackingTroops = null;
+            foreach (var item in attackingTroops)
+            {
+                attackingTroops[item.Key] = 0;
+            }
 
             foreach (var item in defendingTroops)
                 defendingTroops[item.Key] = defendingTroops[item.Key] - (int)Math.Ceiling(defendingTroops[item.Key] * casualtyRatio);
@@ -92,10 +108,15 @@ namespace Services
             if (survivedTroops == null)
                 return;
 
-            foreach (var item in survivedTroops)
-            {
-                troopsOfNextPhase[item.Key] += item.Value;
-            }
+            if (troopsOfNextPhase.Count == 0)            
+                foreach (var item in survivedTroops)                
+                    troopsOfNextPhase.Add(item.Key, item.Value);
+                
+            
+            else 
+                foreach (var item in survivedTroops)
+                    troopsOfNextPhase[item.Key] += item.Value;
+                
         }
     }
 }

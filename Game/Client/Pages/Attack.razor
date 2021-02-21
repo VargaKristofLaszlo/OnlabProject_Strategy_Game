@@ -1,0 +1,79 @@
+﻿@page "/Attack"
+@using Game.Shared.Models.Request
+@using Game.Shared.Models
+@using System.Net.Http.Headers
+@using System.ComponentModel.DataAnnotations;
+@inject HttpClient httpClient
+
+<EditForm Model="AccessToken" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="AccesToken" @bind-Value="AccessToken.AccessToken" />
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+<p>@answer</p>
+
+@code {
+    public class ModelClass
+    {
+        [Required]
+        public string AccessToken { get; set; }
+    }
+
+    private ModelClass AccessToken = new ModelClass();
+    private string answer;
+
+    private async Task HandleValidSubmit()
+    {
+        AttackRequest request = new AttackRequest();
+
+        var spearman = new Unit()
+        {
+            Name = "Spearman",
+            AttackPoint = 10,
+            UnitType = UnitType.Infantry,
+            MinBarrackStage = 1,
+            CarryingCapacity = 25,
+            UnitCost = new Resources
+            {
+                Wood = 50,
+                Stone = 30,
+                Silver = 20,
+                Population = 1
+            },
+            ArcherDefensePoint = 10,
+            CavalryDefensePoint = 45,
+            InfantryDefensePoint = 25
+        };
+        int spearmanAmount = 35;
+
+
+
+        Dictionary<Game.Shared.Models.Unit, int> attackingForces = new Dictionary<Game.Shared.Models.Unit, int>();
+        attackingForces.Add(spearman, spearmanAmount);
+
+        request = new AttackRequest()
+        {
+            AttackType = AttackType.Looting,
+            AttackingForces = new List<KeyValuePair<Game.Shared.Models.Unit, int>>()
+    {
+                    attackingForces.First()
+                },
+            AttackedUserId = "b987a2ab-0fc2-4c37-b0e7-f9e12fc6a3cd",
+            AttackedCityIndex = 0,
+            AttackerCityIndex = 0
+        };
+
+        var httpResponse = await AttackAsync(request);
+        answer = await httpResponse.Content.ReadAsStringAsync();
+    }
+    public async Task<HttpResponseMessage> AttackAsync(AttackRequest request)
+    {
+        httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", AccessToken.AccessToken);
+        return await httpClient.PostAsJsonAsync("https://localhost:44394/api/Game/Attack", request);
+    }
+}

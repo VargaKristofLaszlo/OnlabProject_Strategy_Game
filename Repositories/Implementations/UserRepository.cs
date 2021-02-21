@@ -50,6 +50,7 @@ namespace BackEnd.Repositories.Implementations
         {
             return await _db.Users
                 .Include(user => user.Cities)
+                .ThenInclude(city =>city.CityWall)
                 .FirstOrDefaultAsync(user => user.Id.Equals(userId));
         }
 

@@ -9,19 +9,19 @@ namespace Models.DataSeeding
     public class UnitTypeSeeding
     {
         private readonly ApplicationDbContext _db;
-        private Unit Spearman;
-        private Unit Swordsman;
-        private Unit AxeFighter;
-        private Unit Archer;
-        private Unit LightCavalry;
-        private Unit MountedArcher;
-        private Unit HeavyCavalry;
+        private BackEnd.Models.Models.Unit Spearman;
+        private BackEnd.Models.Models.Unit Swordsman;
+        private BackEnd.Models.Models.Unit AxeFighter;
+        private BackEnd.Models.Models.Unit Archer;
+        private BackEnd.Models.Models.Unit LightCavalry;
+        private BackEnd.Models.Models.Unit MountedArcher;
+        private BackEnd.Models.Models.Unit HeavyCavalry;
         public UnitTypeSeeding(ApplicationDbContext db)
         {
             _db = db;
 
             //Creating the unit types
-            Spearman = new Unit
+            Spearman = new BackEnd.Models.Models.Unit
             {
                 Name = "Spearman",
                 AttackPoint = 10,
@@ -31,7 +31,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Infantry,
                 MinBarrackStage = 1,
                 CarryingCapacity = 25,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 50,
                     Stone = 30,
@@ -39,8 +39,8 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             }; 
-             Swordsman = new Unit
-            {
+             Swordsman = new BackEnd.Models.Models.Unit
+             {
                 Name = "Swordsman",
                 AttackPoint = 25,
                 InfantryDefensePoint = 55,
@@ -49,7 +49,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Infantry,
                 MinBarrackStage = 3,
                 CarryingCapacity = 15,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 30,
                     Stone = 30,
@@ -57,7 +57,7 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             };
-            AxeFighter = new Unit
+            AxeFighter = new BackEnd.Models.Models.Unit
             {
                 Name = "Axe Fighter",
                 AttackPoint = 45,
@@ -67,7 +67,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Infantry,
                 MinBarrackStage = 5,
                 CarryingCapacity = 20,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 60,
                     Stone = 30,
@@ -75,7 +75,7 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             }; 
-            Archer = new Unit
+            Archer = new BackEnd.Models.Models.Unit
             {
                 Name = "Archer",
                 AttackPoint = 25,
@@ -85,7 +85,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Archer,
                 MinBarrackStage = 9,
                 CarryingCapacity = 10,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 80,
                     Stone = 30,
@@ -93,8 +93,8 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             };
-             LightCavalry = new Unit
-            {
+             LightCavalry = new BackEnd.Models.Models.Unit
+             {
                 Name = "Light Cavalry",
                 AttackPoint = 130,
                 InfantryDefensePoint = 30,
@@ -103,7 +103,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Cavalry,
                 MinBarrackStage = 11,
                 CarryingCapacity = 50,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 125,
                     Stone = 100,
@@ -111,7 +111,7 @@ namespace Models.DataSeeding
                     Population = 4
                 }
             }; 
-            MountedArcher = new Unit
+            MountedArcher = new BackEnd.Models.Models.Unit
             {
                 Name = "Mounted Archer",
                 AttackPoint = 150,
@@ -121,7 +121,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Archer,
                 MinBarrackStage = 13,
                 CarryingCapacity = 50,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 250,
                     Stone = 200,
@@ -129,8 +129,8 @@ namespace Models.DataSeeding
                     Population = 5
                 }
             }; 
-             HeavyCavalry = new Unit
-            {
+             HeavyCavalry = new BackEnd.Models.Models.Unit
+             {
                 Name = "Heavy Cavalry",
                 AttackPoint = 150,
                 InfantryDefensePoint = 200,
@@ -139,7 +139,7 @@ namespace Models.DataSeeding
                 UnitType = UnitType.Cavalry,
                 MinBarrackStage = 21,
                 CarryingCapacity = 50,
-                UnitCost = new Resources
+                UnitCost = new BackEnd.Models.Models.Resources
                 {
                     Wood = 200,
                     Stone = 150,
@@ -161,7 +161,7 @@ namespace Models.DataSeeding
             await CreateUnitType(HeavyCavalry);
         }
 
-        private async Task CreateUnitType(Unit unitType)
+        private async Task CreateUnitType(BackEnd.Models.Models.Unit unitType)
         {
             var _unitType = await _db.Units
               .Where(unit => unit.Name.Equals(unitType.Name))

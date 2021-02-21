@@ -89,5 +89,13 @@ namespace Game.Server.Controllers
             return Ok();
         }
 
+
+
+        [HttpPost("Attack")]
+        public async Task<IActionResult> AttackOtherCity([FromBody] AttackRequest request) 
+        {
+            await _gameService.AttackOtherCity(request);
+            return Ok();
+        }
     }
 }

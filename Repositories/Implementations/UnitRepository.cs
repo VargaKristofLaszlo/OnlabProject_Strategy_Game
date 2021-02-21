@@ -53,10 +53,10 @@ namespace Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<UnitsInCity> GetUnitsInCityByUnitId(string unitId)
+        public async Task<UnitsInCity> GetUnitsInCity(string unitId, string barrackId)
         {
             return await _db.UnitsInCities
-                .Where(entity => entity.UnitId.Equals(unitId))
+                .Where(entity => entity.UnitId.Equals(unitId) && entity.BarrackId.Equals(barrackId))
                 .FirstOrDefaultAsync();
         }
 

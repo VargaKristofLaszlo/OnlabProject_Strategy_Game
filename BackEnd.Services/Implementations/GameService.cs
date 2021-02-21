@@ -135,7 +135,7 @@ namespace Services.Implementations
 
             PayTheCost(city, productionCost);
 
-            var unitsOfThisTypeInCity = await _unitOfWork.Units.GetUnitsInCityByUnitId(unitCheck.Type.Id);
+            var unitsOfThisTypeInCity = await _unitOfWork.Units.GetUnitsInCity(unitCheck.Type.Id, city.Barrack.Id);
 
             //Create a new entry in the db
             if (unitsOfThisTypeInCity == null)
@@ -242,12 +242,22 @@ namespace Services.Implementations
                 -infantry
                 -cavalry
                 -archers
-            Each phase the attacker uses the unit types according to the phase.
+            Each phase the attacker uses the units with the type according to the phase.
                 So in the infantry phase the attacker can only use infantry units.
             The defender can use all of it's unit types in every phase however the amount used is limited.
             The used amount is calculated via this formula:
                percentage = (sum of population cost of the unit type used in the current phase) / (sum of population cost of all the attacking units)
-               For every defending unit type amount =  amount of units of this type * percentage
+               For every defending unit type: amount =  (amount of units of this type) * percentage
+            After this calculate the attack values: 
+                Sum of (attack points of the unit type) * (amount of units)
+            The defense values: 
+                Sum of (defense points of the unit type according to the phase) * (amount of units)
+            The side with the lower sum looses all units.
+            The other side suffers casualties using this formula:
+                ratio = (Sqrt of (defenseValue / attackValue)) / (attackValue / defenseValue)
+                Remaining amount of unit type = current amount * ratio
+            The remaining troops are added to the next phase as extras.
+
          */
         public async Task AttackOtherCity(AttackRequest request)
         {
@@ -257,55 +267,37 @@ namespace Services.Implementations
             DefendingTroops defendingTroops = initValues.defendingTroops;
             IEnumerable<UnitsInCity> unitsOfAttacker = initValues.unitsOfAttacker;
             IEnumerable<UnitsInCity> defendingUnits = initValues.defendingUnits;
+            int wallStage = initValues.wallStage;
 
-            var infantryPhaseResult = InfantryPhase(attackingTroops, defendingTroops);
+            var infantryPhaseResult = new InfantryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);           
 
             //Add the survivors of the previous phase to the next one
             defendingTroops.AddSurvivorsOfPreviousPhase(infantryPhaseResult.defendingTroops, defendingTroops.CavalryPhaseDefendingUnits);
             attackingTroops.AddSurvivorsOfPreviousPhase(infantryPhaseResult.attackerTroops, attackingTroops.CavalryPhaseTroops);
 
-            var cavalryPhaseResult = CavalryPhase(attackingTroops, defendingTroops);
-
+            var cavalryPhaseResult = new CavalryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
             //Add the survivors of the previous phase to the next one
             defendingTroops.AddSurvivorsOfPreviousPhase(cavalryPhaseResult.defendingTroops, defendingTroops.ArcheryPhaseDefendingUnits);
             attackingTroops.AddSurvivorsOfPreviousPhase(cavalryPhaseResult.attackerTroops, attackingTroops.ArcheryPhaseTroops);
             
-            var archeryPhaseResult = ArcheryPhase(attackingTroops, defendingTroops);
+            var archeryPhaseResult = new ArcheryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
 
             //Update the attacking and defending side
             foreach (var item in archeryPhaseResult.attackerTroops)
-                unitsOfAttacker.Where(u => u.Equals(item.Key)).First().Amount = item.Value;
+                unitsOfAttacker.Where(u => u.Unit.Name.Equals(item.Key.Name)).First().Amount = item.Value;
 
             foreach (var item in archeryPhaseResult.defendingTroops)
-                defendingUnits.Where(d => d.Unit.Equals(item.Key)).First().Amount = item.Value;            
-        }
+                defendingUnits.Where(d => d.Unit.Name.Equals(item.Key.Name)).First().Amount = item.Value;
 
-        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
-            InfantryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops) 
-        {
-            var infantryPhaseBehaviour = new InfantryAttackPhaseBehaviour();
-            return infantryPhaseBehaviour.Action(attackingTroops, defendingTroops);
-        }
-
-        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
-            CavalryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops)
-        {
-            var calvalryPhaseBehaviour = new CavalryAttackPhaseBehaviour();
-            return calvalryPhaseBehaviour.Action(attackingTroops, defendingTroops);
+            await _unitOfWork.CommitChangesAsync();
         }  
         
-        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
-            ArcheryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops)
-        {
-            var archeryPhaseBehaviour = new ArcheryAttackPhaseBehaviour();
-            return archeryPhaseBehaviour.Action(attackingTroops, defendingTroops);
-        }
 
         private async Task<(AttackingTroops attackingTroops, DefendingTroops defendingTroops, 
-            IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits)> InitAttackProcess(AttackRequest request) 
+            IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits, int wallStage)> InitAttackProcess(AttackRequest request) 
         {
             var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
-            var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUsername);
+            var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUserId);
             if (defendingUser == null || attackingUser == null)
                 throw new NotFoundException();
 
@@ -313,24 +305,25 @@ namespace Services.Implementations
             if (attackingCity == null)
                 throw new NotFoundException();
 
-            var unitsOfAttacker = await _unitOfWork.Units.GetUnitsInCityByBarrackId(attackingCity.Barrack.Id);
+            var unitsOfAttacker = await _unitOfWork.Units.GetUnitsInCityByBarrackId(attackingCity.BarrackId);
 
             //Convert the dto into a model in order to use it for the attack calculations
             Dictionary<Unit, int> attackingForces = new Dictionary<Unit, int>();
             foreach (var item in request.AttackingForces)
                 attackingForces.Add(_mapper.Map<Unit>(item.Key), item.Value);
 
-
             AttackingTroops attackingTroops = new AttackingTroops(attackingForces);
 
             //Get the defending units
             var defendingUnits =
-                await _unitOfWork.Units.GetUnitsInCityByBarrackId(defendingUser.Cities.ElementAt(request.AttackedCityIndex).Barrack.Id);
+                await _unitOfWork.Units.GetUnitsInCityByBarrackId(defendingUser.Cities.ElementAt(request.AttackedCityIndex).BarrackId);
 
             DefendingTroops defendingTroops = new DefendingTroops(defendingUnits, attackingTroops.InfantryProvisionPercentage,
                 attackingTroops.CavalryProvisionPercentage, attackingTroops.ArcheryProvisionPercentage);
 
-            return (attackingTroops, defendingTroops,unitsOfAttacker,defendingUnits);
+            int wallStage = defendingUser.Cities.ElementAt(request.AttackedCityIndex).CityWall.Stage;
+
+            return (attackingTroops, defendingTroops,unitsOfAttacker,defendingUnits, wallStage);
         }
     }
 }
