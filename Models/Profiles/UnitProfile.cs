@@ -19,7 +19,9 @@ namespace Models.Profiles
                .ForMember(backendModel => backendModel.ArcherDefensePoint, map => map.MapFrom(sharedModel => sharedModel.ArcherDefensePoint))
                .ForMember(backendModel => backendModel.CarryingCapacity, map => map.MapFrom(sharedModel => sharedModel.CarryingCapacity))
                .ForMember(backendModel => backendModel.MinBarrackStage, map => map.MapFrom(sharedModel => sharedModel.MinBarrackStage))
-               .ForMember(backendModel => backendModel.UnitCost, map => map.MapFrom(sharedModel => sharedModel.UnitCost)).ReverseMap();  
+               .ForMember(backendModel => backendModel.UnitCost, map => map.MapFrom(sharedModel => sharedModel.UnitCost))
+               .ForMember(backendModel => backendModel.UnitType, map =>map.MapFrom(sharedModel => sharedModel.UnitType))
+               .ReverseMap();  
         }
     }
 }

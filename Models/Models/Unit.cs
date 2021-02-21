@@ -1,7 +1,6 @@
-﻿using Models.Models;
+﻿using Game.Shared.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackEnd.Models.Models
 {

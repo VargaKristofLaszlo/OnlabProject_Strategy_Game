@@ -1,4 +1,5 @@
 ﻿using BackEnd.Models.Models;
+using Game.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 25,
                 CavalryDefensePoint = 45,
                 ArcherDefensePoint = 10,
-                UnitType = Models.UnitType.Infantry,
+                UnitType = UnitType.Infantry,
                 MinBarrackStage = 1,
                 CarryingCapacity = 25,
                 UnitCost = new Resources
@@ -45,7 +46,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 55,
                 CavalryDefensePoint = 5,
                 ArcherDefensePoint = 30,
-                UnitType = Models.UnitType.Infantry,
+                UnitType = UnitType.Infantry,
                 MinBarrackStage = 3,
                 CarryingCapacity = 15,
                 UnitCost = new Resources
@@ -63,7 +64,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint= 10,
                 CavalryDefensePoint = 5,
                 ArcherDefensePoint = 10,
-                UnitType = Models.UnitType.Infantry,
+                UnitType = UnitType.Infantry,
                 MinBarrackStage = 5,
                 CarryingCapacity = 20,
                 UnitCost = new Resources
@@ -81,7 +82,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 10,
                 CavalryDefensePoint = 30,
                 ArcherDefensePoint = 60,
-                UnitType = Models.UnitType.Archer,
+                UnitType = UnitType.Archer,
                 MinBarrackStage = 9,
                 CarryingCapacity = 10,
                 UnitCost = new Resources
@@ -99,7 +100,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 30,
                 CavalryDefensePoint = 40,
                 ArcherDefensePoint = 30,
-                UnitType = Models.UnitType.Cavalry,
+                UnitType = UnitType.Cavalry,
                 MinBarrackStage = 11,
                 CarryingCapacity = 50,
                 UnitCost = new Resources
@@ -117,7 +118,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 40,
                 CavalryDefensePoint = 30,
                 ArcherDefensePoint = 50,
-                UnitType = Models.UnitType.Archer,
+                UnitType = UnitType.Archer,
                 MinBarrackStage = 13,
                 CarryingCapacity = 50,
                 UnitCost = new Resources
@@ -135,7 +136,7 @@ namespace Models.DataSeeding
                 InfantryDefensePoint = 200,
                 CavalryDefensePoint = 160,
                 ArcherDefensePoint = 180,
-                UnitType = Models.UnitType.Cavalry,
+                UnitType = UnitType.Cavalry,
                 MinBarrackStage = 21,
                 CarryingCapacity = 50,
                 UnitCost = new Resources

@@ -4,6 +4,8 @@ using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using Game.Shared.Models.Request;
 using Services.Exceptions;
+using Services.Implementations.AttackPhaseBehaviourImpl;
+using Services.Implementations.BuildingBehaviourImpl;
 using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -235,136 +237,100 @@ namespace Services.Implementations
                 woodAmount = warehouse.MaxWoodStorageCapacity;
         }
 
+        /*
+            The fight is divided into 3 phases:
+                -infantry
+                -cavalry
+                -archers
+            Each phase the attacker uses the unit types according to the phase.
+                So in the infantry phase the attacker can only use infantry units.
+            The defender can use all of it's unit types in every phase however the amount used is limited.
+            The used amount is calculated via this formula:
+               percentage = (sum of population cost of the unit type used in the current phase) / (sum of population cost of all the attacking units)
+               For every defending unit type amount =  amount of units of this type * percentage
+         */
         public async Task AttackOtherCity(AttackRequest request)
         {
-            var attackingCity =  _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId).Result.Cities.ElementAt(request.AttackerCityIndex);
+            //Initialize the variables for the attack process
+            var initValues = await InitAttackProcess(request);
+            AttackingTroops attackingTroops = initValues.attackingTroops;
+            DefendingTroops defendingTroops = initValues.defendingTroops;
+            IEnumerable<UnitsInCity> unitsOfAttacker = initValues.unitsOfAttacker;
+            IEnumerable<UnitsInCity> defendingUnits = initValues.defendingUnits;
 
-            var totalStrengths = CalculateAttackerUnitTypeStrength(request);
+            var infantryPhaseResult = InfantryPhase(attackingTroops, defendingTroops);
 
-            int strengthSum = totalStrengths.infantryTotalStrength + totalStrengths.cavalryTotalStrength + totalStrengths.archerTotalStrength;
+            //Add the survivors of the previous phase to the next one
+            defendingTroops.AddSurvivorsOfPreviousPhase(infantryPhaseResult.defendingTroops, defendingTroops.CavalryPhaseDefendingUnits);
+            attackingTroops.AddSurvivorsOfPreviousPhase(infantryPhaseResult.attackerTroops, attackingTroops.CavalryPhaseTroops);
 
-            double infantryStrengthPercent = totalStrengths.infantryTotalStrength / strengthSum;
-            double cavalryStrengthPercent = totalStrengths.cavalryTotalStrength / strengthSum;
-            double archerStrengthPercent = totalStrengths.archerTotalStrength / strengthSum;
+            var cavalryPhaseResult = CavalryPhase(attackingTroops, defendingTroops);
 
-            //Get the defending city's data
+            //Add the survivors of the previous phase to the next one
+            defendingTroops.AddSurvivorsOfPreviousPhase(cavalryPhaseResult.defendingTroops, defendingTroops.ArcheryPhaseDefendingUnits);
+            attackingTroops.AddSurvivorsOfPreviousPhase(cavalryPhaseResult.attackerTroops, attackingTroops.ArcheryPhaseTroops);
+            
+            var archeryPhaseResult = ArcheryPhase(attackingTroops, defendingTroops);
+
+            //Update the attacking and defending side
+            foreach (var item in archeryPhaseResult.attackerTroops)
+                unitsOfAttacker.Where(u => u.Equals(item.Key)).First().Amount = item.Value;
+
+            foreach (var item in archeryPhaseResult.defendingTroops)
+                defendingUnits.Where(d => d.Unit.Equals(item.Key)).First().Amount = item.Value;            
+        }
+
+        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
+            InfantryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops) 
+        {
+            var infantryPhaseBehaviour = new InfantryAttackPhaseBehaviour();
+            return infantryPhaseBehaviour.Action(attackingTroops, defendingTroops);
+        }
+
+        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
+            CavalryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops)
+        {
+            var calvalryPhaseBehaviour = new CavalryAttackPhaseBehaviour();
+            return calvalryPhaseBehaviour.Action(attackingTroops, defendingTroops);
+        }  
+        
+        private (Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops)
+            ArcheryPhase(AttackingTroops attackingTroops, DefendingTroops defendingTroops)
+        {
+            var archeryPhaseBehaviour = new ArcheryAttackPhaseBehaviour();
+            return archeryPhaseBehaviour.Action(attackingTroops, defendingTroops);
+        }
+
+        private async Task<(AttackingTroops attackingTroops, DefendingTroops defendingTroops, 
+            IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits)> InitAttackProcess(AttackRequest request) 
+        {
+            var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
             var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUsername);
-            if (defendingUser == null)
+            if (defendingUser == null || attackingUser == null)
                 throw new NotFoundException();
 
-            var defendingUnits = 
-                await _unitOfWork.Units.GetUnitsInCityByBarrackId(defendingUser.Cities.ElementAt(request.AttackedCityIndex).BarrackId);
+            var attackingCity = attackingUser.Cities.ElementAt(request.AttackerCityIndex);
+            if (attackingCity == null)
+                throw new NotFoundException();
+
+            var unitsOfAttacker = await _unitOfWork.Units.GetUnitsInCityByBarrackId(attackingCity.Barrack.Id);
+
+            //Convert the dto into a model in order to use it for the attack calculations
+            Dictionary<Unit, int> attackingForces = new Dictionary<Unit, int>();
+            foreach (var item in request.AttackingForces)
+                attackingForces.Add(_mapper.Map<Unit>(item.Key), item.Value);
 
 
-            //InfantryDefensePhase
-            double infantryDefenseValue = GetInfantryDefenseTotal(defendingUnits, infantryStrengthPercent);
-            double infantryAttackValue = strengthSum * infantryStrengthPercent;
+            AttackingTroops attackingTroops = new AttackingTroops(attackingForces);
 
-            //The defenders won
-            if (infantryDefenseValue > infantryAttackValue)
-            {
-                //The attacker lost all attacking units
-                FallenUnits attackersFallenUnits = new FallenUnits
-                {
-                    Spearman = request.SpearmanAmount,
-                    Swordsman = request.SwordsmanAmount,
-                    Archer = request.ArcherAmount,
-                    AxeFighter = request.AxeFighterAmount,
-                    MountedArcher = request.MountedArcherAmount,
-                    LightCavalry = request.LightCavalryAmount,
-                    HeavyCavalry = request.HeavyCavalryAmount
-                };
-                await RemoveTheFallenUnits(attackingCity.Barrack.Id, attackersFallenUnits);
+            //Get the defending units
+            var defendingUnits =
+                await _unitOfWork.Units.GetUnitsInCityByBarrackId(defendingUser.Cities.ElementAt(request.AttackedCityIndex).Barrack.Id);
 
-                //TODO the defender lost a portion of it's units
-                
+            DefendingTroops defendingTroops = new DefendingTroops(defendingUnits, attackingTroops.InfantryProvisionPercentage,
+                attackingTroops.CavalryProvisionPercentage, attackingTroops.ArcheryProvisionPercentage);
 
-                await _unitOfWork.CommitChangesAsync();
-                return;
-            }
-            else
-            {
-                //TODO the attacker lost a portion of it's units
-                //TODO the defender lost all of this phases's defending units               
-            }
-            
-            //TODO repeate this process for a CavalryDefensePhase and an ArcherDefensePhase
-
+            return (attackingTroops, defendingTroops,unitsOfAttacker,defendingUnits);
         }
-
-
-        private async Task RemoveTheFallenUnits(string barrackId, FallenUnits fallenUnits) 
-        {
-            IEnumerable<UnitsInCity> unitsInCities = await _unitOfWork.Units.GetUnitsInCityByBarrackId(barrackId);
-            unitsInCities.ReduceAmount("Spearman",fallenUnits.Spearman);
-            unitsInCities.ReduceAmount("Swordsman", fallenUnits.Swordsman);
-            unitsInCities.ReduceAmount("Axe Fighter", fallenUnits.AxeFighter);
-            unitsInCities.ReduceAmount("Archer", fallenUnits.Archer);
-            unitsInCities.ReduceAmount("Light Cavalry", fallenUnits.LightCavalry);
-            unitsInCities.ReduceAmount("Mounted Archer", fallenUnits.MountedArcher);
-            unitsInCities.ReduceAmount("Heavy Cavalry", fallenUnits.HeavyCavalry);
-        }
-
-        
-
-
-        private double GetInfantryDefenseTotal(IEnumerable<UnitsInCity> units, double percentage)
-        {
-            return 0 +
-                CalculateInfantryDefense(units, "Spearman", percentage) +
-                CalculateInfantryDefense(units, "Swordsman", percentage) +
-                CalculateInfantryDefense(units, "Axe Fighter", percentage) +
-                CalculateInfantryDefense(units, "Archer", percentage) +
-                CalculateInfantryDefense(units, "Light Cavalry", percentage) +
-                CalculateInfantryDefense(units, "Mounted Archer", percentage) +
-                CalculateInfantryDefense(units, "Heavy Cavalry", percentage);
-        }
-                
-                
-        private double CalculateInfantryDefense(IEnumerable<UnitsInCity> units, string unitType, double percentage)
-        {
-            var unit = units.FirstOrDefault(u => u.Unit.Name.Equals(unitType));
-            if (unit == null)
-                return 0;
-            else return unit.Amount * percentage * unit.Unit.InfantryDefensePoint;
-        }
-
-
-        private (int infantryTotalStrength, int cavalryTotalStrength, int archerTotalStrength) CalculateAttackerUnitTypeStrength(AttackRequest request)
-        {
-            //infantry strength
-            int spearmanStrength = _unitOfWork.Units.FindUnitByName("Spearman").Result.AttackPoint * request.SpearmanAmount;
-            int swordsmanStrength = _unitOfWork.Units.FindUnitByName("Swordsman").Result.AttackPoint * request.SwordsmanAmount;
-            int axeFighterStrength = _unitOfWork.Units.FindUnitByName("Axe Fighter").Result.AttackPoint * request.AxeFighterAmount;
-            int infantryTotal = spearmanStrength + swordsmanStrength + axeFighterStrength;
-
-            //cavalry strength
-            int lightCavalryStrength = _unitOfWork.Units.FindUnitByName("Light Cavalry").Result.AttackPoint * request.LightCavalryAmount;
-            int heavyCavalryStrength = _unitOfWork.Units.FindUnitByName("Heavy Cavalry").Result.AttackPoint * request.HeavyCavalryAmount;
-            int cavalryTotal = lightCavalryStrength + heavyCavalryStrength;
-            //archer strength
-            int archerStrength = _unitOfWork.Units.FindUnitByName("Archer").Result.AttackPoint * request.ArcherAmount;
-            int mountedArcherStrength = _unitOfWork.Units.FindUnitByName("Mounted Archer").Result.AttackPoint * request.MountedArcherAmount;
-            int archerTotal = archerStrength + mountedArcherStrength;
-
-            return (infantryTotal, cavalryTotal, archerTotal);
-        }
-    }
-    public static class extension 
-    {
-        public static void ReduceAmount(this IEnumerable<UnitsInCity> unitsInCity, string unitName, int removeAmount)
-        {
-            unitsInCity.FirstOrDefault(u => u.Unit.Name.Equals(unitName)).Amount -= removeAmount;
-        }
-    }
-    public class FallenUnits
-    {
-        public int Spearman { get; set; }
-        public int Swordsman { get; set; }
-        public int AxeFighter { get; set; }
-        public int LightCavalry { get; set; }
-        public int HeavyCavalry { get; set; }
-        public int Archer { get; set; }
-        public int MountedArcher { get; set; }
     }
 }

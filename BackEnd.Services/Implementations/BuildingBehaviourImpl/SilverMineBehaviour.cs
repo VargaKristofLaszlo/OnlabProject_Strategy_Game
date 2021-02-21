@@ -3,7 +3,7 @@ using Services.Exceptions;
 using Services.Interfaces;
 using System;
 
-namespace Services.Implementations
+namespace Services.Implementations.BuildingBehaviourImpl
 {
     public class SilverMineBehaviour : BuildingBehaviour
     {

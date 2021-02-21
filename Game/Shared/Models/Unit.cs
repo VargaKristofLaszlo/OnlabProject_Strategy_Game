@@ -19,6 +19,9 @@ namespace Game.Shared.Models
         public int CavalryDefensePoint { get; set; }
 
         [Required]
+        public UnitType UnitType { get; set; }
+
+        [Required]
         public int ArcherDefensePoint { get; set; }
 
         [Required]

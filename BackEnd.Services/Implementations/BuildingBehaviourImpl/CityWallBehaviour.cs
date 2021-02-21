@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Implementations
+namespace Services.Implementations.BuildingBehaviourImpl
 {
     public class CityWallBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city,BuildingUpgradeCost upgradeCost)
+        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.CityWall.Stage - 1)
                 throw new InvalidBuildingStageModificationException();
