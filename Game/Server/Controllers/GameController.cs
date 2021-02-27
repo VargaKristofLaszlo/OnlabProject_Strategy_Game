@@ -1,13 +1,8 @@
 ﻿using Game.Shared.Models.Request;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services.Implementations;
 using Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Game.Server.Controllers
@@ -18,10 +13,14 @@ namespace Game.Server.Controllers
     public class GameController : ControllerBase
     {
         private readonly IGameService _gameService;
+        private readonly IBuildingService _buildingService;
+        private readonly IAttackService _attackService;
 
-        public GameController(IGameService gameService)
+        public GameController(IGameService gameService, IBuildingService buildingService, IAttackService attackService)
         {
             _gameService = gameService;
+            _buildingService = buildingService;
+            _attackService = attackService;
         }
 
        
@@ -38,7 +37,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The building was not found")]
         public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage) 
         {
-            await _gameService.UpgradeBuilding(cityIndex, buildingName, newStage);
+            await _buildingService.UpgradeBuilding(cityIndex, buildingName, newStage);
             return NoContent();
         }
 
@@ -55,7 +54,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The building was not found")]        
         public async Task<IActionResult> DowngradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
-            await _gameService.DowngradeBuilding(cityIndex, buildingName, newStage);
+            await _buildingService.DowngradeBuilding(cityIndex, buildingName, newStage);
             return NoContent();
         }
 
@@ -94,7 +93,7 @@ namespace Game.Server.Controllers
         [HttpPost("Attack")]
         public async Task<IActionResult> AttackOtherCity([FromBody] AttackRequest request) 
         {
-            await _gameService.AttackOtherCity(request);
+            await _attackService.AttackOtherCity(request);
             return Ok();
         }
     }

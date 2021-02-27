@@ -15,6 +15,8 @@ using Models.Profiles;
 using Repositories.Implementations;
 using Services.Exceptions;
 using Services.Implementations;
+using Services.Implementations.AttackService;
+using Services.Implementations.BuildingService;
 using Services.Interfaces;
 using System;
 using System.Net.Http;
@@ -33,6 +35,8 @@ namespace Game.Server.Extensions
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IViewService, ViewService>();
             services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IBuildingService, BuildingService>();
+            services.AddScoped<IAttackService, AttackService>();
 
             return services;
         }

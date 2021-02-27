@@ -2,7 +2,7 @@
 using Services.Interfaces;
 using System.Collections.Generic;
 
-namespace Services.Implementations.DefensePhaseBehaviourImpl
+namespace Services.Implementations.AttackService.DefensePhaseBehaviourImpl
 {
     public class CavalryDefensePhase : IDefensePhase
     {

@@ -1,9 +1,8 @@
 ﻿using BackEnd.Models.Models;
 using Services.Exceptions;
 using Services.Interfaces;
-using System;
 
-namespace Services.Implementations.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class BarrackBehaviour : BuildingBehaviour
     {

@@ -30,30 +30,8 @@
     {
         AttackRequest request = new AttackRequest();
 
-        var spearman = new Unit()
-        {
-            Name = "Spearman",
-            AttackPoint = 10,
-            UnitType = UnitType.Infantry,
-            MinBarrackStage = 1,
-            CarryingCapacity = 25,
-            UnitCost = new Resources
-            {
-                Wood = 50,
-                Stone = 30,
-                Silver = 20,
-                Population = 1
-            },
-            ArcherDefensePoint = 10,
-            CavalryDefensePoint = 45,
-            InfantryDefensePoint = 25
-        };
-        int spearmanAmount = 35;
-
-
-
-        Dictionary<Game.Shared.Models.Unit, int> attackingForces = new Dictionary<Game.Shared.Models.Unit, int>();
-        attackingForces.Add(spearman, spearmanAmount);
+        Dictionary<string, int> attackingForces = new Dictionary<string, int>();
+        attackingForces.Add("Spearman", 35);
 
         request = new AttackRequest()
         {

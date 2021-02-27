@@ -5,6 +5,7 @@ using FluentAssertions;
 using Moq;
 using Services.Exceptions;
 using Services.Implementations;
+using Services.Implementations.BuildingService;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -14,16 +15,14 @@ namespace UnitTests.BuildingTests
     public class BuildingDowngradeTest
     {
         private readonly Mock<IUnitOfWork> _mockedUnitOfWork;
-        private readonly Mock<IIdentityContext> _mockedIdentityContext;
-        private readonly Mock<IMapper> _mockedMapper;
-        private readonly GameService _gameService;
+        private readonly Mock<IIdentityContext> _mockedIdentityContext;       
+        private readonly BuildingService _buildingService;
 
         public BuildingDowngradeTest()
         {
             _mockedUnitOfWork = new Mock<IUnitOfWork>();
-            _mockedIdentityContext = new Mock<IIdentityContext>();
-            _mockedMapper = new Mock<IMapper>();
-            _gameService = new GameService(_mockedUnitOfWork.Object, _mockedIdentityContext.Object, _mockedMapper.Object);
+            _mockedIdentityContext = new Mock<IIdentityContext>();           
+            _buildingService = new BuildingService(_mockedUnitOfWork.Object, _mockedIdentityContext.Object);
         }
 
 
@@ -34,7 +33,7 @@ namespace UnitTests.BuildingTests
             int cityIndex = 0;
             string buildingName = "Barrack";
 
-            Func<Task> act = () => _gameService.DowngradeBuilding(cityIndex, buildingName, newStage);
+            Func<Task> act = () => _buildingService.DowngradeBuilding(cityIndex, buildingName, newStage);
 
             act.Should().Throw<BadRequestException>().WithMessage("The building can not be downgraded any further");
         }

@@ -1,10 +1,11 @@
 ﻿using BackEnd.Models.Models;
-using Services.Implementations.DefensePhaseBehaviourImpl;
+using Services.Implementations.AttackService.DefensePhaseBehaviourImpl;
+using Services.Implementations.AttackService.Troops;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Services.Implementations.AttackPhaseBehaviourImpl
+namespace Services.Implementations.AttackService.AttackPhaseBehaviourImpl
 {
     public class ArcheryAttackPhaseBehaviour : IAttackPhaseBehaviour
     {

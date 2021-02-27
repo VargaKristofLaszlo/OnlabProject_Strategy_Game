@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using System;
+using Services.Implementations.BuildingService;
 
 namespace UnitTests.BuildingTests
 {
@@ -16,23 +17,21 @@ namespace UnitTests.BuildingTests
     public class BuildingUpgradeTest
     {
         private readonly Mock<IUnitOfWork> _mockedUnitOfWork;
-        private readonly Mock<IIdentityContext> _mockedIdentityContext;
-        private readonly Mock<IMapper> _mockedMapper;
-        private readonly GameService _gameService;
+        private readonly Mock<IIdentityContext> _mockedIdentityContext;        
+        private readonly BuildingService _buildingService;
 
         public BuildingUpgradeTest()
         {
             _mockedUnitOfWork = new Mock<IUnitOfWork>();
             _mockedIdentityContext = new Mock<IIdentityContext>();
-            _mockedMapper = new Mock<IMapper>();
-            _gameService = new GameService(_mockedUnitOfWork.Object, _mockedIdentityContext.Object, _mockedMapper.Object);
+            _buildingService = new BuildingService(_mockedUnitOfWork.Object, _mockedIdentityContext.Object);
         }
 
 
         [Fact]
         public void UpgradeFailsDueToInvalidBuildingName()
         {
-            Func<Task> act = () => _gameService.UpgradeBuilding(0, "randomBuildingName", 1);
+            Func<Task> act = () => _buildingService.UpgradeBuilding(0, "randomBuildingName", 1);
             act.Should().Throw<NotFoundException>();
         }
 
@@ -42,7 +41,7 @@ namespace UnitTests.BuildingTests
         {
             _mockedUnitOfWork.Setup(uow => uow.UpgradeCosts.FindMaxStage(It.IsAny<string>())).ReturnsAsync(0);
 
-            Func<Task> act = () => _gameService.UpgradeBuilding(0, "Barrack", 1);
+            Func<Task> act = () => _buildingService.UpgradeBuilding(0, "Barrack", 1);
             act.Should().Throw<BadRequestException>().WithMessage("The building is not upgradeable");
         }
 
@@ -66,7 +65,7 @@ namespace UnitTests.BuildingTests
             _mockedUnitOfWork.Setup(uow => uow.UpgradeCosts.FindUpgradeCost(It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(mockedUpgradeCost.Object);
 
-            Func<Task> act = () => _gameService.UpgradeBuilding(0, "Barrack", 1);
+            Func<Task> act = () => _buildingService.UpgradeBuilding(0, "Barrack", 1);
             act.Should().Throw<BadRequestException>().WithMessage("The city does not have enough resources");
         }
 

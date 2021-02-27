@@ -2,9 +2,9 @@
 using Services.Interfaces;
 using System.Collections.Generic;
 
-namespace Services.Implementations.DefensePhaseBehaviourImpl
+namespace Services.Implementations.AttackService.DefensePhaseBehaviourImpl
 {
-    public class InfantryDefensePhase : IDefensePhase
+    public class ArcheryDefensePhase : IDefensePhase
     {
         public int CalculateDefenseValue(Dictionary<Unit, int> troops)
         {
@@ -12,7 +12,7 @@ namespace Services.Implementations.DefensePhaseBehaviourImpl
 
             foreach (var item in troops)
             {
-                defenseValue += item.Key.InfantryDefensePoint * item.Value;
+                defenseValue += item.Key.ArcherDefensePoint * item.Value;
             }
 
             return defenseValue;

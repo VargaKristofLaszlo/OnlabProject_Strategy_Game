@@ -5,16 +5,16 @@ using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Services
+namespace Services.Implementations.AttackService.Troops
 {
     public class AttackingTroops : ITroopsBehaviour
     {
         private int _infantryProvision = 0;
         private int _cavalryProvision = 0;
         private int _archeryProvision = 0;
-        public Dictionary<BackEnd.Models.Models.Unit, int> InfantryPhaseTroops { get; set; }
-        public Dictionary<BackEnd.Models.Models.Unit, int> CavalryPhaseTroops { get; set; }
-        public Dictionary<BackEnd.Models.Models.Unit, int> ArcheryPhaseTroops { get; set; }
+        public Dictionary<BackEnd.Models.Models.Unit, int> InfantryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
+        public Dictionary<BackEnd.Models.Models.Unit, int> CavalryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
+        public Dictionary<BackEnd.Models.Models.Unit, int> ArcheryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
         public double InfantryProvisionPercentage => _infantryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
         public double CavalryProvisionPercentage => _cavalryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
         public double ArcheryProvisionPercentage => _archeryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
@@ -57,7 +57,7 @@ namespace Services
         }
 
         public (Dictionary<BackEnd.Models.Models.Unit, int> attackingTroops, Dictionary<BackEnd.Models.Models.Unit, int> defendingTroops)
-            Fight(Dictionary<BackEnd.Models.Models.Unit, int> attackingTroops,Dictionary<BackEnd.Models.Models.Unit, int> defendingTroops,
+            Fight(Dictionary<BackEnd.Models.Models.Unit, int> attackingTroops, Dictionary<BackEnd.Models.Models.Unit, int> defendingTroops,
                 int attackValue, int defenseValue)
         {
             double casualtyRatio;
@@ -66,7 +66,7 @@ namespace Services
 
             if (attackValue > defenseValue)
             {
-                casualtyRatio = Math.Sqrt(DefenseDivAttack) / (AttackDivDefense);
+                casualtyRatio = Math.Sqrt(DefenseDivAttack) / AttackDivDefense;
                 if (double.IsInfinity(casualtyRatio))
                     casualtyRatio = 0;
 
@@ -79,10 +79,10 @@ namespace Services
                 foreach (var item in attackingTroops)
                     attackingTroops[item.Key] = attackingTroops[item.Key] - (int)Math.Ceiling(attackingTroops[item.Key] * casualtyRatio);
 
-                return (attackingTroops,defendingTroops);
+                return (attackingTroops, defendingTroops);
             }
 
-            casualtyRatio = Math.Sqrt(AttackDivDefense) / (DefenseDivAttack);
+            casualtyRatio = Math.Sqrt(AttackDivDefense) / DefenseDivAttack;
             if (double.IsInfinity(casualtyRatio))
                 casualtyRatio = 0;
 
@@ -95,7 +95,7 @@ namespace Services
             foreach (var item in defendingTroops)
                 defendingTroops[item.Key] = defendingTroops[item.Key] - (int)Math.Ceiling(defendingTroops[item.Key] * casualtyRatio);
 
-            return (attackingTroops,defendingTroops);
+            return (attackingTroops, defendingTroops);
         }
 
         public void AddSurvivorsOfPreviousPhase(Dictionary<BackEnd.Models.Models.Unit, int> survivedTroops,
@@ -104,15 +104,15 @@ namespace Services
             if (survivedTroops == null)
                 return;
 
-            if (troopsOfNextPhase.Count == 0)            
-                foreach (var item in survivedTroops)                
+            if (troopsOfNextPhase.Count == 0)
+                foreach (var item in survivedTroops)
                     troopsOfNextPhase.Add(item.Key, item.Value);
-                
-            
-            else 
+
+
+            else
                 foreach (var item in survivedTroops)
                     troopsOfNextPhase[item.Key] += item.Value;
-                
+
         }
     }
 }

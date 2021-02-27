@@ -1,10 +1,11 @@
 ﻿using BackEnd.Models.Models;
-using Services.Implementations.DefensePhaseBehaviourImpl;
+using Services.Implementations.AttackService.DefensePhaseBehaviourImpl;
+using Services.Implementations.AttackService.Troops;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Services.Implementations.AttackPhaseBehaviourImpl
+namespace Services.Implementations.AttackService.AttackPhaseBehaviourImpl
 {
     public class InfantryAttackPhaseBehaviour : IAttackPhaseBehaviour
     {
@@ -20,7 +21,7 @@ namespace Services.Implementations.AttackPhaseBehaviourImpl
             defenseValue = (int)Math.Ceiling(defenseValue * wallDefenseMultiplier);
             defenseValue += wallStage * 10;
 
-            int attackValue = attackingTroops.CalculateAttackValue(attackingTroops.InfantryPhaseTroops);           
+            int attackValue = attackingTroops.CalculateAttackValue(attackingTroops.InfantryPhaseTroops);
 
             if (attackingTroops.InfantryPhaseTroops.Count == 0 || defendingTroops.InfantryPhaseDefendingUnits.Count == 0)
                 return (attackingTroops.InfantryPhaseTroops, defendingTroops.InfantryPhaseDefendingUnits);

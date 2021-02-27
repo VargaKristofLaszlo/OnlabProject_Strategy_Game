@@ -10,10 +10,8 @@ namespace Services.Interfaces
 {
     public interface IGameService
     {
-        Task UpgradeBuilding(int cityIndex, string buildingName, int newStage);
-        Task DowngradeBuilding(int cityIndex, string buildingName, int newStage);
+       
         Task ProduceUnits(UnitProductionRequest request);
-        Task SendResourcesToOtherPlayer(SendResourceToOtherPlayerRequest request);
-        Task AttackOtherCity(AttackRequest request);
+        Task SendResourcesToOtherPlayer(SendResourceToOtherPlayerRequest request);        
     }
 }

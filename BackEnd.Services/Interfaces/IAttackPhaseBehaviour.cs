@@ -1,4 +1,5 @@
 ﻿using BackEnd.Models.Models;
+using Services.Implementations.AttackService.Troops;
 using System.Collections.Generic;
 
 namespace Services.Interfaces

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Implementations.AttackService.Troops
 {
     public class DefendingTroops : ITroopsBehaviour
     {
@@ -25,7 +25,7 @@ namespace Services
             }
         }
 
-        public void AddSurvivorsOfPreviousPhase(Dictionary<Unit, int> survivedTroops, Dictionary<Unit,int> troopsOfNextPhase) 
+        public void AddSurvivorsOfPreviousPhase(Dictionary<Unit, int> survivedTroops, Dictionary<Unit, int> troopsOfNextPhase)
         {
             if (survivedTroops == null)
                 return;
@@ -35,5 +35,5 @@ namespace Services
                 troopsOfNextPhase[item.Key] += item.Value;
             }
         }
-   }
+    }
 }

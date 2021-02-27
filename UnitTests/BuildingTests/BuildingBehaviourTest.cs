@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Services.Exceptions;
-using Services.Implementations.BuildingBehaviourImpl;
+using Services.Implementations.BuildingService.BuildingBehaviourImpl;
 using System;
 using Xunit;
 
