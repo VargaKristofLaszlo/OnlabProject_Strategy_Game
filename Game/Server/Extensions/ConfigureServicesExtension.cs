@@ -1,4 +1,5 @@
-﻿using BackEnd.Models.Models;
+﻿using BackEnd.Infrastructure;
+using BackEnd.Models.Models;
 using BackEnd.Services.Implementations;
 using BackEnd.Services.Interfaces;
 using Hellang.Middleware.ProblemDetails;
@@ -36,13 +37,13 @@ namespace Game.Server.Extensions
             return services;
         }
 
-        public static IServiceCollection AddHttpContextAccessorConfig(this IServiceCollection services) 
+        public static IServiceCollection AddIdentityContextConfig(this IServiceCollection services) 
         {
-            services.AddScoped(sp =>
+            services.AddScoped<IIdentityContext, IdentityContext>(sp => 
             {
                 var httpContext = sp.GetService<IHttpContextAccessor>().HttpContext;
 
-                var identityOptions = new BackEnd.Infrastructure.IdentityOptions();
+                var identityContext = new IdentityContext();
 
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
@@ -51,16 +52,17 @@ namespace Game.Server.Extensions
                     string email = httpContext.User.FindFirst(ClaimTypes.Email).Value;
                     bool isAdmin = "Admin".Equals(httpContext.User.FindFirst(ClaimTypes.Role).Value);
 
-                    identityOptions.UserId = id;
-                    identityOptions.Username = username;
-                    identityOptions.Email = email;
-                    identityOptions.IsAdmin = isAdmin;
+                    identityContext.UserId = id;
+                    identityContext.Username = username;
+                    identityContext.Email = email;
+                    identityContext.IsAdmin = isAdmin;
                 }
-                return identityOptions;
+                return identityContext;
             });
 
             return services;
         }
+
 
         public static IServiceCollection AddAuthenticationConfig(this IServiceCollection services, IConfiguration configuration) 
         {

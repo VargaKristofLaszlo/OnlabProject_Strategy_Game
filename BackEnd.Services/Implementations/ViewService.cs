@@ -19,13 +19,13 @@ namespace BackEnd.Services.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IdentityOptions _identityOptions;
+        private readonly IIdentityContext _identityContext;
 
-        public ViewService(IUnitOfWork unitOfWork, IMapper mapper, IdentityOptions identityOptions)
+        public ViewService(IUnitOfWork unitOfWork, IMapper mapper, IIdentityContext identityOptions)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _identityOptions = identityOptions;
+            _identityContext = identityOptions;
         }
 
         private int CalculatePageCount(int modelCount, int pageSize)
@@ -54,7 +54,7 @@ namespace BackEnd.Services.Implementations
             pageNumber.ValidatePageNumber();
             pageSize.ValideatePageSize();
 
-            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
 
             var cityNameList = user.Cities.Select(city => city.CityName);
             int cityNameListCount = cityNameList.Count();
@@ -124,7 +124,7 @@ namespace BackEnd.Services.Implementations
 
         private async Task<Models.Models.City> GetCityData(int cityIndex)
         {
-            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
 
             if (user == null)
                 throw new NotFoundException();

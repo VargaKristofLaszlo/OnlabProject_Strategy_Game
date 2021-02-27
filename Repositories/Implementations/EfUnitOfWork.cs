@@ -67,9 +67,9 @@ namespace BackEnd.Repositories.Implementations
             }
         }
 
-        public async Task CommitChangesAsync()
+        public async Task<int> CommitChangesAsync()
         {
-            await _db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
     }
 }

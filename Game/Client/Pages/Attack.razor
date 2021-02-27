@@ -58,10 +58,7 @@
         request = new AttackRequest()
         {
             AttackType = AttackType.Looting,
-            AttackingForces = new List<KeyValuePair<Game.Shared.Models.Unit, int>>()
-    {
-                    attackingForces.First()
-                },
+            AttackingForces = attackingForces,
             AttackedUserId = "b987a2ab-0fc2-4c37-b0e7-f9e12fc6a3cd",
             AttackedCityIndex = 0,
             AttackerCityIndex = 0

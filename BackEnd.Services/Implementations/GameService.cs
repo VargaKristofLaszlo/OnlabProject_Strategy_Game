@@ -7,6 +7,7 @@ using Services.Exceptions;
 using Services.Implementations.AttackPhaseBehaviourImpl;
 using Services.Implementations.BuildingBehaviourImpl;
 using Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,13 +17,13 @@ namespace Services.Implementations
     public class GameService : IGameService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IdentityOptions _identityOptions;
+        private readonly IIdentityContext _identityContext;
         private readonly IMapper _mapper;
 
-        public GameService(IUnitOfWork unitOfWork, IdentityOptions identityOptions, IMapper mapper)
+        public GameService(IUnitOfWork unitOfWork, IIdentityContext identityOptions, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _identityOptions = identityOptions;
+            _identityContext = identityOptions;
             _mapper = mapper;
         }
 
@@ -35,7 +36,7 @@ namespace Services.Implementations
                 throw new BadRequestException("The building is not upgradeable");
 
             //Get the city which contains the upgradeable building
-            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
             var city = await _unitOfWork.Cities.FindCityById(user.Cities.ElementAt(cityIndex).Id);
 
             //Get the upgrade cost for the building
@@ -75,7 +76,7 @@ namespace Services.Implementations
             var buildingBehaviour = CreateConcreteBuildingBehaviour(buildingName);
 
             //Get the city which contains the downgradeable building
-            var user = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
             var city = await _unitOfWork.Cities.FindCityById(user.Cities.ElementAt(cityIndex).Id);
 
             //Get the upgrade cost for the building
@@ -113,7 +114,7 @@ namespace Services.Implementations
 
         public async Task ProduceUnits(UnitProductionRequest request)
         {
-            var city = await GetCityByCityIndex(request.CityIndex, _identityOptions.UserId);
+            var city = await GetCityByCityIndex(request.CityIndex, _identityContext.UserId);
 
             var producibleUnits = await _unitOfWork.Units.GetProducibleUnitTypes(city.Barrack.Stage);
 
@@ -201,7 +202,7 @@ namespace Services.Implementations
 
         public async Task SendResourcesToOtherPlayer(SendResourceToOtherPlayerRequest request)
         {
-            var senderCity = await GetCityByCityIndex(request.FromCityIndex, _identityOptions.UserId);
+            var senderCity = await GetCityByCityIndex(request.FromCityIndex, _identityContext.UserId);
 
             var receivingUser = await _unitOfWork.Users.FindUserByUsernameOrNullAsync(request.ToUserName);
             var receivingCity = await GetCityByCityIndex(request.ToCityIndex, receivingUser.Id);
@@ -296,7 +297,7 @@ namespace Services.Implementations
         private async Task<(AttackingTroops attackingTroops, DefendingTroops defendingTroops, 
             IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits, int wallStage)> InitAttackProcess(AttackRequest request) 
         {
-            var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityOptions.UserId);
+            var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
             var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUserId);
             if (defendingUser == null || attackingUser == null)
                 throw new NotFoundException();
@@ -306,11 +307,16 @@ namespace Services.Implementations
                 throw new NotFoundException();
 
             var unitsOfAttacker = await _unitOfWork.Units.GetUnitsInCityByBarrackId(attackingCity.BarrackId);
+            IEnumerable<Unit> allUnitTypes = await _unitOfWork.Units.GetAllUnitsAsync();
 
             //Convert the dto into a model in order to use it for the attack calculations
             Dictionary<Unit, int> attackingForces = new Dictionary<Unit, int>();
-            foreach (var item in request.AttackingForces)
-                attackingForces.Add(_mapper.Map<Unit>(item.Key), item.Value);
+            try 
+            {
+                foreach (var item in request.AttackingForces)
+                    attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item)), item.Value);
+            }               
+            catch (InvalidOperationException) { throw new BadRequestException("Invalid unit type name"); }
 
             AttackingTroops attackingTroops = new AttackingTroops(attackingForces);
 

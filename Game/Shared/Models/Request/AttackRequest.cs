@@ -8,8 +8,8 @@ namespace Game.Shared.Models.Request
 {
     public class AttackRequest
     {
-        public AttackType AttackType { get; set; }
-        public List<KeyValuePair<Unit, int>> AttackingForces { get; set; }
+        public AttackType AttackType { get; set; }        
+        public Dictionary<Unit, int> AttackingForces { get; set; }
         public string AttackedUserId { get; set; }
         public int AttackedCityIndex { get; set; }
         public int AttackerCityIndex { get; set; }

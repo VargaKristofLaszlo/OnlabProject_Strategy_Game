@@ -50,7 +50,7 @@ namespace Game.Server
 
             services.AddIdentityConfig();
             services.AddAuthenticationConfig(Configuration);
-            services.AddHttpContextAccessorConfig();
+            services.AddIdentityContextConfig();
             services.AddMyServices();
             services.AddAutoMapperConfig();
             services.AddProblemDetailsConfig();
@@ -66,6 +66,7 @@ namespace Game.Server
                     });
                 options.EnableAnnotations();
             });
+            
 
             services.AddControllersWithViews();
             services.AddRazorPages();

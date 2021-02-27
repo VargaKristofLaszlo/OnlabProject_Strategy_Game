@@ -21,16 +21,10 @@ namespace Services.Implementations.AttackPhaseBehaviourImpl
             defenseValue = (int)Math.Ceiling(defenseValue * wallDefenseMultiplier);
             defenseValue += wallStage * 10;
 
-            //Copying the prop values to fields so it can be passed as ref
-            var attackingTroops_field = attackingTroops.CavalryPhaseTroops;
-            var defendingTroops_field = defendingTroops.CavalryPhaseDefendingUnits;
+            if (attackingTroops.CavalryPhaseTroops.Count == 0 || defendingTroops.CavalryPhaseDefendingUnits.Count == 0)
+                return (attackingTroops.CavalryPhaseTroops, defendingTroops.CavalryPhaseDefendingUnits);
 
-            if (attackingTroops_field.Count == 0 || defendingTroops_field.Count == 0)
-                return (attackingTroops_field, defendingTroops_field);
-
-            attackingTroops.Fight(ref attackingTroops_field, ref defendingTroops_field, attackValue, defenseValue);
-
-            return (attackingTroops_field, defendingTroops_field);
+            return attackingTroops.Fight(attackingTroops.CavalryPhaseTroops, defendingTroops.CavalryPhaseDefendingUnits, attackValue, defenseValue);
         }
     }
 }

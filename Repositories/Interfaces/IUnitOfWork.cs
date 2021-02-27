@@ -9,6 +9,6 @@ namespace BackEnd.Repositories.Interfaces
         IUpgradeCostRepository UpgradeCosts { get; }
         IUnitRepository Units { get; }
         ICityRepository Cities { get; }       
-        Task CommitChangesAsync();
+        Task<int> CommitChangesAsync();
     }
 }

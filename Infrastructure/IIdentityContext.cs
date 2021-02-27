@@ -1,6 +1,12 @@
-﻿namespace BackEnd.Infrastructure
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BackEnd.Infrastructure
 {
-    public class IdentityOptions
+    public interface IIdentityContext
     {
         public string UserId { get; set; }
 

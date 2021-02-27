@@ -18,15 +18,15 @@ namespace BackEnd.Services.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly AuthOptions _authOptions;
         private readonly IMailService _mailService;
-        private readonly IdentityOptions _identity;
+        private readonly IIdentityContext _identityContext;
 
         public AuthenticationService(IUnitOfWork unitOfWork, AuthOptions authOptions,
-            IMailService mailService, IdentityOptions identity)
+            IMailService mailService, IIdentityContext identity)
         {
             _unitOfWork = unitOfWork;
             _authOptions = authOptions;
             _mailService = mailService;
-            _identity = identity;
+            _identityContext = identity;
         }
 
         public async Task RegisterUserAsync(UserCreationRequest request)
@@ -186,7 +186,7 @@ namespace BackEnd.Services.Implementations
 
         public async Task UpdatePasswordAsync(string currentPassword, string newPassword)
         {
-            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identity.UserId);
+            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identityContext.UserId);
 
             var usermanagerResponse = await _unitOfWork.Users.UpdatePasswordAsync(user, currentPassword, newPassword);
 
@@ -196,16 +196,16 @@ namespace BackEnd.Services.Implementations
 
         public async Task SendEmailUpdateConfirmationAsync(string newEmailAddress)
         {
-            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identity.UserId);
+            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identityContext.UserId);
             if (user == null)
                 throw new NotFoundException();
 
-            if (_identity.Email.Equals(newEmailAddress))
+            if (_identityContext.Email.Equals(newEmailAddress))
                 throw new OperationFailedException("Choose a new email address");
 
             string token = await _unitOfWork.Users.GenerateEmailUpdateTokenAsync(user, newEmailAddress);
 
-            string url = $"{_authOptions.AppUrl}/api/auth/VerifyEmailUpdate?username={_identity.Username}&email={newEmailAddress}&token={token}";
+            string url = $"{_authOptions.AppUrl}/api/auth/VerifyEmailUpdate?username={_identityContext.Username}&email={newEmailAddress}&token={token}";
 
             _mailService.SendEmail(user.Email, "Confirm your new email address", $"<h1>We received a request to change your email address</h1>" +
                     $"<p>Your new email address after confirmation is {newEmailAddress}<p>" +
@@ -240,14 +240,14 @@ namespace BackEnd.Services.Implementations
 
         public async Task SendAccountDeletionConfirmationAsync()
         {
-            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identity.UserId);
+            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(_identityContext.UserId);
 
             if (user == null)
                 throw new NotFoundException();
 
             var accountDeletionToken = await _unitOfWork.Users.GenerateAccountDeletionTokenAsync(user);
 
-            string url = $"{_authOptions.AppUrl}/Api/Auth/Delete/Action?username={_identity.Username}&token={accountDeletionToken}";
+            string url = $"{_authOptions.AppUrl}/Api/Auth/Delete/Action?username={_identityContext.Username}&token={accountDeletionToken}";
 
             _mailService.SendEmail(user.Email, "Account deletion", $"<h1>We received a request to delete your account</h1>" +
                     $"<p>To confirm it please click <a href={url}>here</a> </p>");

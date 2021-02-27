@@ -10,13 +10,9 @@ namespace Services
 {
     public class DefendingTroops : ITroopsBehaviour
     {
-        private Dictionary<Unit, int> _infantryPhaseDefendingUnits = new Dictionary<Unit, int>();
-        private Dictionary<Unit, int> _cavalryPhaseDefendingUnits = new Dictionary<Unit, int>();
-        private Dictionary<Unit, int> _archeryPhaseDefendingUnits = new Dictionary<Unit, int>();
-
-        public Dictionary<Unit, int> InfantryPhaseDefendingUnits { get => _infantryPhaseDefendingUnits;  set => _infantryPhaseDefendingUnits = value; }
-        public Dictionary<Unit, int> CavalryPhaseDefendingUnits { get => _cavalryPhaseDefendingUnits;  set => _cavalryPhaseDefendingUnits = value; }
-        public Dictionary<Unit, int> ArcheryPhaseDefendingUnits { get => _archeryPhaseDefendingUnits;  set => _archeryPhaseDefendingUnits = value; }
+        public Dictionary<Unit, int> InfantryPhaseDefendingUnits { get; set; }
+        public Dictionary<Unit, int> CavalryPhaseDefendingUnits { get; set; }
+        public Dictionary<Unit, int> ArcheryPhaseDefendingUnits { get; set; }
 
         public DefendingTroops(IEnumerable<UnitsInCity> defendingTroops, double infantryProvisionPercentage,
             double cavalryProvisionPercentage, double archeryProvisionPercentage)
