@@ -4,13 +4,18 @@ using BackEnd.Repositories.Implementations;
 using BackEnd.Repositories.Interfaces;
 using Game.Server.Extensions;
 using Hellang.Middleware.ProblemDetails;
+using Infrastructure;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Services.Implementations;
 
 namespace Game.Server
 {
@@ -48,12 +53,17 @@ namespace Game.Server
                 AppUrl = Configuration["AppUrl"]
             });
 
-            services.AddIdentityConfig();
-            services.AddAuthenticationConfig(Configuration);
+            services.AddIdentityConfig();           
             services.AddIdentityContextConfig();
             services.AddMyServices();
             services.AddAutoMapperConfig();
             services.AddProblemDetailsConfig();
+            services.AddTokenConfig();
+
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
 
             services.AddSwaggerGen(options =>
             {
@@ -66,7 +76,7 @@ namespace Game.Server
                     });
                 options.EnableAnnotations();
             });
-            
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -95,6 +105,8 @@ namespace Game.Server
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "StrategyGame Web API V1");
             });
+
+
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();

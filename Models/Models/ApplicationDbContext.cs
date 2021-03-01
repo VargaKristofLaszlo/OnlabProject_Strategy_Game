@@ -33,35 +33,57 @@ namespace BackEnd.Models.Models
             builder.Entity<ApplicationUser>()
                 .HasMany(p => p.Cities)
                 .WithOne(p => p.User)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<City>()
+                .HasOne(pr => pr.Barrack)
+                .WithOne()                
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.Entity<City>()
+             .HasOne(pr => pr.CityHall)
+             .WithOne()
+             .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.Entity<City>()
+             .HasOne(pr => pr.CityWall)
+             .WithOne()
+             .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.Entity<City>()
+               .HasOne(pr => pr.Farm)
+               .WithOne()
+               .OnDelete(DeleteBehavior.ClientCascade);
+            
 
             builder.Entity<UnitsInCity>()
                 .HasOne(pr => pr.Barrack)
                 .WithMany(b => b.UnitsInCity)
                 .HasForeignKey(pr => pr.BarrackId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UnitsInCity>()
                 .HasOne(pr => pr.Unit)
                 .WithMany(u => u.UnitsInCity)
                 .HasForeignKey(pr => pr.UnitId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
 
             builder.Entity<City>()
                 .HasOne(c => c.StoneProduction)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<City>()
                 .HasOne(c => c.SilverProduction)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<City>()
                 .HasOne(c => c.WoodProduction)
                 .WithOne()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             base.OnModelCreating(builder);

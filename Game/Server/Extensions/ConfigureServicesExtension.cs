@@ -3,6 +3,8 @@ using BackEnd.Models.Models;
 using BackEnd.Services.Implementations;
 using BackEnd.Services.Interfaces;
 using Hellang.Middleware.ProblemDetails;
+using IdentityModel;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -19,6 +21,7 @@ using Services.Implementations.AttackService;
 using Services.Implementations.BuildingService;
 using Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
@@ -37,17 +40,19 @@ namespace Game.Server.Extensions
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IBuildingService, BuildingService>();
             services.AddScoped<IAttackService, AttackService>();
-
             return services;
         }
 
-        public static IServiceCollection AddIdentityContextConfig(this IServiceCollection services) 
+        public static IServiceCollection AddIdentityContextConfig(this IServiceCollection services)
         {
-            services.AddScoped<IIdentityContext, IdentityContext>(sp => 
+            services.AddScoped<IIdentityContext, IdentityContext>(sp =>
             {
                 var httpContext = sp.GetService<IHttpContextAccessor>().HttpContext;
 
                 var identityContext = new IdentityContext();
+
+
+                var claims = httpContext.User.Claims;
 
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
@@ -67,33 +72,16 @@ namespace Game.Server.Extensions
             return services;
         }
 
-
-        public static IServiceCollection AddAuthenticationConfig(this IServiceCollection services, IConfiguration configuration) 
+        public static IServiceCollection AddTokenConfig(this IServiceCollection services)
         {
-            services.AddAuthentication(auth =>
-            {
-                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddIdentityServerJwt()
-             .AddJwtBearer(options =>
-             {
-                 options.TokenValidationParameters = new TokenValidationParameters
-                 {
-                     ValidateIssuer = true,
-                     ValidateAudience = true,
-                     ValidAudience = configuration["AuthenticationSettings:Audience"],
-                     ValidIssuer = configuration["AuthenticationSettings:Issuer"],
-                     RequireExpirationTime = true,
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthenticationSettings:Key"])),
-                     ValidateIssuerSigningKey = true
-                 };
-             });
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(3));
 
             return services;
         }
 
 
-        public static IServiceCollection AddAutoMapperConfig(this IServiceCollection services) 
+        public static IServiceCollection AddAutoMapperConfig(this IServiceCollection services)
         {
             services.AddSingleton(sp => new AutoMapper.MapperConfiguration(config =>
             {
@@ -107,7 +95,7 @@ namespace Game.Server.Extensions
             return services;
         }
 
-        public static IServiceCollection AddProblemDetailsConfig(this IServiceCollection services) 
+        public static IServiceCollection AddProblemDetailsConfig(this IServiceCollection services)
         {
             services.AddProblemDetails(opt =>
             {
@@ -139,7 +127,7 @@ namespace Game.Server.Extensions
             return services;
         }
 
-        public static IServiceCollection AddIdentityConfig(this IServiceCollection services) 
+        public static IServiceCollection AddIdentityConfig(this IServiceCollection services)
         {
             services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -150,10 +138,25 @@ namespace Game.Server.Extensions
               .AddTokenProvider<DeletionTokenProvider<ApplicationUser>>("AccountDeletion")
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
+
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
+            services.AddScoped<IClaimsTransformation, MyUserClaimsTransformer>();
+              
+
+
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
+            services.AddAuthentication()
+               .AddIdentityServerJwt();
+              
+               
+             
+
             return services;
         }
+
+     
     }
 }

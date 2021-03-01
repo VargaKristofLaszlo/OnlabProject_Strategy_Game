@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210301032451_deleteSomeBuildings")]
+    partial class deleteSomeBuildings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -701,25 +703,25 @@ namespace Game.Server.Migrations
                     b.HasOne("BackEnd.Models.Models.Barrack", "Barrack")
                         .WithOne()
                         .HasForeignKey("BackEnd.Models.Models.City", "BarrackId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityHall", "CityHall")
                         .WithOne()
                         .HasForeignKey("BackEnd.Models.Models.City", "CityHallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityWall", "CityWall")
                         .WithOne()
                         .HasForeignKey("BackEnd.Models.Models.City", "CityWallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.Farm", "Farm")
                         .WithOne()
                         .HasForeignKey("BackEnd.Models.Models.City", "FarmId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.ResourceProduction", "SilverProduction")

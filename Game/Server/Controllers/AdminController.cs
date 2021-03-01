@@ -33,7 +33,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(204, "The operation succeeded")]
         [SwaggerResponse(404, "The user could not be found")]
         public async Task<IActionResult> BanUser([FromBody] UserBanRequest banRequest)
-        {
+        {       
             await _adminService.BanUserAsync(banRequest);
             return NoContent();
         }

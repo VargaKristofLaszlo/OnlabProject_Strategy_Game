@@ -1,7 +1,70 @@
 ﻿@page "/"
-
+@using System.Security.Claims;
+@using Game.Shared.Models;
+@using System.Net.Http
+@inject HttpClient Http
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+<AuthorizeView>
+    <Authorized>
+        Hello logged in user.
+        @Show(context.User.Claims)
+
+
+        <table>
+            <thead>
+                <tr>Item.Type</tr>
+                <tr>Item.Value</tr>
+                <tr>Item.ValueType</tr>
+            </thead>
+            <tbody>
+                @foreach (var item in context.User.Claims)
+                {
+                    <tr>
+                        <td>@item.Type</td>
+                        <td>@item.Value</td>
+                        <td>@item.ValueType</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+
+    </Authorized>
+</AuthorizeView>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code
+{
+    public string Show(IEnumerable<Claim> claims)
+    {
+        string res = "";
+
+        var nameClaim = claims.FirstOrDefault(x => x.Type.Equals(ClaimTypes.Name));
+        var idClaim = claims.FirstOrDefault(x => x.Type.Equals(ClaimTypes.NameIdentifier));
+        var emailClaim = claims.FirstOrDefault(x => x.Type.Equals(ClaimTypes.Email));
+
+        if (nameClaim == null)
+            res += "nameClaim was null  ";
+        else
+            res += nameClaim.Value + "  ";
+
+        if (idClaim == null)
+            res += "idClaim was null  ";
+        else
+            res += idClaim.Value + "  ";
+
+        if (emailClaim == null)
+            res += "emailClaim was null  ";
+        else
+            res += emailClaim.Value + "  ";
+
+        return res;
+    }
+
+
+
+}

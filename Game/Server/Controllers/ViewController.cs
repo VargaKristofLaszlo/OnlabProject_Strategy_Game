@@ -103,6 +103,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(200, "The request was successful", typeof(CityDetails))]
         public async Task<IActionResult> GetCity([FromQuery] int cityIndex) 
         {
+            
             var result = await _viewService.GetCityDetails(cityIndex);
             return Ok(result);
         }

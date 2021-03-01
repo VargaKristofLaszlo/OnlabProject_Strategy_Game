@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210301032051_barrackRemove")]
+    partial class barrackRemove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,17 +182,13 @@ namespace Game.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BarrackId")
-                        .IsUnique();
+                    b.HasIndex("BarrackId");
 
-                    b.HasIndex("CityHallId")
-                        .IsUnique();
+                    b.HasIndex("CityHallId");
 
-                    b.HasIndex("CityWallId")
-                        .IsUnique();
+                    b.HasIndex("CityWallId");
 
-                    b.HasIndex("FarmId")
-                        .IsUnique();
+                    b.HasIndex("FarmId");
 
                     b.HasIndex("SilverProductionId")
                         .IsUnique();
@@ -699,27 +697,27 @@ namespace Game.Server.Migrations
             modelBuilder.Entity("BackEnd.Models.Models.City", b =>
                 {
                     b.HasOne("BackEnd.Models.Models.Barrack", "Barrack")
-                        .WithOne()
-                        .HasForeignKey("BackEnd.Models.Models.City", "BarrackId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .WithMany()
+                        .HasForeignKey("BarrackId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityHall", "CityHall")
-                        .WithOne()
-                        .HasForeignKey("BackEnd.Models.Models.City", "CityHallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .WithMany()
+                        .HasForeignKey("CityHallId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityWall", "CityWall")
-                        .WithOne()
-                        .HasForeignKey("BackEnd.Models.Models.City", "CityWallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .WithMany()
+                        .HasForeignKey("CityWallId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.Farm", "Farm")
-                        .WithOne()
-                        .HasForeignKey("BackEnd.Models.Models.City", "FarmId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .WithMany()
+                        .HasForeignKey("FarmId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.ResourceProduction", "SilverProduction")
