@@ -2,10 +2,10 @@
 
 namespace Shared.Models
 {
-    public class PagingInformations
+    public record PagingInformations
     {
-        public int? PageNumber { get; set; }
-        public int? PageSize { get; set; }
-        public int? PagesCount { get; set; }      
+        public int? PageNumber { get; init; }
+        public int? PageSize { get; init; }
+        public int? PagesCount { get; init; }      
     }
 }

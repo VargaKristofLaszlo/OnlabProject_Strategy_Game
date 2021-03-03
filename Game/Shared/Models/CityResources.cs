@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Game.Shared.Models
 {
-    public class CityResources
+    public record CityResources
     {
-        public int StoneAmount { get; set; }
-        public int StoneProductionPerHour { get; set; }        
-        public int SilverAmount { get; set; }
-        public int SilverProductionPerHour { get; set; }
-        public int WoodAmount { get; set; }
-        public int WoodProductionPerHour { get; set; }
+        public int StoneAmount { get; init; }
+        public int StoneProductionPerHour { get; init; }        
+        public int SilverAmount { get; init; }
+        public int SilverProductionPerHour { get; init; }
+        public int WoodAmount { get; init; }
+        public int WoodProductionPerHour { get; init; }
     }
 }

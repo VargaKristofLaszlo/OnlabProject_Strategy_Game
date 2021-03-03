@@ -7,33 +7,33 @@ using System.Threading.Tasks;
 
 namespace Game.Shared.Models
 {
-    public class Unit
+    public record Unit
     {
         [Required]
-        public int AttackPoint { get; set; }
+        public int AttackPoint { get; init; }
 
         [Required]
-        public int InfantryDefensePoint { get; set; }
+        public int InfantryDefensePoint { get; init; }
 
         [Required]
-        public int CavalryDefensePoint { get; set; }
+        public int CavalryDefensePoint { get; init; }
 
         [Required]
-        public UnitType UnitType { get; set; }
+        public UnitType UnitType { get; init; }
 
         [Required]
-        public int ArcherDefensePoint { get; set; }
+        public int ArcherDefensePoint { get; init; }
 
         [Required]
-        public int MinBarrackStage { get; set; }
+        public int MinBarrackStage { get; init; }
 
         [Required]
-        public int CarryingCapacity { get; set; }
+        public int CarryingCapacity { get; init; }
 
         [Required]
-        public Resources UnitCost { get; set; }
+        public Resources UnitCost { get; init; }
 
         [Required]
-        public string Name { get; set; }
+        public string Name { get; init; }
     }
 }

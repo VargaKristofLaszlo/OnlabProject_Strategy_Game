@@ -16,7 +16,7 @@
 else
 {
    @CityDetails.CityName;
-   @CityDetails.BarrackStage;
+   @CityDetails.LumberStage;
 }
 
 @code {
@@ -26,7 +26,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         try
-        {           
+        {     
              CityDetails = await Http.GetFromJsonAsync<CityDetails>("/api/View/City?cityIndex=0");           
         }
         catch (AccessTokenNotAvailableException exception)

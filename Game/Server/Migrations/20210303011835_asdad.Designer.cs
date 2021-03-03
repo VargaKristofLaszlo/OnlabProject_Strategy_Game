@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210301033326_addedClientCascade")]
-    partial class addedClientCascade
+    [Migration("20210303011835_asdad")]
+    partial class asdad
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -99,6 +99,9 @@ namespace Game.Server.Migrations
 
                     b.Property<string>("BuildingName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Stage")
@@ -202,7 +205,8 @@ namespace Game.Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("WarehouseId")
+                        .IsUnique();
 
                     b.HasIndex("WoodProductionId")
                         .IsUnique();
@@ -220,6 +224,9 @@ namespace Game.Server.Migrations
 
                     b.Property<string>("BuildingName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Stage")
@@ -247,6 +254,9 @@ namespace Game.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CityId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("DefensePoints")
                         .HasColumnType("int");
 
@@ -270,6 +280,9 @@ namespace Game.Server.Migrations
 
                     b.Property<string>("BuildingName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxPopulation")
@@ -314,6 +327,9 @@ namespace Game.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CityId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("ProductionAmount")
                         .HasColumnType("int");
 
@@ -326,6 +342,8 @@ namespace Game.Server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuildingCostId");
+
+                    b.HasIndex("CityId");
 
                     b.ToTable("ResourceProductions");
                 });
@@ -399,6 +417,9 @@ namespace Game.Server.Migrations
 
                     b.Property<string>("BuildingName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaxSilverStorageCapacity")
@@ -701,27 +722,27 @@ namespace Game.Server.Migrations
             modelBuilder.Entity("BackEnd.Models.Models.City", b =>
                 {
                     b.HasOne("BackEnd.Models.Models.Barrack", "Barrack")
-                        .WithOne()
+                        .WithOne("City")
                         .HasForeignKey("BackEnd.Models.Models.City", "BarrackId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityHall", "CityHall")
-                        .WithOne()
+                        .WithOne("City")
                         .HasForeignKey("BackEnd.Models.Models.City", "CityHallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.CityWall", "CityWall")
-                        .WithOne()
+                        .WithOne("City")
                         .HasForeignKey("BackEnd.Models.Models.City", "CityWallId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.Farm", "Farm")
-                        .WithOne()
+                        .WithOne("City")
                         .HasForeignKey("BackEnd.Models.Models.City", "FarmId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.ResourceProduction", "SilverProduction")
@@ -743,8 +764,8 @@ namespace Game.Server.Migrations
                         .IsRequired();
 
                     b.HasOne("BackEnd.Models.Models.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
+                        .WithOne("City")
+                        .HasForeignKey("BackEnd.Models.Models.City", "WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -833,6 +854,12 @@ namespace Game.Server.Migrations
                     b.HasOne("BackEnd.Models.Models.BuildingUpgradeCost", "UpgradeCost")
                         .WithMany()
                         .HasForeignKey("BuildingCostId");
+
+                    b.HasOne("BackEnd.Models.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId");
+
+                    b.Navigation("City");
 
                     b.Navigation("UpgradeCost");
                 });
@@ -953,12 +980,34 @@ namespace Game.Server.Migrations
 
             modelBuilder.Entity("BackEnd.Models.Models.Barrack", b =>
                 {
+                    b.Navigation("City");
+
                     b.Navigation("UnitsInCity");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Models.CityHall", b =>
+                {
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Models.CityWall", b =>
+                {
+                    b.Navigation("City");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Models.Farm", b =>
+                {
+                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Models.Unit", b =>
                 {
                     b.Navigation("UnitsInCity");
+                });
+
+            modelBuilder.Entity("BackEnd.Models.Models.Warehouse", b =>
+                {
+                    b.Navigation("City");
                 });
 #pragma warning restore 612, 618
         }

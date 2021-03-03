@@ -6,27 +6,25 @@ using System.Threading.Tasks;
 
 namespace Game.Shared.Models
 {
-    public class CityDetails
+    public record CityDetails
     {
-        public DateTime LastResourceQueryTime { get; set; }
-        public string CityName { get; set; }
-        public int BarrackStage { get; set; }
-        public Resources BarrackUpgradeCost { get; set; }
-        public int CityHallStage { get; set; }
-        public Resources CityHallUpgradeCost { get; set; }
-        public int CityWallStage { get; set; }
-        public Resources CityWallUpgradeCost { get; set; }
-        public int FarmStage { get; set; }
-        public Resources FarmUpgradeCost { get; set; }
-        public int SilverMineStage { get; set; }
-        public Resources SilverMineUpgradeCost { get; set; }
-        public int StoneMineStage { get; set; }
-        public Resources StoneMineUpgradeCost { get; set; }
-        public int LumberStage { get; set; }
-        public Resources LumberUpgradeCost { get; set; }
-        public int WarehouseStage { get; set; }
-        public Resources WarehouseUpgradeCost { get; set; }
-
-
+        public DateTime LastResourceQueryTime{ get; init; }
+        public string CityName { get; init; }
+        public int BarrackStage { get; init; }
+        public Resources BarrackUpgradeCost { get; init; }
+        public int CityHallStage { get; init; }
+        public Resources CityHallUpgradeCost { get; init; }
+        public int CityWallStage { get; init; }
+        public Resources CityWallUpgradeCost { get; init; }
+        public int FarmStage { get; init; }
+        public Resources FarmUpgradeCost { get; init; }
+        public int SilverMineStage { get; init; }
+        public Resources SilverMineUpgradeCost { get; init; }
+        public int StoneMineStage { get; init; }
+        public Resources StoneMineUpgradeCost { get; init; }
+        public int LumberStage { get; init; }
+        public Resources LumberUpgradeCost { get; init; }
+        public int WarehouseStage { get; init; }
+        public Resources WarehouseUpgradeCost { get; init; }
     }
 }

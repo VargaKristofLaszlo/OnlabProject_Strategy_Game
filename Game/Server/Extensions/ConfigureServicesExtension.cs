@@ -33,7 +33,6 @@ namespace Game.Server.Extensions
         public static IServiceCollection AddMyServices(
              this IServiceCollection services)
         {
-            services.AddScoped<BackEnd.Services.Interfaces.IAuthenticationService, BackEnd.Services.Implementations.AuthenticationService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<IViewService, ViewService>();

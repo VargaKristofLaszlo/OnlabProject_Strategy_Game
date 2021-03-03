@@ -76,7 +76,6 @@ namespace Game.Server
                     });
                 options.EnableAnnotations();
             });
-            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

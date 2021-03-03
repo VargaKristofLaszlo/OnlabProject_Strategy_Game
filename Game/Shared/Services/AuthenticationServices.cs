@@ -17,7 +17,7 @@ namespace Shared.Services
         }
 
         public async Task<HttpResponseMessage> LoginAsync(UserLoginRequest request)
-        {            
+        {     
             return await httpClient.PostAsJsonAsync($"{httpClient.BaseAddress}/Auth/Login", request);
         }
     }

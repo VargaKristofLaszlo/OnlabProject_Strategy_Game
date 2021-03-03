@@ -48,6 +48,8 @@ namespace Game.Server.Areas.Identity.Pages.Account
                 City city = await CreateCity(user);
                 user.Cities.Add(city);
                 await _unitOfWork.CommitChangesAsync();
+                SetIds(city);
+                await _unitOfWork.CommitChangesAsync();
             }
             StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
             return Page();
@@ -69,15 +71,18 @@ namespace Game.Server.Areas.Identity.Pages.Account
             //Create the buildings
             Warehouse warehouse = Warehouse.Create(warehouseCost);
             ResourceProduction silverMine = ResourceProduction.CreateResourceProductionBuilding(silverMineCost);
+            silverMine.ResourceType = ResourceType.silver;
             ResourceProduction stoneMine = ResourceProduction.CreateResourceProductionBuilding(stoneMineCost);
+            stoneMine.ResourceType = ResourceType.stone;
             ResourceProduction lumber = ResourceProduction.CreateResourceProductionBuilding(lumberCost);
+            lumber.ResourceType = ResourceType.wood;
             Farm farm = Farm.Create(farmCost);
             CityWall cityWall = CityWall.Create(cityWallCost);
             CityHall cityHall = CityHall.Create(cityhallCost);
             Barrack barrack = Barrack.Create(barrackCost);
 
             //Add the buildings to the city
-            return new City
+            City city =  new City
             {
                 CityName = $"{user.UserName}'s city",
                 Resources = new Resources
@@ -106,6 +111,33 @@ namespace Game.Server.Areas.Identity.Pages.Account
                 WarehouseId = warehouse.Id,
                 Warehouse = warehouse
             };
+            return city;
+        }
+        private void SetIds(City city) 
+        {
+            city.SilverProduction.City = city;
+            city.SilverProduction.CityId = city.Id;
+
+            city.StoneProduction.City = city;
+            city.StoneProduction.CityId = city.Id;
+
+            city.WoodProduction.City = city;
+            city.WoodProduction.CityId = city.Id;
+
+            city.Barrack.City = city;
+            city.Barrack.CityId = city.Id;
+
+            city.Farm.City = city;
+            city.Farm.CityId = city.Id;
+
+            city.CityWall.City = city;
+            city.CityWall.CityId = city.Id;
+
+            city.CityHall.City = city;
+            city.CityHall.CityId = city.Id;
+
+            city.Warehouse.City = city;
+            city.Warehouse.CityId = city.Id;
         }
     }
 }

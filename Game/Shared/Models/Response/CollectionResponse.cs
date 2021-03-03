@@ -2,9 +2,9 @@
 
 namespace Shared.Models.Response
 {
-    public class CollectionResponse<T>
+    public record CollectionResponse<T>
     {
-        public IEnumerable<T> Records { get; set; }
-        public PagingInformations PagingInformations { get; set; }
+        public IEnumerable<T> Records { get; init; }
+        public PagingInformations PagingInformations { get; init; }
     }
 }

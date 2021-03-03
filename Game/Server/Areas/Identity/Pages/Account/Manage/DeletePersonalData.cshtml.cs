@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BackEnd.Models.Models;
+using BackEnd.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,15 +15,17 @@ namespace Game.Server.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
-       
+        private readonly IUnitOfWork _unitOfWork;
 
         public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            IUnitOfWork unitOfWork,
             ILogger<DeletePersonalDataModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _unitOfWork = unitOfWork;
             _logger = logger;         
         }
 
@@ -68,14 +71,13 @@ namespace Game.Server.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            
-            var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
+            var result = await _unitOfWork.Users.DeleteUserAsync(userId);            
+            if (!result.IsSuccess)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user with ID '{userId}'.");
             }
-
+           
             await _signInManager.SignOutAsync();
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);

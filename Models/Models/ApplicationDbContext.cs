@@ -36,27 +36,6 @@ namespace BackEnd.Models.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.Entity<City>()
-                .HasOne(pr => pr.Barrack)
-                .WithOne()                
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            builder.Entity<City>()
-             .HasOne(pr => pr.CityHall)
-             .WithOne()
-             .OnDelete(DeleteBehavior.ClientCascade);
-
-            builder.Entity<City>()
-             .HasOne(pr => pr.CityWall)
-             .WithOne()
-             .OnDelete(DeleteBehavior.ClientCascade);
-
-            builder.Entity<City>()
-               .HasOne(pr => pr.Farm)
-               .WithOne()
-               .OnDelete(DeleteBehavior.ClientCascade);
-            
-
             builder.Entity<UnitsInCity>()
                 .HasOne(pr => pr.Barrack)
                 .WithMany(b => b.UnitsInCity)

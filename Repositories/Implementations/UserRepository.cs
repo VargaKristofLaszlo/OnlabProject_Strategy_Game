@@ -4,6 +4,7 @@ using BackEnd.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,104 +55,6 @@ namespace BackEnd.Repositories.Implementations
                 .FirstOrDefaultAsync(user => user.Id.Equals(userId));
         }
 
-        public async Task<UsermanagerResponse> UpdateEmailAddressAsync(ApplicationUser user, string token, string newEmailAddress)
-        {
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
-
-            var result = await _userManager.ChangeEmailAsync(user, newEmailAddress, normalToken);
-
-            if (result.Succeeded)
-                return UsermanagerResponse.TaskCompletedSuccessfully();
-
-            IEnumerable<string> Errors = result.Errors.Select(error => error.Description);
-
-            return UsermanagerResponse.TaskFailed(Errors);
-        }
-
-        public async Task<UsermanagerResponse> UpdatePasswordAsync(ApplicationUser user, string currentPassword, string newPassword)
-        {
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
-
-            if (result.Succeeded)
-                return UsermanagerResponse.TaskCompletedSuccessfully();
-
-            IEnumerable<string> Errors = result.Errors.Select(error => error.Description);
-
-            return UsermanagerResponse.TaskFailed(Errors);
-        }
-
-        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
-        {
-            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
-
-            return WebEncoders.Base64UrlEncode(encodedEmailToken);
-        }
-
-        public async Task<string> GeneratePasswordResetTokenAsnyc(ApplicationUser user)
-        {
-            var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            var encodedPasswordResetToken = Encoding.UTF8.GetBytes(passwordResetToken);
-
-            return WebEncoders.Base64UrlEncode(encodedPasswordResetToken);
-        }
-
-        public async Task<string> GenerateEmailUpdateTokenAsync(ApplicationUser user, string newEmail)
-        {
-            var emaiUpdateToken = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
-
-            var encodedEmailUpdateToken = Encoding.UTF8.GetBytes(emaiUpdateToken);
-
-            return WebEncoders.Base64UrlEncode(encodedEmailUpdateToken);
-        }
-
-        public async Task<string> GenerateAccountDeletionTokenAsync(ApplicationUser user) 
-        {
-            var userDeletionToken =  await _userManager.GenerateUserTokenAsync(user, "AccountDeletion", "Deleting the user");
-
-            var encodedUserDeletionToken = Encoding.UTF8.GetBytes(userDeletionToken);
-
-            return WebEncoders.Base64UrlEncode(encodedUserDeletionToken);
-        }
-
-        public async Task<bool> CheckPasswordAsync(ApplicationUser user, string password)
-        {
-            return await _userManager.CheckPasswordAsync(user, password);
-        }
-
-        public async Task<UsermanagerResponse> ConfirmEmailAsync(ApplicationUser user, string token)
-        {
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
-
-            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
-
-            if (result.Succeeded)
-                return UsermanagerResponse.TaskCompletedSuccessfully();
-
-            IEnumerable<string> errors = result.Errors.Select(error => error.Description);
-
-            return UsermanagerResponse.TaskFailed(errors);
-        }
-
-        public async Task<UsermanagerResponse> ConfirmEmailUpdateAsync(ApplicationUser user, string token, string newEmail)
-        {
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
-
-            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
-
-            if (result.Succeeded)
-                return UsermanagerResponse.TaskCompletedSuccessfully();
-
-            IEnumerable<string> errors = result.Errors.Select(error => error.Description);
-
-            return UsermanagerResponse.TaskFailed(errors);
-        }
-
         public async Task<UsermanagerResponse> CreateUserAsync(ApplicationUser user, string password, string role)
         {
             var result = await _userManager.CreateAsync(user, password);
@@ -167,33 +70,73 @@ namespace BackEnd.Repositories.Implementations
             return UsermanagerResponse.TaskFailed(errors);
         }
 
-
-        public async Task<UsermanagerResponse> ResetPasswordAsync(ApplicationUser user, string token, string newPassword)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
         {
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
+            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            var result = await _userManager.ResetPasswordAsync(user, normalToken, newPassword);
+            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
 
-            if (result.Succeeded)
-                return UsermanagerResponse.TaskCompletedSuccessfully();
-
-            IEnumerable<string> errors = result.Errors.Select(error => error.Description);
-
-            return UsermanagerResponse.TaskFailed(errors);
+            return WebEncoders.Base64UrlEncode(encodedEmailToken);
         }
 
-        public async Task<UsermanagerResponse> DeleteUserAsync(ApplicationUser user, string token)
+        public async Task<UsermanagerResponse> DeleteUserAsync(string userId)
         {
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
+            var user = await GetUserWithCities(userId);
+            if (user == null)
+                return UsermanagerResponse.TaskCompletedSuccessfully();
+                        
 
-            var tokenVerification = await _userManager.VerifyUserTokenAsync(user, "AccountDeletion", "Deleting the user", normalToken);
-            if (tokenVerification == false)
-                return UsermanagerResponse.TaskFailed(new List<string>{ "Invalid token"});
+            List<Barrack> barracks = new List<Barrack>();
+            List<CityHall> cityHalls= new List<CityHall>();
+            List<CityWall> cityWalls = new List<CityWall>();
+            List<Farm> farms = new List<Farm>();
+            List<ResourceProduction> resourceProductions = new List<ResourceProduction>();
+            List<Warehouse> warehouses = new List<Warehouse>();
+            List<UnitsInCity> unitsInCities = new List<UnitsInCity>();
+
+            foreach (var city in user.Cities)
+            {
+                barracks.Add(_db.Barracks.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                cityHalls.Add(_db.CityHalls.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                cityWalls.Add(_db.CityWalls.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                farms.Add(_db.Farms.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                resourceProductions.AddRange( _db.ResourceProductions.Where(x => x.CityId.Equals(city.Id)).ToList());
+                warehouses.Add(_db.Warehouses.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+            }
+            foreach (var barrack in barracks)
+            {
+                foreach (var units in barrack.UnitsInCity)
+                {
+                    unitsInCities.Add(units);
+                }
+            }
 
             var result = await _userManager.DeleteAsync(user);
+            foreach (var item in barracks)
+                _db.Barracks.Remove(item);
 
+            foreach (var item in cityHalls)
+                _db.CityHalls.Remove(item);
+
+            foreach (var item in cityWalls)
+                _db.CityWalls.Remove(item);
+
+            foreach (var item in farms)
+                _db.Farms.Remove(item);
+
+            foreach (var item in resourceProductions)
+                _db.ResourceProductions.Remove(item);
+
+            foreach (var item in warehouses)
+                _db.Warehouses.Remove(item);
+
+            foreach (var item in unitsInCities)
+            {
+                _db.UnitsInCities.Remove(item);
+            }
+
+            await _db.SaveChangesAsync();
+            
             if (result.Succeeded)
                 return UsermanagerResponse.TaskCompletedSuccessfully();
 
@@ -201,6 +144,5 @@ namespace BackEnd.Repositories.Implementations
 
             return UsermanagerResponse.TaskFailed(errors);
         }
-
     }
 }
