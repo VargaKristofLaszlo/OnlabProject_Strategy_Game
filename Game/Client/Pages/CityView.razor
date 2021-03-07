@@ -1,6 +1,5 @@
 ﻿@inject HttpClient http
 @inject IDialogService DialogService
-@inject Helpers.PopulationState PopulationState
 @inject Helpers.CityResourceState CityResourceState
 
 @if (_cityDetails != null)
@@ -203,50 +202,42 @@
             switch (buildingName)
             {
                 case _barrack:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.BarrackUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.BarrackUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.BarrackUpgradeCost);
                     _cityDetails.BarrackUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.BarrackStage = dialogData.NewStage;
                     break;
                 case _cityHall:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.CityHallUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.CityHallUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.CityHallUpgradeCost);
                     _cityDetails.CityHallUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.CityHallStage = dialogData.NewStage;
                     break;
                 case _cityWall:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.CityWallUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.CityWallUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.CityWallUpgradeCost);
                     _cityDetails.CityWallUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.CityWallStage = dialogData.NewStage;
                     break;
                 case _farm:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.FarmUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.FarmUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.FarmUpgradeCost);
                     _cityDetails.FarmUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.FarmStage = dialogData.NewStage;
                     break;
                 case _lumber:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.LumberUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.LumberUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.LumberUpgradeCost);
                     _cityDetails.LumberUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.LumberStage = dialogData.NewStage;
                     break;
                 case _silverMine:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.SilverMineUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.SilverMineUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.SilverMineUpgradeCost);
                     _cityDetails.SilverMineUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.SilverMineStage = dialogData.NewStage;
                     break;
                 case _stoneMine:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.StoneMineUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.StoneMineUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.StoneMineUpgradeCost);
                     _cityDetails.StoneMineUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.StoneMineStage = dialogData.NewStage;
                     break;
                 case _wareHouse:
-                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.WarehouseUpgradeCost.Population);
-                    CityResourceState.SetResourceValue(_cityDetails.WarehouseUpgradeCost);
+                    CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.WarehouseUpgradeCost);
                     _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.WarehouseStage = dialogData.NewStage;
                     break;
@@ -266,7 +257,7 @@
             var parameters = new DialogParameters();
             parameters.Add("CurrentStage", currentStage);
             parameters.Add("BuildingName", buildingName);
-            parameters.Add("CityIndex", cityIndex);
+            parameters.Add("CityIndex", cityIndex);           
 
             var res = DialogService.Show<DowngradeDialog>($"Downgrade the {buildingName}", parameters: parameters);
 
@@ -279,42 +270,42 @@
                 switch (buildingName)
                 {
                     case _barrack:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.BarrackUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.BarrackStage = dialogData.NewStage;
                         break;
                     case _cityHall:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.CityHallUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.CityHallStage = dialogData.NewStage;
                         break;
                     case _cityWall:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.CityWallUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.CityWallStage = dialogData.NewStage;
                         break;
                     case _farm:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.FarmUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.FarmStage = dialogData.NewStage;
                         break;
                     case _lumber:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.LumberUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.LumberStage = dialogData.NewStage;
                         break;
                     case _silverMine:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.SilverMineUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.SilverMineStage = dialogData.NewStage;
                         break;
                     case _stoneMine:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.StoneMineUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.StoneMineStage = dialogData.NewStage;
                         break;
                     case _wareHouse:
-                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.WarehouseStage = dialogData.NewStage;
                         break;

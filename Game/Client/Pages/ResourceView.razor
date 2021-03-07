@@ -1,6 +1,5 @@
 ﻿@inject HttpClient http
 @inject IJSRuntime JSRuntime
-@inject Helpers.PopulationState PopulationState
 @inject Helpers.CityResourceState CityResourceState
 @implements IDisposable
 @if (_cityResources == null)
@@ -56,7 +55,7 @@ else
             <tbody class="tooltip-population ml-1">
                 <tr>
                     <td><i class="fas fa-user"></i></td>
-                    <td>@PopulationState.Population</td>
+                    <td>@CityResourceState.Population</td>
                 </tr>
                 <tr id="max-population">
                     <td>Total provisions provided</td>
@@ -82,27 +81,24 @@ else
         _cityResources = await httpResponse.Content.ReadFromJsonAsync<CityResources>();
 
         httpResponse = await viewServices.GetWarehouseCapacity(CityIndex);
-        _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
-
-        PopulationState.SetPopulation(_cityResources.FreePopulation);       
+        _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();           
 
         CityResourceState.SetInitValue(new Resources
         {
             Wood = _cityResources.WoodAmount,
             Stone = _cityResources.StoneAmount,
-            Silver = _cityResources.SilverAmount
+            Silver = _cityResources.SilverAmount,
+            Population = _cityResources.FreePopulation
         });
     }
 
     protected override void OnInitialized()
-    {
-        PopulationState.OnChange += StateHasChanged; ;
+    {        
         CityResourceState.OnChange += StateHasChanged;
     }
 
     public void Dispose()
-    {
-        PopulationState.OnChange -= StateHasChanged;
+    {       
         CityResourceState.OnChange += StateHasChanged;
     }
 

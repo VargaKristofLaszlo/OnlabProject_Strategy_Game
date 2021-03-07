@@ -27,8 +27,7 @@ namespace Game.Client
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Game.ServerAPI"));           
             builder.Services.AddApiAuthorization();
-            builder.Services.AddMudServices();
-            builder.Services.AddSingleton<PopulationState>();
+            builder.Services.AddMudServices();          
             builder.Services.AddSingleton<CityResourceState>();
 
             await builder.Build().RunAsync();
