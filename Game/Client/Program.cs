@@ -29,6 +29,7 @@ namespace Game.Client
             builder.Services.AddApiAuthorization();
             builder.Services.AddMudServices();
             builder.Services.AddSingleton<PopulationState>();
+            builder.Services.AddSingleton<CityResourceState>();
 
             await builder.Build().RunAsync();
         }

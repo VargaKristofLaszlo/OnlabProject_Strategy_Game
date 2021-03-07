@@ -1,6 +1,7 @@
 ﻿@inject HttpClient http
 @inject IJSRuntime JSRuntime
 @inject Helpers.PopulationState PopulationState
+@inject Helpers.CityResourceState CityResourceState
 @implements IDisposable
 @if (_cityResources == null)
 {
@@ -13,7 +14,7 @@ else
             <tbody class="tooltip-wood">
                 <tr>
                     <td><i class="fas fa-tree"></i></td>
-                    <td>@_cityResources.WoodAmount</td>
+                    <td>@CityResourceState.Wood</td>
                 </tr>
                 <tr id="wood-production">
                     <td>Wood</td>
@@ -27,7 +28,7 @@ else
             <tbody class="tooltip-stone ml-1">
                 <tr>
                     <td><i class="fas fa-gem"></i></td>
-                    <td>@_cityResources.StoneAmount</td>
+                    <td>@CityResourceState.Stone</td>
                 </tr>
                 <tr id="stone-production">
                     <td>Stone</td>
@@ -41,7 +42,7 @@ else
             <tbody class="tooltip-silver ml-1">
                 <tr>
                     <td><i class="fas fa-coins"></i></td>
-                    <td>@_cityResources.SilverAmount</td>
+                    <td>@CityResourceState.Silver</td>
                 </tr>
                 <tr id="silver-production">
                     <td>Silver</td>
@@ -83,18 +84,26 @@ else
         httpResponse = await viewServices.GetWarehouseCapacity(CityIndex);
         _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
 
-        PopulationState.SetPopulation(_cityResources.FreePopulation);
+        PopulationState.SetPopulation(_cityResources.FreePopulation);       
 
+        CityResourceState.SetInitValue(new Resources
+        {
+            Wood = _cityResources.WoodAmount,
+            Stone = _cityResources.StoneAmount,
+            Silver = _cityResources.SilverAmount
+        });
     }
 
     protected override void OnInitialized()
     {
         PopulationState.OnChange += StateHasChanged; ;
+        CityResourceState.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
         PopulationState.OnChange -= StateHasChanged;
+        CityResourceState.OnChange += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
