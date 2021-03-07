@@ -6,7 +6,7 @@ namespace Services.Interfaces
 {
     public abstract class BuildingBehaviour
     {
-        public abstract int Upgrade(City city, BuildingUpgradeCost upgradeCost);
-        public abstract int Downgrade(City city, BuildingUpgradeCost upgradeCost);
+        public abstract City Upgrade(City city, BuildingUpgradeCost upgradeCost);
+        public abstract City Downgrade(City city, BuildingUpgradeCost upgradeCost);
     }
 }

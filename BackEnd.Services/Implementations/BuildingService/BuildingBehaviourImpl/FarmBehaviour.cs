@@ -6,24 +6,37 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class FarmBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Farm.Stage - 1)
+            if (upgradeCost.BuildingStage != city.Farm.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.Farm.MaxPopulation -= 200;
             city.Farm.UpgradeCost = upgradeCost;
-            return city.Farm.Stage -= 1;
+            city.Farm.Stage -= 1;
+            city.Farm.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Farm.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.Farm.MaxPopulation += 200;
+                city.Farm.UpgradeCost = upgradeCost;
+                city.Farm.Stage += 1;
+                city.Farm.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.Farm.Stage)
                 throw new InvalidBuildingStageModificationException();
-
-            city.Farm.MaxPopulation += 200;
-            city.Farm.UpgradeCost = upgradeCost;
-            return city.Farm.Stage += 1;
+            else 
+            {
+                city.Farm.MaxPopulation += 200;
+                city.Farm.UpgradeCost = upgradeCost;
+                city.Farm.Stage += 1;
+                city.Farm.BuildingCostId = upgradeCost.Id;
+            }            
+            return city;
         }
     }
 }

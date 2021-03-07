@@ -1,0 +1,98 @@
+﻿@inject HttpClient http
+@inject IJSRuntime JSRuntime
+
+@if (_units == null)
+{
+
+}
+else
+{
+    <div class="d-inline-flex ml-auto mr-5 pr-4 mt-4">
+        <table>
+            <tbody class="tooltip-spearman">
+                <tr>
+                    <td>
+                        <img src="/images/spear.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.Spearmans</td></tr>
+                <tr id="tooltip-spearman-name"><td>Spearman</td></tr>
+            </tbody>
+            <tbody class="tooltip-swordsman">
+                <tr>
+                    <td>
+                        <img src="/images/sword.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.Swordsmans</td></tr>
+                <tr id="tooltip-swordsman-name"><td>Swordsman</td></tr>
+            </tbody>
+            <tbody class="tooltip-axe-fighter">
+                <tr>
+                    <td>
+                        <img src="/images/axe.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.AxeFighers</td></tr>
+                <tr id="tooltip-axe-fighter-name"><td>Axe fighter</td></tr>
+            </tbody>
+            <tbody class="tooltip-archer">
+                <tr>
+                    <td>
+                        <img src="/images/archer.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.Archers</td></tr>
+                <tr id="tooltip-archer-name"><td>Archer</td></tr>
+            </tbody>
+            <tbody class="tooltip-light-cavalry">
+                <tr>
+                    <td>
+                        <img src="/images/horse-riding.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.LightCavalry</td></tr>
+                <tr id="tooltip-light-cavalry-name"><td>Light cavalry</td></tr>
+            </tbody>
+            <tbody class="tooltip-mounted-archer">
+                <tr>
+                    <td>
+                        <img src="/images/sagittarius-sign.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.MountedArcher</td></tr>
+                <tr id="tooltip-mounted-archer-name"><td>Mounted archer</td></tr>
+            </tbody>
+            <tbody class="tooltip-heavy-cavalry">
+                <tr>
+                    <td>
+                        <img src="/images/knight.svg" width="34" height="34" />
+                    </td>
+                </tr>
+                <tr><td>@_units.HeavyCavalry</td></tr>
+                <tr id="tooltip-heavy-cavalry-name"><td>Heavy cavalry</td></tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public int CityIndex { get; set; } = 0;
+
+    private UnitsOfTheCity _units = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewServices viewServices = new ViewServices(http);
+        var httpResponse = await viewServices.GetUnitsOfCity(CityIndex);
+        _units = await httpResponse.Content.ReadFromJsonAsync<UnitsOfTheCity>();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("HoverBehaviour");
+    }
+}

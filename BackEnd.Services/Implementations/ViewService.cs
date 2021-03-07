@@ -48,31 +48,13 @@ namespace BackEnd.Services.Implementations
             return _mapper.Map<BuildingUpgradeCost>(result);
         }
 
-        public async Task<CollectionResponse<string>> GetCityNamesOfUser(int pageNumber = 1, int pageSize = 10)
+        public async Task<IEnumerable<string>> GetCityNamesOfUser()
         {
-            //Validation
-            pageNumber.ValidatePageNumber();
-            pageSize.ValideatePageSize();
+
 
             var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
 
-            var cityNameList = user.Cities.Select(city => city.CityName);
-            int cityNameListCount = cityNameList.Count();
-
-            var cityNameListForPage = cityNameList
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
-
-            return new CollectionResponse<string>
-            {
-                Records = cityNameListForPage,
-                PagingInformations = new PagingInformations
-                {
-                    PageNumber = pageNumber,
-                    PageSize = pageSize,
-                    PagesCount = CalculatePageCount(cityNameListCount, pageSize)
-                }
-            };
+            return user.Cities.Select(city => city.CityName);
         }
 
 
@@ -149,7 +131,7 @@ namespace BackEnd.Services.Implementations
             return producibleUnits.ToList().Select(unit => _mapper.Map<Unit>(unit));
         }
 
-        public async Task<CityResources> GetResourcesOfCity(int cityIndex) 
+        public async Task<CityResources> GetResourcesOfCity(int cityIndex)
         {
             var city = await GetCityData(cityIndex);
 
@@ -159,7 +141,7 @@ namespace BackEnd.Services.Implementations
             int silverAmount = city.Resources.Silver;
             int woodAmount = city.Resources.Wood;
 
-            if (hourDifference > 0) 
+            if (hourDifference > 0)
             {
                 //introducing local variables since we need to use ref
                 stoneAmount = city.Resources.Stone + city.StoneProduction.ProductionAmount * hourDifference;
@@ -167,7 +149,7 @@ namespace BackEnd.Services.Implementations
                 woodAmount = city.Resources.Wood + city.WoodProduction.ProductionAmount * hourDifference;
                 city.LastResourceQueryTime = DateTime.UtcNow;
 
-                CheckWarehouseCapacity(ref stoneAmount,ref silverAmount,ref woodAmount, city.Warehouse);
+                CheckWarehouseCapacity(ref stoneAmount, ref silverAmount, ref woodAmount, city.Warehouse);
 
                 //updating the resources if the city with the storable amount
                 city.Resources.Stone = stoneAmount;
@@ -183,11 +165,13 @@ namespace BackEnd.Services.Implementations
                 SilverAmount = silverAmount,
                 SilverProductionPerHour = city.SilverProduction.ProductionAmount,
                 WoodAmount = woodAmount,
-                WoodProductionPerHour = city.WoodProduction.ProductionAmount
+                WoodProductionPerHour = city.WoodProduction.ProductionAmount,
+                TotalPopulation = city.Farm.MaxPopulation,
+                FreePopulation = city.Resources.Population
             };
         }
 
-        private void CheckWarehouseCapacity(ref int stoneAmount, ref int silverAmount, ref int woodAmount, Models.Models.Warehouse warehouse) 
+        private void CheckWarehouseCapacity(ref int stoneAmount, ref int silverAmount, ref int woodAmount, Models.Models.Warehouse warehouse)
         {
             if (stoneAmount > warehouse.MaxStoneStorageCapacity)
                 stoneAmount = warehouse.MaxStoneStorageCapacity;
@@ -197,6 +181,60 @@ namespace BackEnd.Services.Implementations
 
             if (woodAmount > warehouse.MaxWoodStorageCapacity)
                 woodAmount = warehouse.MaxWoodStorageCapacity;
+        }
+
+        public async Task<WarehouseCapacity> GetWarehouseCapacity(int cityIndex)
+        {
+            var warehouse = await _unitOfWork.Cities.FindWarehouseOfCity(cityIndex, _identityContext.UserId);
+
+            return new WarehouseCapacity
+            {
+                StoneLimit = warehouse.MaxStoneStorageCapacity,
+                SilverLimit = warehouse.MaxSilverStorageCapacity,
+                WoodLimit = warehouse.MaxWoodStorageCapacity
+            };
+        }
+
+        public async Task<UnitsOfTheCity> GetUnitsOfCity(int cityIndex)
+        {
+            var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
+
+            var city = user.Cities.ElementAt(cityIndex);
+
+            var units = await _unitOfWork.Units.GetUnitsInCityByBarrackId(city.BarrackId);
+
+            var result = new UnitsOfTheCity();
+
+            foreach (var item in units)
+            {
+                switch (item.Unit.Name)
+                {
+                    case "Swordsman":
+                        result.Swordsmans += item.Amount;
+                        break;
+                    case "Heavy Cavalry":
+                        result.HeavyCavalry += item.Amount;
+                        break;
+                    case "Mounted Archer":
+                        result.MountedArcher += item.Amount;
+                        break;
+                    case "Light Cavalry":
+                        result.LightCavalry += item.Amount;
+                        break;
+                    case "Spearman":
+                        result.Spearmans += item.Amount;
+                        break;
+                    case "Archer":
+                        result.Archers += item.Amount;
+                        break;
+                    case "Axe Fighter":
+                        result.AxeFighers += item.Amount;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return result;
         }
     }
 }

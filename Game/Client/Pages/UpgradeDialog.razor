@@ -1,0 +1,62 @@
+﻿@inject HttpClient http
+
+<MudDialog>
+    <DialogContent>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <thead>
+                <tr>
+                    <td><MudIcon Icon="fas fa-tree" /></td>
+                    <td><MudIcon Icon="fas fa-gem" /></td>
+                    <td><MudIcon Icon="fas fa-coins" /></td>
+                    <td><MudIcon Icon="fas fa-user" /></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@UpgradeCost.Wood</td>
+                    <td>@UpgradeCost.Stone</td>
+                    <td>@UpgradeCost.Silver</td>
+                    <td>@UpgradeCost.Population</td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Resources UpgradeCost { get; set; }
+
+    [Parameter]
+    public int CurrentStage { get; set; }
+
+    [Parameter]
+    public string BuildingName { get; set; }
+
+    [Parameter]
+    public int CityIndex { get; set; }
+
+    async Task Submit()
+    {
+        GameServices gameServices = new GameServices(http);
+        var httpResponse = await gameServices.UpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
+
+
+
+        if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var content = await httpResponse.Content.ReadFromJsonAsync<SuccessfulBuildingStageModification>();
+            MudDialog.Close(DialogResult.Ok(content));
+        }
+        else 
+        {
+            MudDialog.Close(DialogResult.Cancel());
+        }
+    }
+    void Cancel() => MudDialog.Cancel();
+}

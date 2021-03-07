@@ -14,5 +14,7 @@ namespace Game.Shared.Models
         public int SilverProductionPerHour { get; init; }
         public int WoodAmount { get; init; }
         public int WoodProductionPerHour { get; init; }
+        public int TotalPopulation { get; init; }
+        public int FreePopulation { get; init; }
     }
 }

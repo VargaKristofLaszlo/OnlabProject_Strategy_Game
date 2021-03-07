@@ -1,0 +1,104 @@
+﻿@inject HttpClient http
+@inject IJSRuntime JSRuntime
+@inject Helpers.PopulationState PopulationState
+@implements IDisposable
+@if (_cityResources == null)
+{
+
+}
+else
+{
+    <div class="d-inline-flex ml-auto mr-5 pr-4 mt-4">
+        <table>
+            <tbody class="tooltip-wood">
+                <tr>
+                    <td><i class="fas fa-tree"></i></td>
+                    <td>@_cityResources.WoodAmount</td>
+                </tr>
+                <tr id="wood-production">
+                    <td>Wood</td>
+                    <td>@_cityResources.WoodProductionPerHour per hour</td>
+                </tr>
+                <tr id="wood-capacity">
+                    <td>Warehouse size</td>
+                    <td>@_warehouseCapacity.WoodLimit</td>
+                </tr>
+            </tbody>
+            <tbody class="tooltip-stone ml-1">
+                <tr>
+                    <td><i class="fas fa-gem"></i></td>
+                    <td>@_cityResources.StoneAmount</td>
+                </tr>
+                <tr id="stone-production">
+                    <td>Stone</td>
+                    <td>@_cityResources.StoneProductionPerHour per hour</td>
+                </tr>
+                <tr id="stone-capacity">
+                    <td>Warehouse size</td>
+                    <td>@_warehouseCapacity.StoneLimit</td>
+                </tr>
+            </tbody>
+            <tbody class="tooltip-silver ml-1">
+                <tr>
+                    <td><i class="fas fa-coins"></i></td>
+                    <td>@_cityResources.SilverAmount</td>
+                </tr>
+                <tr id="silver-production">
+                    <td>Silver</td>
+                    <td>@_cityResources.SilverProductionPerHour per hour</td>
+                </tr>
+                <tr id="silver-capacity">
+                    <td>Warehouse size</td>
+                    <td>@_warehouseCapacity.SilverLimit</td>
+                </tr>
+            </tbody>
+            <tbody class="tooltip-population ml-1">
+                <tr>
+                    <td><i class="fas fa-user"></i></td>
+                    <td>@PopulationState.Population</td>
+                </tr>
+                <tr id="max-population">
+                    <td>Total provisions provided</td>
+                    <td>@_cityResources.TotalPopulation</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int CityIndex { get; set; } = 0;
+
+    private CityResources _cityResources = null;
+    private WarehouseCapacity _warehouseCapacity = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewServices viewServices = new ViewServices(http);
+        var httpResponse = await viewServices.GetResourcesOfTheCity(CityIndex);
+        _cityResources = await httpResponse.Content.ReadFromJsonAsync<CityResources>();
+
+        httpResponse = await viewServices.GetWarehouseCapacity(CityIndex);
+        _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+
+        PopulationState.SetPopulation(_cityResources.FreePopulation);
+
+    }
+
+    protected override void OnInitialized()
+    {
+        PopulationState.OnChange += StateHasChanged; ;
+    }
+
+    public void Dispose()
+    {
+        PopulationState.OnChange -= StateHasChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("HoverBehaviour");
+    }
+}

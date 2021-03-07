@@ -67,9 +67,9 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The user could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<string>))]
-        public async Task<IActionResult> GetCityNamesOfUser([FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        public async Task<IActionResult> GetCityNamesOfUser() 
         {
-            var result = await _viewService.GetCityNamesOfUser(pageNumber, pageSize);
+            var result = await _viewService.GetCityNamesOfUser();
 
             return Ok(result);
         }
@@ -140,6 +140,20 @@ namespace Game.Server.Controllers
         {
             var result = await _viewService.GetResourcesOfCity(cityIndex);
 
+            return Ok(result);
+        }
+
+        [HttpGet("Warehouse/Capacity")]
+        public async Task<IActionResult> GetWarehouseCapacity([FromQuery]int cityIndex) 
+        {
+            var result = await _viewService.GetWarehouseCapacity(cityIndex);
+            return Ok(result);
+        }
+
+        [HttpGet("UnitsOfCity")]
+        public async Task<IActionResult> GetUnitsOfCity([FromQuery] int cityIndex) 
+        {
+            var result = await _viewService.GetUnitsOfCity(cityIndex);
             return Ok(result);
         }
     }

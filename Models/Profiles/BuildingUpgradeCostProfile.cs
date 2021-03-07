@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Game.Shared.Models;
+using Game.Shared.Models.Request;
 using System;
 
 namespace Models.Profiles
@@ -7,14 +9,14 @@ namespace Models.Profiles
     {
         public BuildingUpgradeCostProfile()
         {
-            CreateMap<BackEnd.Models.Models.BuildingUpgradeCost, Shared.Models.BuildingUpgradeCost>()
+            CreateMap<BackEnd.Models.Models.BuildingUpgradeCost, BuildingUpgradeCost>()
                 .ForMember(dto => dto.Population, model => model.MapFrom(cost => cost.UpgradeCost.Population))
                 .ForMember(dto => dto.Silver, model => model.MapFrom(cost => cost.UpgradeCost.Silver))
                 .ForMember(dto => dto.Stone, model => model.MapFrom(cost => cost.UpgradeCost.Stone))
                 .ForMember(dto => dto.Wood, model => model.MapFrom(cost => cost.UpgradeCost.Wood));
 
 
-            CreateMap<Shared.Models.Request.UpgradeCostCreationRequest, BackEnd.Models.Models.BuildingUpgradeCost>()
+            CreateMap<UpgradeCostCreationRequest, BackEnd.Models.Models.BuildingUpgradeCost>()
                 .ForMember(dto => dto.BuildingName, model => model.MapFrom(cost => cost.BuildingName))
                 .ForMember(dto => dto.BuildingStage, model => model.MapFrom(cost => cost.BuildingStage))
                 .ForMember(dto => dto.UpgradeTime, model => model.MapFrom(cost => new TimeSpan(0, 0, cost.UpgradeTimeInSeconds)))

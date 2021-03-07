@@ -7,26 +7,38 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
     public class BarrackBehaviour : BuildingBehaviour
     {
 
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Barrack.Stage - 1)
+            if (upgradeCost.BuildingStage != city.Barrack.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.Barrack.UpgradeCost = upgradeCost;
-
-            return city.Barrack.Stage -= 1;
+            city.Barrack.Stage -= 1;
+            city.Barrack.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
 
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Barrack.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.Barrack.UpgradeCost = upgradeCost;
+                city.Barrack.Stage += 1;
+                city.Barrack.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage - 2 != city.Barrack.Stage)
                 throw new InvalidBuildingStageModificationException();
+            else 
+            {
+                city.Barrack.UpgradeCost = upgradeCost;
+                city.Barrack.Stage += 1;
+                city.Barrack.BuildingCostId = upgradeCost.Id;
+            }
+            
 
-            city.Barrack.UpgradeCost = upgradeCost;
-
-            return city.Barrack.Stage += 1;
+            return city;
         }
     }
 }

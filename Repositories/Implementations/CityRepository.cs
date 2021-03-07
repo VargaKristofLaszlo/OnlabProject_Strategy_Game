@@ -1,6 +1,7 @@
 ﻿using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Repositories.Implementations
@@ -35,6 +36,18 @@ namespace Repositories.Implementations
                 .Include(city => city.Warehouse)
                     .ThenInclude(warehouse => warehouse.UpgradeCost)
                 .FirstOrDefaultAsync(city => city.Id.Equals(id));
+        }
+
+
+
+        public async Task<Warehouse> FindWarehouseOfCity(int cityIndex, string userId)
+        {
+            var cititesOfUser = await _db.Cities
+                .Where(city => city.UserId.Equals(userId))
+                .Include(city => city.Warehouse)
+                .ToListAsync();
+
+            return cititesOfUser.ElementAt(cityIndex).Warehouse;
         }
     }
 }

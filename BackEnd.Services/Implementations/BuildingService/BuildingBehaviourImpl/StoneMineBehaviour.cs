@@ -7,24 +7,37 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class StoneMineBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.StoneProduction.Stage - 1)
+            if (upgradeCost.BuildingStage != city.StoneProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.StoneProduction.ProductionAmount = (int)Math.Ceiling(city.StoneProduction.ProductionAmount / 1.2);
             city.StoneProduction.UpgradeCost = upgradeCost;
-            return city.StoneProduction.Stage -= 1;
+            city.StoneProduction.Stage -= 1;
+            city.StoneProduction.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.StoneProduction.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.StoneProduction.ProductionAmount = (int)Math.Ceiling(city.StoneProduction.ProductionAmount * 1.2);
+                city.StoneProduction.UpgradeCost = upgradeCost;
+                city.StoneProduction.Stage += 1;
+                city.StoneProduction.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.StoneProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
-
-            city.StoneProduction.ProductionAmount = (int)Math.Ceiling(city.StoneProduction.ProductionAmount * 1.2);
-            city.StoneProduction.UpgradeCost = upgradeCost;
-            return city.StoneProduction.Stage += 1;
+            else 
+            {
+                city.StoneProduction.ProductionAmount = (int)Math.Ceiling(city.StoneProduction.ProductionAmount * 1.2);
+                city.StoneProduction.UpgradeCost = upgradeCost;
+                city.StoneProduction.Stage += 1;
+                city.StoneProduction.BuildingCostId = upgradeCost.Id;
+            }
+            return city;
         }
     }
 }

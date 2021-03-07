@@ -4,7 +4,6 @@ using BackEnd.Services.Extensions;
 using BackEnd.Services.Interfaces;
 using Game.Shared.Models.Request;
 using Services.Exceptions;
-using Shared.Models.Request;
 using System.Linq;
 using System.Threading.Tasks;
 

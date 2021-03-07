@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
-
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -7,12 +9,16 @@
 
     <div class="main">
         <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <LoginDisplay />           
         </div>
 
-        <div class="content px-4">
+        <div class="content px-4 pt-0">
             @Body
         </div>
-    </div>
+    </div>    
 </div>
+<div class="footer">
+    <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+
+</div>
+

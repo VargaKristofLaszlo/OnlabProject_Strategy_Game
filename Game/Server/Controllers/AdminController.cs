@@ -3,7 +3,6 @@ using Game.Shared.Models.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Models.Request;
 using Shared.Models.Response;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
@@ -73,7 +72,7 @@ namespace Game.Server.Controllers
             return NoContent();
         }
 
-        
+      
         [HttpPut("Moderate/Cityname")]
         [SwaggerOperation(
             Summary = "Moderates the name of a city",

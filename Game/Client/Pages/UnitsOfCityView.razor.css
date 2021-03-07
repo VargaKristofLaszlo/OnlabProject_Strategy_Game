@@ -1,0 +1,192 @@
+﻿  td {
+    padding: 0 5px;
+}
+
+.tooltip-spearman {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-spearman #tooltip-spearman-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-spearman:hover #tooltip-spearman-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-swordsman {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-swordsman #tooltip-swordsman-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-swordsman:hover #tooltip-swordsman-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-axe-fighter {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-axe-fighter #tooltip-axe-fighter-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-axe-fighter:hover #tooltip-axe-fighter-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-archer {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-archer #tooltip-archer-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-archer:hover #tooltip-archer-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-light-cavalry {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-light-cavalry #tooltip-light-cavalry-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-light-cavalry:hover #tooltip-light-cavalry-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-mounted-archer {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-mounted-archer #tooltip-mounted-archer-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-mounted-archer:hover #tooltip-mounted-archer-name {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-heavy-cavalry {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-heavy-cavalry #tooltip-heavy-cavalry-name {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-heavy-cavalry:hover #tooltip-heavy-cavalry-name {
+        visibility: visible;
+        color: black;
+    }

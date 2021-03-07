@@ -1,0 +1,182 @@
+﻿.tooltip-wood {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-wood #wood-capacity {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-wood #wood-production {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-wood:hover #wood-capacity {
+        visibility: visible;
+        color: black;
+    }
+
+    .tooltip-wood:hover #wood-production {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-stone {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-stone #stone-capacity {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-stone #stone-production {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-stone:hover #stone-capacity {
+        visibility: visible;
+        color: black;
+    }
+
+    .tooltip-stone:hover #stone-production {
+        visibility: visible;
+        color: black;
+    }
+
+.tooltip-silver {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-silver #silver-capacity {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-silver #silver-production {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+    .tooltip-silver:hover #silver-capacity {
+        visibility: visible;
+        color: black;
+    }
+
+    .tooltip-silver:hover #silver-production {
+        visibility: visible;
+        color: black;
+    }
+
+
+
+
+
+
+.tooltip-population {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip-population #max-population {
+        visibility: hidden;
+        width: 200px;
+        background: #ffcc99;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: fixed;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        margin-left: -60px;
+        width: auto;
+    }
+
+
+
+    .tooltip-population:hover #max-population {
+        visibility: visible;
+        color: black;
+    }
+
+   

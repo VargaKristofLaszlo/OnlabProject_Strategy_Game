@@ -1,4 +1,4 @@
-﻿namespace Shared.Models.Request
+﻿namespace Game.Shared.Models.Request
 {
     public class UserBanRequest
     {
@@ -8,6 +8,6 @@
 
         public string Message { get; set; }
 
-       
+
     }
 }

@@ -7,29 +7,45 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class WarehouseBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Warehouse.Stage - 1)
+            if (upgradeCost.BuildingStage != city.Warehouse.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.Warehouse.MaxSilverStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxSilverStorageCapacity / 1.5);
             city.Warehouse.MaxStoneStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxStoneStorageCapacity / 1.5);
             city.Warehouse.MaxWoodStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxWoodStorageCapacity / 1.5);
             city.Warehouse.UpgradeCost = upgradeCost;
-            return city.Warehouse.Stage -= 1;
+            city.Warehouse.Stage -= 1;
+            city.Warehouse.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.Warehouse.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.Warehouse.MaxSilverStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxSilverStorageCapacity * 1.5);
+                city.Warehouse.MaxStoneStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxStoneStorageCapacity * 1.5);
+                city.Warehouse.MaxWoodStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxWoodStorageCapacity * 1.5);
+                city.Warehouse.UpgradeCost = upgradeCost;
+                city.Warehouse.Stage += 1;
+                city.Warehouse.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.Warehouse.Stage)
                 throw new InvalidBuildingStageModificationException();
+            else 
+            {
+                city.Warehouse.MaxSilverStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxSilverStorageCapacity * 1.5);
+                city.Warehouse.MaxStoneStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxStoneStorageCapacity * 1.5);
+                city.Warehouse.MaxWoodStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxWoodStorageCapacity * 1.5);
+                city.Warehouse.UpgradeCost = upgradeCost;
+                city.Warehouse.Stage += 1;
+                city.Warehouse.BuildingCostId = upgradeCost.Id;
+            }
 
-            city.Warehouse.MaxSilverStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxSilverStorageCapacity * 1.5);
-            city.Warehouse.MaxStoneStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxStoneStorageCapacity * 1.5);
-            city.Warehouse.MaxWoodStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxWoodStorageCapacity * 1.5);
-            city.Warehouse.UpgradeCost = upgradeCost;
-            return city.Warehouse.Stage += 1;
+            return city;
         }
     }
 }

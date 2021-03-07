@@ -7,24 +7,38 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class LumberBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.WoodProduction.Stage - 1)
+            if (upgradeCost.BuildingStage != city.WoodProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.WoodProduction.ProductionAmount = (int)Math.Ceiling(city.WoodProduction.ProductionAmount / 1.2);
             city.WoodProduction.UpgradeCost = upgradeCost;
-            return city.WoodProduction.Stage -= 1;
+            city.WoodProduction.Stage -= 1;
+            city.WoodProduction.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.WoodProduction.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.WoodProduction.ProductionAmount = (int)Math.Ceiling(city.WoodProduction.ProductionAmount * 1.2);
+                city.WoodProduction.UpgradeCost = upgradeCost;
+                city.WoodProduction.Stage += 1;
+                city.WoodProduction.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.WoodProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
-
-            city.WoodProduction.ProductionAmount = (int)Math.Ceiling(city.WoodProduction.ProductionAmount * 1.2);
-            city.WoodProduction.UpgradeCost = upgradeCost;
-            return city.WoodProduction.Stage += 1;
+            else 
+            {
+                city.WoodProduction.ProductionAmount = (int)Math.Ceiling(city.WoodProduction.ProductionAmount * 1.2);
+                city.WoodProduction.UpgradeCost = upgradeCost;
+                city.WoodProduction.Stage += 1;
+                city.WoodProduction.BuildingCostId = upgradeCost.Id;
+            }
+            
+            return city;
         }
     }
 }

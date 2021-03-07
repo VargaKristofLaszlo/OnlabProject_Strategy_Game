@@ -1,5 +1,4 @@
 ﻿using Game.Shared.Models.Request;
-using Shared.Models.Request;
 using System.Threading.Tasks;
 
 namespace BackEnd.Services.Interfaces

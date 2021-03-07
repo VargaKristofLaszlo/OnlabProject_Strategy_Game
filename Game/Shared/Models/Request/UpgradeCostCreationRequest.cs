@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Shared.Models.Request
+namespace Game.Shared.Models.Request
 {
     public class UpgradeCostCreationRequest
     {
@@ -13,7 +13,7 @@ namespace Shared.Models.Request
         public int BuildingStage { get; set; }
 
         [Required]
-        public Resources UpgradeCost { get; set; } 
+        public Resources UpgradeCost { get; set; }
 
         [Required]
         public int UpgradeTimeInSeconds { get; set; }

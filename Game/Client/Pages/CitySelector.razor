@@ -1,0 +1,40 @@
+﻿@inject HttpClient http
+@using System.Collections.Generic
+
+@if (_cityNames == null)
+{
+    <p>Loading..</p>
+}
+else
+{
+    <span class="mt-4"> @_cityNames.ElementAt(CityIndex)</span>
+
+    <MudMenu Icon="@Icons.Material.Filled.List" Color="Color.Primary" Direction="Direction.Right" OffsetX="true">
+        @foreach (var cityName in _cityNames)
+        {
+            <MudMenuItem OnClick="() => HandlerCityNameOnClick(_cityNames.IndexOf(cityName))">@cityName</MudMenuItem>
+        }
+    </MudMenu>
+}
+
+
+@code {
+    [Parameter]
+    public int CityIndex { get; set; } = 0;
+
+    private List<string> _cityNames;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewServices viewServices = new ViewServices(http);
+        var httpResponse = await viewServices.GetCityNamesOfUser();
+        var names = await httpResponse.Content.ReadFromJsonAsync<IEnumerable<string>>();
+        _cityNames = names.ToList();
+    }
+
+    private void HandlerCityNameOnClick(int i)
+    {
+        Console.WriteLine(i);
+
+    }
+}

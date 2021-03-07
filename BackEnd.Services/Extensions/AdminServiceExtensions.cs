@@ -1,5 +1,5 @@
 ﻿using BackEnd.Models.Models;
-using Shared.Models.Request;
+using Game.Shared.Models.Request;
 using System;
 
 namespace BackEnd.Services.Extensions

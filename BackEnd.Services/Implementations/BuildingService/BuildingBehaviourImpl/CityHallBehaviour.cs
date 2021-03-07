@@ -6,24 +6,37 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class CityHallBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.CityHall.Stage - 1)
+            if (upgradeCost.BuildingStage != city.CityHall.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.CityHall.UpgradeTimeReductionPercent -= 5;
             city.CityHall.UpgradeCost = upgradeCost;
-            return city.CityHall.Stage -= 1;
+            city.CityHall.Stage -= 1;
+            city.CityHall.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.CityHall.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.CityHall.UpgradeTimeReductionPercent += 5;
+                city.CityHall.UpgradeCost = upgradeCost;
+                city.CityHall.Stage += 1;
+                city.CityHall.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.CityHall.Stage)
                 throw new InvalidBuildingStageModificationException();
-
-            city.CityHall.UpgradeTimeReductionPercent += 5;
-            city.CityHall.UpgradeCost = upgradeCost;
-            return city.CityHall.Stage += 1;
+            else 
+            {
+                city.CityHall.UpgradeTimeReductionPercent += 5;
+                city.CityHall.UpgradeCost = upgradeCost;
+                city.CityHall.Stage += 1;
+                city.CityHall.BuildingCostId = upgradeCost.Id;
+            }            
+            return city;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Shared.Models
+﻿namespace Game.Shared.Models
 {
     public record BuildingUpgradeCost
     {

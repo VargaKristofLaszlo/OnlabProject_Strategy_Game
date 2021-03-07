@@ -13,22 +13,30 @@ namespace Game.Server
 {
     public class MyUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, IdentityRole>
     {
-       
+        private readonly IUnitOfWork _unitOfWork;
+
         public MyUserClaimsPrincipalFactory(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<IdentityOptions> optionsAccessor)
+            IOptions<IdentityOptions> optionsAccessor,
+            IUnitOfWork unitOfWork)
             : base(userManager, roleManager, optionsAccessor)
         {
+            _unitOfWork = unitOfWork;
         }
 
+
+       
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
         {
             var identity = await base.GenerateClaimsAsync(user);
+           
+            var userRole = await _unitOfWork.Users.FindUserRoleAsync(user);
+
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
             identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
             identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            identity.AddClaim(new Claim(ClaimTypes.Role, UserManager.GetRolesAsync(user).Result.First()));
+            identity.AddClaim(new Claim(ClaimTypes.Role, userRole));           
             return identity;
         }
     }
@@ -48,9 +56,9 @@ namespace Game.Server
             var existingClaimsIdentity = (ClaimsIdentity)principal.Identity;
 
             var userId = existingClaimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await  _unitOfWork.Users.FindUserByIdOrNullAsync(userId);
+            var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(userId);
             var userRole = await _unitOfWork.Users.FindUserRoleAsync(user);
-            if (user != null) 
+            if (user != null)
             {
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));

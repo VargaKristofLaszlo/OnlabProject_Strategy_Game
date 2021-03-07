@@ -134,24 +134,24 @@ namespace Game.Server.Extensions
                 options.SignIn.RequireConfirmedAccount = true;
             }).AddRoles<IdentityRole>()
               .AddDefaultTokenProviders()
-              .AddTokenProvider<DeletionTokenProvider<ApplicationUser>>("AccountDeletion")
-              .AddEntityFrameworkStores<ApplicationDbContext>();
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>();
+            
 
-
-
-            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, MyUserClaimsPrincipalFactory>();
             services.AddScoped<IClaimsTransformation, MyUserClaimsTransformer>();
-              
 
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => 
+                {
+                    options.IdentityResources["openid"].UserClaims.Add("role"); // Roles  
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.NameIdentifier);                 
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Name);                 
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Email);  
+                });
 
             services.AddAuthentication()
                .AddIdentityServerJwt();
-              
-               
-             
 
             return services;
         }

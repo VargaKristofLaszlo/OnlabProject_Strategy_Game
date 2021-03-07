@@ -31,14 +31,14 @@ namespace Game.Server.Controllers
             "and find the building which needs to upgraded using it's name." +
             "<b>Using this end-point requires the user to log in<b>"            
         )]
-        [SwaggerResponse(204, "The upgrade was successful")]        
+        [SwaggerResponse(200, "The upgrade was successful")]        
         [SwaggerResponse(400, "The upgrade failed")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(404, "The building was not found")]
         public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage) 
         {
-            await _buildingService.UpgradeBuilding(cityIndex, buildingName, newStage);
-            return NoContent();
+            var res = await _buildingService.UpgradeBuilding(cityIndex, buildingName, newStage);
+            return Ok(res);
         }
 
         [HttpPatch("{buildingName}/Downgrade")]
@@ -48,14 +48,14 @@ namespace Game.Server.Controllers
             "and find the building which needs to downgraded using it's name." +
             "<b>Using this end-point requires the user to log in<b>"
         )]
-        [SwaggerResponse(204, "The downgrade was successful")]
+        [SwaggerResponse(200, "The downgrade was successful")]
         [SwaggerResponse(400, "The downgrade failed")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(404, "The building was not found")]        
         public async Task<IActionResult> DowngradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
-            await _buildingService.DowngradeBuilding(cityIndex, buildingName, newStage);
-            return NoContent();
+            var res = await _buildingService.DowngradeBuilding(cityIndex, buildingName, newStage);
+            return Ok(res);
         }
 
         [HttpPost("ProduceUnit")]

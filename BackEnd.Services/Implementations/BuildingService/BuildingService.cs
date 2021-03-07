@@ -1,11 +1,13 @@
 ﻿using BackEnd.Infrastructure;
 using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
+using Game.Shared.Models;
 using Services.Exceptions;
 using Services.Implementations.BuildingService.BuildingBehaviourImpl;
 using Services.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
+using Resources = BackEnd.Models.Models.Resources;
 
 namespace Services.Implementations.BuildingService
 {
@@ -22,7 +24,7 @@ namespace Services.Implementations.BuildingService
         }
 
 
-        public async Task UpgradeBuilding(int cityIndex, string buildingName, int newStage)
+        public async Task<SuccessfulBuildingStageModification> UpgradeBuilding(int cityIndex, string buildingName, int newStage)
         {
             var buildingBehaviour = CreateConcreteBuildingBehaviour(buildingName);
 
@@ -36,15 +38,37 @@ namespace Services.Implementations.BuildingService
 
             //Get the upgrade cost for the building
             var upgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(buildingName, newStage);
+            var newUpgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(buildingName, newStage + 1);
 
             //Check if the city has enough resources to upgrade the building
             if (HasEnoughResources(city, upgradeCost) == false)
                 throw new BadRequestException("The city does not have enough resources");
 
             //Upgrade the building
-            buildingBehaviour.Upgrade(city, upgradeCost);
+            city = buildingBehaviour.Upgrade(city, newUpgradeCost);
             PayTheCost(city, upgradeCost.UpgradeCost);
             await _unitOfWork.CommitChangesAsync();
+
+            if (newUpgradeCost == null) 
+            {
+                return new SuccessfulBuildingStageModification()
+                {
+                    NewStage = newStage,
+                    NewUpgradeCost = null
+                };
+            }
+
+            return new SuccessfulBuildingStageModification()
+            {
+                NewStage = newStage,
+                NewUpgradeCost = new Game.Shared.Models.Resources 
+                {
+                    Wood = newUpgradeCost.UpgradeCost.Wood,
+                    Silver = newUpgradeCost.UpgradeCost.Silver,
+                    Stone = newUpgradeCost.UpgradeCost.Stone,
+                    Population = newUpgradeCost.UpgradeCost.Population
+                }
+            };
         }
 
         private async Task<bool> IsUpgradeable(string buildingName, int newStage)
@@ -53,7 +77,7 @@ namespace Services.Implementations.BuildingService
             return newStage <= maxStage;
         }
 
-        private bool HasEnoughResources(City city, BuildingUpgradeCost upgradeCost)
+        private bool HasEnoughResources(City city, BackEnd.Models.Models.BuildingUpgradeCost upgradeCost)
         {
             return
                 city.Resources.Population >= upgradeCost.UpgradeCost.Population &&
@@ -63,9 +87,9 @@ namespace Services.Implementations.BuildingService
         }
 
 
-        public async Task DowngradeBuilding(int cityIndex, string buildingName, int newStage)
+        public async Task<SuccessfulBuildingStageModification> DowngradeBuilding(int cityIndex, string buildingName, int newStage)
         {
-            if (newStage < 2)
+            if (newStage < 0)
                 throw new BadRequestException("The building can not be downgraded any further");
 
             var buildingBehaviour = CreateConcreteBuildingBehaviour(buildingName);
@@ -74,12 +98,26 @@ namespace Services.Implementations.BuildingService
             var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
             var city = await _unitOfWork.Cities.FindCityById(user.Cities.ElementAt(cityIndex).Id);
 
-            //Get the upgrade cost for the building
-            var upgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(buildingName, newStage);
+            //Get the upgrade cost for the building           
+            var upgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(buildingName, newStage + 1);
+
+            city.Resources.Population += upgradeCost.UpgradeCost.Population;
+            
 
             //Downgrade the building
-            buildingBehaviour.Downgrade(city, upgradeCost);
+            city = buildingBehaviour.Downgrade(city, upgradeCost);
             await _unitOfWork.CommitChangesAsync();
+            return new SuccessfulBuildingStageModification()
+            {
+                NewStage = newStage,
+                NewUpgradeCost = new Game.Shared.Models.Resources
+                {
+                    Wood = upgradeCost.UpgradeCost.Wood,
+                    Silver = upgradeCost.UpgradeCost.Silver,
+                    Stone = upgradeCost.UpgradeCost.Stone,
+                    Population = upgradeCost.UpgradeCost.Population
+                }
+            };
         }
 
         private BuildingBehaviour CreateConcreteBuildingBehaviour(string buildingName)

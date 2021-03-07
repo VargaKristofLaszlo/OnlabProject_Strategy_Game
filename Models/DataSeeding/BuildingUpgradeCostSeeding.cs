@@ -25,6 +25,7 @@ namespace Models.DataSeeding
             await CreateBuildingUpgradeCost("SilverMine");
             await CreateBuildingUpgradeCost("StoneMine");
             await CreateBuildingUpgradeCost("Lumber");
+            await CreateExtraStage("Barrack", 2);
         }
 
         private async Task CreateBuildingUpgradeCost(string buildingName) 
@@ -63,11 +64,14 @@ namespace Models.DataSeeding
         private async Task CreateExtraStage(string buildingName, int stage) 
         {
             //Avoid adding duplicates
-            var cost = await _db.MaxBuildingStages
+            var maxBuildingStage = await _db.MaxBuildingStages
               .Where(max => max.BuildingName.Equals(buildingName))
               .FirstOrDefaultAsync();
 
-            if (cost != null)
+            if (maxBuildingStage == null)
+                return;
+
+            if (maxBuildingStage.MaxStage + 1 != stage)
                 return;
 
             await _db.BuildingUpgradeCosts.AddAsync(new BuildingUpgradeCost
@@ -81,14 +85,10 @@ namespace Models.DataSeeding
                 },
                 UpgradeTime = new TimeSpan(0, 0, 15),
                 BuildingName = buildingName,
-                BuildingStage = 1
+                BuildingStage = stage
             });
 
-            await _db.MaxBuildingStages.AddAsync(new MaxBuildingStage
-            {
-                BuildingName = buildingName,
-                MaxStage = 1
-            });
+            maxBuildingStage.MaxStage = stage;
 
             await _db.SaveChangesAsync();
         }

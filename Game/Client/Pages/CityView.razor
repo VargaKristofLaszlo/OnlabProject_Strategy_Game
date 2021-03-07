@@ -1,0 +1,320 @@
+﻿@inject HttpClient http
+@inject IDialogService DialogService
+@inject Helpers.PopulationState PopulationState
+
+@if (_cityDetails != null)
+{
+
+    <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+            <tr>
+                @foreach (var h in headings)
+                {
+                    <th>@h</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Barrack</td>
+                <td>@_cityDetails.BarrackStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.BarrackUpgradeCost,
+                                                             _cityDetails.BarrackStage,
+                                                             _barrack,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                               _cityDetails.BarrackStage,
+                                                             _barrack,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>City hall</td>
+                <td>@_cityDetails.CityHallStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.CityHallUpgradeCost,
+                                                             _cityDetails.CityHallStage,
+                                                             _cityHall,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.CityHallStage,
+                                                             _cityHall,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>City wall</td>
+                <td>@_cityDetails.CityWallStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.CityWallUpgradeCost,
+                                                             _cityDetails.CityWallStage,
+                                                             _cityWall,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.CityWallStage,
+                                                             _cityWall,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Farm</td>
+                <td>@_cityDetails.FarmStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.FarmUpgradeCost,
+                                                             _cityDetails.FarmStage,
+                                                             _farm,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.FarmStage,
+                                                             _farm,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Lumber</td>
+                <td>@_cityDetails.LumberStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.LumberUpgradeCost,
+                                                             _cityDetails.LumberStage,
+                                                             _lumber,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.LumberStage,
+                                                             _lumber,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Silver mine</td>
+                <td>@_cityDetails.SilverMineStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.SilverMineUpgradeCost,
+                                                             _cityDetails.SilverMineStage,
+                                                             _silverMine,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.SilverMineStage,
+                                                             _silverMine,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Stone mine</td>
+                <td>@_cityDetails.StoneMineStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.StoneMineUpgradeCost,
+                                                             _cityDetails.StoneMineStage,
+                                                             _stoneMine,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.StoneMineStage,
+                                                             _stoneMine,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+            <tr>
+                <td>Warehouse</td>
+                <td>@_cityDetails.WarehouseStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                             _cityDetails.WarehouseUpgradeCost,
+                                                             _cityDetails.WarehouseStage,
+                                                             _wareHouse,
+                                                             CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                             _cityDetails.WarehouseStage,
+                                                             _wareHouse,
+                                                             CityIndex)"></i>
+                </td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+}
+
+
+@code {
+    [Parameter]
+    public int CityIndex { get; set; }
+    private CityDetails _cityDetails;
+    private const string _barrack = "Barrack";
+    private const string _cityHall = "CityHall";
+    private const string _cityWall = "CityWall";
+    private const string _farm = "Farm";
+    private const string _lumber = "Lumber";
+    private const string _silverMine = "SilverMine";
+    private const string _stoneMine = "StoneMine";
+    private const string _wareHouse = "Warehouse";
+
+    string[] headings = { "Name", "Stage", "Upgrade", "Downgrade" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewServices viewServices = new ViewServices(http);
+        var httpResponse = await viewServices.GetCityDetails(CityIndex);
+        _cityDetails = await httpResponse.Content.ReadFromJsonAsync<CityDetails>();
+        ;
+    }
+
+
+
+
+    private async Task OpenUpgradeDialog(Resources upgradeCost, int currentStage, string buildingName, int cityIndex)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("UpgradeCost", upgradeCost);
+        parameters.Add("CurrentStage", currentStage);
+        parameters.Add("BuildingName", buildingName);
+        parameters.Add("CityIndex", cityIndex);
+
+
+        var res = DialogService.Show<UpgradeDialog>($"Upgrade the {buildingName}", parameters: parameters);
+
+        var dialogResult = await res.Result;
+
+        if (dialogResult.Cancelled == false)
+        {
+            var dialogData = dialogResult.Data as SuccessfulBuildingStageModification;
+
+            switch (buildingName)
+            {
+                case _barrack:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.BarrackUpgradeCost.Population);
+                    _cityDetails.BarrackUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.BarrackStage = dialogData.NewStage;
+                    break;
+                case _cityHall:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.CityHallUpgradeCost.Population);
+                    _cityDetails.CityHallUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.CityHallStage = dialogData.NewStage;
+                    break;
+                case _cityWall:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.CityWallUpgradeCost.Population);
+                    _cityDetails.CityWallUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.CityWallStage = dialogData.NewStage;
+                    break;
+                case _farm:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.FarmUpgradeCost.Population);
+                    _cityDetails.FarmUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.FarmStage = dialogData.NewStage;
+                    break;
+                case _lumber:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.LumberUpgradeCost.Population);
+                    _cityDetails.LumberUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.LumberStage = dialogData.NewStage;
+                    break;
+                case _silverMine:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.SilverMineUpgradeCost.Population);
+                    _cityDetails.SilverMineUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.SilverMineStage = dialogData.NewStage;
+                    break;
+                case _stoneMine:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.StoneMineUpgradeCost.Population);
+                    _cityDetails.StoneMineUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.StoneMineStage = dialogData.NewStage;
+                    break;
+                case _wareHouse:
+                    PopulationState.SetPopulation(PopulationState.Population - _cityDetails.WarehouseUpgradeCost.Population);
+                    _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
+                    _cityDetails.WarehouseStage = dialogData.NewStage;
+                    break;
+                default:
+                    break;
+            }
+
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task OpenDowngradeDialog(int currentStage, string buildingName, int cityIndex)
+    {
+        if (currentStage > 0)
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("CurrentStage", currentStage);
+            parameters.Add("BuildingName", buildingName);
+            parameters.Add("CityIndex", cityIndex);
+
+            var res = DialogService.Show<DowngradeDialog>($"Downgrade the {buildingName}", parameters: parameters);
+
+            var dialogResult = await res.Result;
+
+            if (dialogResult.Cancelled == false)
+            {
+                var dialogData = dialogResult.Data as SuccessfulBuildingStageModification;
+
+                switch (buildingName)
+                {
+                    case _barrack:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.BarrackUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.BarrackStage = dialogData.NewStage;
+                        break;
+                    case _cityHall:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.CityHallUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.CityHallStage = dialogData.NewStage;
+                        break;
+                    case _cityWall:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.CityWallUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.CityWallStage = dialogData.NewStage;
+                        break;
+                    case _farm:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.FarmUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.FarmStage = dialogData.NewStage;
+                        break;
+                    case _lumber:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.LumberUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.LumberStage = dialogData.NewStage;
+                        break;
+                    case _silverMine:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.SilverMineUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.SilverMineStage = dialogData.NewStage;
+                        break;
+                    case _stoneMine:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.StoneMineUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.StoneMineStage = dialogData.NewStage;
+                        break;
+                    case _wareHouse:
+                        PopulationState.SetPopulation(PopulationState.Population + dialogData.NewUpgradeCost.Population);
+                        _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
+                        _cityDetails.WarehouseStage = dialogData.NewStage;
+                        break;                  
+
+                    default:
+                        break;
+                }
+                StateHasChanged();
+            }
+        }
+    }
+}

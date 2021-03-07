@@ -7,24 +7,37 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 {
     public class SilverMineBehaviour : BuildingBehaviour
     {
-        public override int Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.SilverProduction.Stage - 1)
+            if (upgradeCost.BuildingStage != city.SilverProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
 
             city.SilverProduction.ProductionAmount = (int)Math.Ceiling(city.SilverProduction.ProductionAmount / 1.2);
             city.SilverProduction.UpgradeCost = upgradeCost;
-            return city.SilverProduction.Stage -= 1;
+            city.SilverProduction.Stage -= 1;
+            city.SilverProduction.BuildingCostId = upgradeCost.Id;
+            return city;
         }
 
-        public override int Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
-            if (upgradeCost.BuildingStage != city.SilverProduction.Stage + 1)
+            if (upgradeCost == null)
+            {
+                city.SilverProduction.ProductionAmount = (int)Math.Ceiling(city.SilverProduction.ProductionAmount * 1.2);
+                city.SilverProduction.UpgradeCost = upgradeCost;
+                city.SilverProduction.Stage += 1;
+                city.SilverProduction.BuildingCostId = null;
+            }
+            else if (upgradeCost.BuildingStage != city.SilverProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
-
-            city.SilverProduction.ProductionAmount = (int)Math.Ceiling(city.SilverProduction.ProductionAmount * 1.2);
-            city.SilverProduction.UpgradeCost = upgradeCost;
-            return city.SilverProduction.Stage += 1;
+            else 
+            {
+                city.SilverProduction.ProductionAmount = (int)Math.Ceiling(city.SilverProduction.ProductionAmount * 1.2);
+                city.SilverProduction.UpgradeCost = upgradeCost;
+                city.SilverProduction.Stage += 1;
+                city.SilverProduction.BuildingCostId = upgradeCost.Id;
+            }           
+            return city;
         }
     }
 }
