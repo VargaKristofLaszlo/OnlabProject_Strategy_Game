@@ -3,11 +3,11 @@ using Services.Exceptions;
 using Services.Interfaces;
 using System;
 
-namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingBehaviourImpl
 {
-    public class WarehouseBehaviour : BuildingBehaviour
+    public class WarehouseBehaviour : IBuildingBehaviour
     {
-        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.Warehouse.Stage)
                 throw new InvalidBuildingStageModificationException();
@@ -22,7 +22,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
         }
 
 
-        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost == null)
             {
@@ -35,7 +35,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             }
             else if (upgradeCost.BuildingStage != city.Warehouse.Stage)
                 throw new InvalidBuildingStageModificationException();
-            else 
+            else
             {
                 city.Warehouse.MaxSilverStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxSilverStorageCapacity * 1.5);
                 city.Warehouse.MaxStoneStorageCapacity = (int)Math.Ceiling(city.Warehouse.MaxStoneStorageCapacity * 1.5);

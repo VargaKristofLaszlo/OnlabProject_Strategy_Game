@@ -240,6 +240,9 @@
                     CityResourceState.SetResourceValueAfterUpgrade(_cityDetails.WarehouseUpgradeCost);
                     _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
                     _cityDetails.WarehouseStage = dialogData.NewStage;
+                    var httpResponse = await new ViewServices(http).GetWarehouseCapacity(CityIndex);
+                    var capacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+                    CityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
                     break;
                 default:
                     break;
@@ -257,7 +260,7 @@
             var parameters = new DialogParameters();
             parameters.Add("CurrentStage", currentStage);
             parameters.Add("BuildingName", buildingName);
-            parameters.Add("CityIndex", cityIndex);           
+            parameters.Add("CityIndex", cityIndex);
 
             var res = DialogService.Show<DowngradeDialog>($"Downgrade the {buildingName}", parameters: parameters);
 
@@ -308,6 +311,9 @@
                         CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         _cityDetails.WarehouseUpgradeCost = dialogData.NewUpgradeCost;
                         _cityDetails.WarehouseStage = dialogData.NewStage;
+                        var httpResponse = await new ViewServices(http).GetWarehouseCapacity(CityIndex);
+                        var capacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+                        CityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
                         break;
 
                     default:

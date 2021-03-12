@@ -1,0 +1,57 @@
+﻿@inject Helpers.CityIndexState CityIndexState
+
+<AuthorizeView>
+    <Authorized>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true"  @onclick="OpenBarrackDialog"></span> Barrack
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenCityHallDialog"></span> City hall
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenCityWallDialog"></span> City wall
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenFarmDialog"></span> Farm
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenLumberDialog"></span> Lumber
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenSilverMineDialog"></span> Silver mine
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenStoneMineDialog"></span> Stone mine
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="oi oi-list-rich" aria-hidden="true" @onclick="OpenWarehouseDialog"></span> Warehouse
+            </NavLink>
+        </li>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private void OpenBarrackDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenCityWallDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenCityHallDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenFarmDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenLumberDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenSilverMineDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenStoneMineDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenWarehouseDialog() { Console.WriteLine(CityIndexState.Index); }
+}

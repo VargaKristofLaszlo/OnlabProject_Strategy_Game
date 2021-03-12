@@ -1,11 +1,8 @@
-﻿using AutoMapper;
-using BackEnd.Infrastructure;
+﻿using BackEnd.Infrastructure;
 using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
 using Moq;
 using Services.Exceptions;
-using Services.Implementations;
-using Services.Implementations.BuildingService;
 using System;
 using System.Threading.Tasks;
 using Xunit;

@@ -1,9 +1,8 @@
-﻿using BackEnd.Services.Interfaces;
-using Game.Shared.Models.Request;
+﻿using Game.Shared.Models.Request;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Models.Response;
+using Services.Commands.Admin;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 
@@ -13,11 +12,11 @@ namespace Game.Server.Controllers
     [Authorize(Roles = "Admin")]
     [ApiController]
     public class AdminController : ControllerBase
-    {
-        private readonly IAdminService _adminService;
-        public AdminController(IAdminService adminService)
-        {
-            _adminService = adminService;
+    {      
+        private readonly IMediator _mediator;
+        public AdminController(IMediator mediator)
+        {          
+            _mediator = mediator;
         }
 
 
@@ -32,8 +31,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(204, "The operation succeeded")]
         [SwaggerResponse(404, "The user could not be found")]
         public async Task<IActionResult> BanUser([FromBody] UserBanRequest banRequest)
-        {       
-            await _adminService.BanUserAsync(banRequest);
+        {
+            await _mediator.Send(new BanUser.Command(banRequest));
             return NoContent();
         }
 
@@ -51,7 +50,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(400, "The request model is invalid")]
         public async Task<IActionResult> CreateBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request)
         {
-            await _adminService.CreateBuildingUpgradeCostAsync(request);
+            await _mediator.Send(new CreateBuildingUpgradeCost.Command(request));
             return StatusCode(205);
         }
 
@@ -68,7 +67,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(400, "The request model is invalid")]
         public async Task<IActionResult> ModifyBuildingUpgradeCost([FromBody] UpgradeCostCreationRequest request)
         {
-            await _adminService.ModifyBuildingUpgradeCostAsync(request);
+            await _mediator.Send(new ModifyBuildingUpgradeCost.Command(request));
             return NoContent();
         }
 
@@ -85,7 +84,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(400, "The request model is invalid")]
         public async Task<IActionResult> ModerateCityName([FromBody] CityNameModerationRequest request)
         {
-            await _adminService.ModerateCityNameAsync(request);
+            await _mediator.Send(new ModerateCityName.Command(request));
             return NoContent();
         }
 
@@ -101,7 +100,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(400, "The request model is invalid")]
         public async Task<IActionResult> ModifyUnitCost([FromBody] UnitCostModificationRequest request)
         {
-            await _adminService.ModifyUnitCostAsync(request);
+            await _mediator.Send(new ModifyUnitCost.Command(request));
             return NoContent();
         }
     }

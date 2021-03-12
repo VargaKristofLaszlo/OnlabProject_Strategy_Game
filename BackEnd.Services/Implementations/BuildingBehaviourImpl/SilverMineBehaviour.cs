@@ -3,11 +3,11 @@ using Services.Exceptions;
 using Services.Interfaces;
 using System;
 
-namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingBehaviourImpl
 {
-    public class SilverMineBehaviour : BuildingBehaviour
+    public class SilverMineBehaviour : IBuildingBehaviour
     {
-        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.SilverProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
@@ -19,7 +19,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             return city;
         }
 
-        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost == null)
             {
@@ -30,13 +30,13 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             }
             else if (upgradeCost.BuildingStage != city.SilverProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
-            else 
+            else
             {
                 city.SilverProduction.ProductionAmount = (int)Math.Ceiling(city.SilverProduction.ProductionAmount * 1.2);
                 city.SilverProduction.UpgradeCost = upgradeCost;
                 city.SilverProduction.Stage += 1;
                 city.SilverProduction.BuildingCostId = upgradeCost.Id;
-            }           
+            }
             return city;
         }
     }

@@ -1,4 +1,4 @@
-﻿
+﻿@inject Helpers.CityIndexState CityIndexState
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Game</a>
@@ -14,30 +14,79 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <AuthorizeView Roles="Admin">
+
+
+
+        <AuthorizeView Roles="User">
             <Authorized>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="fetchdata">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                <li class="nav-item px-3" @onclick="OpenBarrackDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Barrack
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenCityHallDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> City hall
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenCityWallDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> City wall
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenFarmDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Farm
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenLumberDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Lumber
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenSilverMineDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Silver mine
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenStoneMineDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Stone mine
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="OpenWarehouseDialog">
+                    <NavLink class="nav-link">
+                        <span class="oi oi-list-rich" aria-hidden="true" ></span> Warehouse
                     </NavLink>
                 </li>
             </Authorized>
         </AuthorizeView>
-       
 
-
+        <AdminRoleNavMenuItems />
 
     </ul>
 </div>
 
 @code {
-    private bool collapseNavMenu = true;
+        private bool collapseNavMenu = true;
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+        private void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
 
+      
+
+
+
+    private void OpenBarrackDialog() { Console.WriteLine(CityIndexState.Index); Console.WriteLine("click"); }
+    private void OpenCityWallDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenCityHallDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenFarmDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenLumberDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenSilverMineDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenStoneMineDialog() { Console.WriteLine(CityIndexState.Index); }
+    private void OpenWarehouseDialog() { Console.WriteLine(CityIndexState.Index); }
 }

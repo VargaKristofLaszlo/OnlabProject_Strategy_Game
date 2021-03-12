@@ -3,28 +3,42 @@
 <MudDialog>
     <DialogContent>
         <MudSimpleTable Style="overflow-x: auto;">
-            <thead>
-                <tr>
-                    <td><MudIcon Icon="fas fa-tree" /></td>
-                    <td><MudIcon Icon="fas fa-gem" /></td>
-                    <td><MudIcon Icon="fas fa-coins" /></td>
-                    <td><MudIcon Icon="fas fa-user" /></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>@UpgradeCost.Wood</td>
-                    <td>@UpgradeCost.Stone</td>
-                    <td>@UpgradeCost.Silver</td>
-                    <td>@UpgradeCost.Population</td>
-                </tr>
-            </tbody>
+            @if (UpgradeCost != null)
+            {
+                <thead>
+
+                    <tr>
+                        <td><MudIcon Icon="fas fa-tree" /></td>
+                        <td><MudIcon Icon="fas fa-gem" /></td>
+                        <td><MudIcon Icon="fas fa-coins" /></td>
+                        <td><MudIcon Icon="fas fa-user" /></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        <td>@UpgradeCost.Wood </td>
+                        <td>@UpgradeCost.Stone </td>
+                        <td>@UpgradeCost.Silver </td>
+                        <td>@UpgradeCost.Population </td>
+
+
+                    </tr>
+                </tbody>
+            }
+            else
+            {
+                <tr><p>You have already reached the highest level</p></tr>
+            }
         </MudSimpleTable>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Upgrade</MudButton>
-    </DialogActions>
+        @if (UpgradeCost != null)
+        {
+            <MudButton Color="Color.Primary" OnClick="Submit">Upgrade</MudButton>
+        }
+        </DialogActions>
 </MudDialog>
 
 @code {

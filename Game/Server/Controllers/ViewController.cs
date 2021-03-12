@@ -1,11 +1,11 @@
-﻿using BackEnd.Services.Interfaces;
-using Game.Shared.Models;
+﻿using Game.Shared.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Queries;
 using Shared.Models;
 using Shared.Models.Response;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,11 +16,12 @@ namespace Game.Server.Controllers
     [ApiController]
     public class ViewController : ControllerBase
     {
-        private readonly IViewService _viewService;
+       
+        private readonly IMediator _mediator;
 
-        public ViewController(IViewService viewService)
-        {
-            _viewService = viewService;
+        public ViewController(IMediator mediator)
+        {           
+            _mediator = mediator;
         }
 
         [Authorize(Roles = "Admin")]
@@ -35,8 +36,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(401, "Only a logged in admin user can use this endpoint")]
         public async Task<IActionResult> GetAllCredentials([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            var result = await _viewService.GetUserCredentialsAsync(pageNumber, pageSize);
-            return Ok(result);
+            var response = await _mediator.Send(new GetUserCredentials.Query(pageNumber, pageSize));
+            return Ok(response);
         }
 
         
@@ -52,8 +53,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage)
         {
-            var result = await _viewService.GetBuildingUpgradeCost(buildingName, buildingStage);
-            return Ok(result);
+            var response = await _mediator.Send(new GetBuildingUpgradeCost.Query(buildingName, buildingStage));
+            return Ok(response);
         }
 
        
@@ -66,12 +67,11 @@ namespace Game.Server.Controllers
         )]
         [SwaggerResponse(404, "The user could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
-        [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<string>))]
+        [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<string>))]
         public async Task<IActionResult> GetCityNamesOfUser() 
         {
-            var result = await _viewService.GetCityNamesOfUser();
-
-            return Ok(result);
+            var response = await _mediator.Send(new GetCityNamesOfUser.Query());
+            return Ok(response);
         }
 
         
@@ -81,12 +81,12 @@ namespace Game.Server.Controllers
             Description = "Returns a list containing informations about the unit types via paging" +
             "<b>Using this end-point requires the user to log in<b>"
         )]
-        [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Unit>))]
+        [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Shared.Models.Unit>))]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         public async Task<IActionResult> GetUnitTypes ([FromQuery] int pageNumber, [FromQuery] int pageSize) 
         {
-            var result = await _viewService.GetUnitTypes(pageNumber, pageSize);
-            return Ok(result);
+            var response = await _mediator.Send(new GetUnitTypes.Query(pageNumber, pageSize));
+            return Ok(response);
         }
 
         
@@ -103,9 +103,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(200, "The request was successful", typeof(CityDetails))]
         public async Task<IActionResult> GetCity([FromQuery] int cityIndex) 
         {
-            
-            var result = await _viewService.GetCityDetails(cityIndex);
-            return Ok(result);
+            var response =  await _mediator.Send(new GetCityDetails.Query(cityIndex));
+            return Ok(response);
         }
 
 
@@ -118,11 +117,11 @@ namespace Game.Server.Controllers
         )]
         [SwaggerResponse(404, "The city could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
-        [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<Unit>))]
+        [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<Shared.Models.Unit>))]
         public async Task<IActionResult> GetProducibleUnits([FromQuery] int cityIndex) 
         {
-            var result = await _viewService.GetProducibleUnitTypes(cityIndex);
-            return Ok(result);
+            var response = await _mediator.Send(new GetProducibleUnitTypes.Query(cityIndex));
+            return Ok(response);
         }
     
         //Call this when we need to refresh the resources of the city
@@ -138,23 +137,22 @@ namespace Game.Server.Controllers
         [SwaggerResponse(200, "The request was successful", typeof(CityResources))]
         public async Task<IActionResult> ResourceUpdate([FromQuery] int cityIndex) 
         {
-            var result = await _viewService.GetResourcesOfCity(cityIndex);
-
-            return Ok(result);
+            var response = await _mediator.Send(new GetResourcesOfCity.Query(cityIndex));
+            return Ok(response);
         }
 
         [HttpGet("Warehouse/Capacity")]
         public async Task<IActionResult> GetWarehouseCapacity([FromQuery]int cityIndex) 
         {
-            var result = await _viewService.GetWarehouseCapacity(cityIndex);
-            return Ok(result);
+            var response = await _mediator.Send(new GetWarehouseCapacity.Query(cityIndex));
+            return Ok(response);
         }
 
         [HttpGet("UnitsOfCity")]
         public async Task<IActionResult> GetUnitsOfCity([FromQuery] int cityIndex) 
         {
-            var result = await _viewService.GetUnitsOfCity(cityIndex);
-            return Ok(result);
+            var response = await _mediator.Send(new GetUnitsOfCity.Query(cityIndex));
+            return Ok(response);
         }
     }
 }

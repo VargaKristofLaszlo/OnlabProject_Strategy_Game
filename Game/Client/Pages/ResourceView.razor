@@ -21,7 +21,7 @@ else
                 </tr>
                 <tr id="wood-capacity">
                     <td>Warehouse size</td>
-                    <td>@_warehouseCapacity.WoodLimit</td>
+                    <td>@CityResourceState.WarehouseCapacity.WoodLimit</td>
                 </tr>
             </tbody>
             <tbody class="tooltip-stone ml-1">
@@ -35,7 +35,7 @@ else
                 </tr>
                 <tr id="stone-capacity">
                     <td>Warehouse size</td>
-                    <td>@_warehouseCapacity.StoneLimit</td>
+                    <td>@CityResourceState.WarehouseCapacity.StoneLimit</td>
                 </tr>
             </tbody>
             <tbody class="tooltip-silver ml-1">
@@ -49,7 +49,7 @@ else
                 </tr>
                 <tr id="silver-capacity">
                     <td>Warehouse size</td>
-                    <td>@_warehouseCapacity.SilverLimit</td>
+                    <td>@CityResourceState.WarehouseCapacity.SilverLimit</td>
                 </tr>
             </tbody>
             <tbody class="tooltip-population ml-1">
@@ -71,8 +71,7 @@ else
     [Parameter]
     public int CityIndex { get; set; } = 0;
 
-    private CityResources _cityResources = null;
-    private WarehouseCapacity _warehouseCapacity = null;
+    private CityResources _cityResources = null;    
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,7 +80,7 @@ else
         _cityResources = await httpResponse.Content.ReadFromJsonAsync<CityResources>();
 
         httpResponse = await viewServices.GetWarehouseCapacity(CityIndex);
-        _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();           
+        WarehouseCapacity _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
 
         CityResourceState.SetInitValue(new Resources
         {
@@ -89,16 +88,16 @@ else
             Stone = _cityResources.StoneAmount,
             Silver = _cityResources.SilverAmount,
             Population = _cityResources.FreePopulation
-        });
+        },_warehouseCapacity);
     }
 
     protected override void OnInitialized()
-    {        
+    {
         CityResourceState.OnChange += StateHasChanged;
     }
 
     public void Dispose()
-    {       
+    {
         CityResourceState.OnChange += StateHasChanged;
     }
 

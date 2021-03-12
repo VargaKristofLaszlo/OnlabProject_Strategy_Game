@@ -1,6 +1,10 @@
 ﻿using Game.Shared.Models.Request;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Services.Commands;
+using Services.Commands.Buildings;
+using Services.Commands.Game;
 using Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
@@ -12,18 +16,14 @@ namespace Game.Server.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly IGameService _gameService;
-        private readonly IBuildingService _buildingService;
-        private readonly IAttackService _attackService;
+        private readonly IMediator _mediator;
 
-        public GameController(IGameService gameService, IBuildingService buildingService, IAttackService attackService)
+        public GameController(IMediator mediator)
         {
-            _gameService = gameService;
-            _buildingService = buildingService;
-            _attackService = attackService;
+            _mediator = mediator;
         }
 
-       
+
         [HttpPatch("{buildingName}/Upgrade")]
         [SwaggerOperation(
             Summary = "Upgrade a building",
@@ -37,8 +37,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The building was not found")]
         public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage) 
         {
-            var res = await _buildingService.UpgradeBuilding(cityIndex, buildingName, newStage);
-            return Ok(res);
+            var response = await _mediator.Send(new UpgradeBuilding.Command(cityIndex, buildingName, newStage));
+            return Ok(response);
         }
 
         [HttpPatch("{buildingName}/Downgrade")]
@@ -54,8 +54,8 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The building was not found")]        
         public async Task<IActionResult> DowngradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
-            var res = await _buildingService.DowngradeBuilding(cityIndex, buildingName, newStage);
-            return Ok(res);
+            var response = await _mediator.Send(new DowngradeBuilding.Command(cityIndex, buildingName, newStage));
+            return Ok(response);
         }
 
         [HttpPost("ProduceUnit")]
@@ -70,7 +70,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The unit type could not be found")]
         public async Task<IActionResult> ProduceUnits([FromBody] UnitProductionRequest request) 
         {
-            await _gameService.ProduceUnits(request);
+            await _mediator.Send(new ProduceUnits.Command(request));
             return Ok();
         }
 
@@ -84,7 +84,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(400, "The resources could not be sent to the other player")]
         public async Task<IActionResult> SendResourcesToOtherPlayer([FromBody] SendResourceToOtherPlayerRequest request) 
         {
-            await _gameService.SendResourcesToOtherPlayer(request);
+            await _mediator.Send(new SendResourcesToOtherPlayer.Command(request));
             return Ok();
         }
 
@@ -93,7 +93,7 @@ namespace Game.Server.Controllers
         [HttpPost("Attack")]
         public async Task<IActionResult> AttackOtherCity([FromBody] AttackRequest request) 
         {
-            await _attackService.AttackOtherCity(request);
+            await _mediator.Send(new AttackOtherCity.Command(request));
             return Ok();
         }
     }

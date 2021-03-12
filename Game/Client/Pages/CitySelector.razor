@@ -1,6 +1,7 @@
 ﻿@inject HttpClient http
 @using System.Collections.Generic
-
+@inject Helpers.CityIndexState CityIndexState
+@implements IDisposable
 @if (_cityNames == null)
 {
     <p>Loading..</p>
@@ -32,9 +33,22 @@ else
         _cityNames = names.ToList();
     }
 
+    protected override void OnInitialized()
+    {
+        CityIndexState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CityIndexState.OnChange += StateHasChanged;
+    }
+
+
     private void HandlerCityNameOnClick(int i)
     {
-        Console.WriteLine(i);
+        CityIndexState.SetIndex(i);
+
+        Console.WriteLine(CityIndexState.Index);
 
     }
 }

@@ -1,47 +1,21 @@
 ﻿using BackEnd.Infrastructure;
 using BackEnd.Models.Models;
-using BackEnd.Services.Implementations;
-using BackEnd.Services.Interfaces;
 using Hellang.Middleware.ProblemDetails;
-using IdentityModel;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Models.Profiles;
-using Repositories.Implementations;
 using Services.Exceptions;
-using Services.Implementations;
-using Services.Implementations.AttackService;
-using Services.Implementations.BuildingService;
-using Services.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
 
 namespace Game.Server.Extensions
 {
     public static class ConfigureServicesExtension
     {
-        public static IServiceCollection AddMyServices(
-             this IServiceCollection services)
-        {
-            services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IMailService, MailService>();
-            services.AddScoped<IViewService, ViewService>();
-            services.AddScoped<IGameService, GameService>();
-            services.AddScoped<IBuildingService, BuildingService>();
-            services.AddScoped<IAttackService, AttackService>();
-            return services;
-        }
-
         public static IServiceCollection AddIdentityContextConfig(this IServiceCollection services)
         {
             services.AddScoped<IIdentityContext, IdentityContext>(sp =>

@@ -12,6 +12,7 @@ namespace Game.Client.Helpers
         public int Wood { get; private set; }
         public int Stone { get; private set; }
         public int Silver { get; private set; }
+        public WarehouseCapacity WarehouseCapacity { get; private set; }
 
         public event Action OnChange;
 
@@ -30,14 +31,22 @@ namespace Game.Client.Helpers
             NotifyStateChanged();
         }
 
-        public void SetInitValue(Resources newValue) 
+        public void SetInitValue(Resources newValue, WarehouseCapacity warehouseCapacity)
         {
             Population = newValue.Population;
             Wood = newValue.Wood;
             Stone = newValue.Stone;
             Silver = newValue.Silver;
+            WarehouseCapacity = warehouseCapacity;
             NotifyStateChanged();
         }
+
+        public void SetWarehouseCapacityAfterUpgrade(WarehouseCapacity warehouseCapacity) 
+        {
+            WarehouseCapacity = warehouseCapacity;
+            NotifyStateChanged();
+        }
+
 
         private void NotifyStateChanged() => OnChange?.Invoke();
     }

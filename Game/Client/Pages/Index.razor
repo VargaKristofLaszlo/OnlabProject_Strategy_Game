@@ -1,11 +1,10 @@
 ﻿
 @page "/"
 @inject HttpClient Http
-
+@inject Helpers.CityIndexState CityIndexState
 
 <AuthorizeView>
-    <Authorized>
-       
+    <Authorized>        
             <div class="d-flex bd-highlight">
                 <CitySelector CityIndex="@_cityIndex" />
                 <ResourceView CityIndex="@_cityIndex" />
@@ -21,16 +20,15 @@
       
     </Authorized>
 </AuthorizeView>
+
 @code
 {
     private int _cityIndex = 0;
 
-
-    List<string> list = new List<string>() { "alma", "fa" };
-
-    void AddMessage(string test)
+    protected override void OnInitialized()
     {
-        Console.WriteLine(test);
+        CityIndexState.SetIndex(0);
+        _cityIndex = CityIndexState.Index;
     }
 
 }

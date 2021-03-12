@@ -3,11 +3,11 @@ using Services.Exceptions;
 using Services.Interfaces;
 using System;
 
-namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingBehaviourImpl
 {
-    public class LumberBehaviour : BuildingBehaviour
+    public class LumberBehaviour : IBuildingBehaviour
     {
-        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.WoodProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
@@ -19,7 +19,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             return city;
         }
 
-        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost == null)
             {
@@ -30,14 +30,14 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             }
             else if (upgradeCost.BuildingStage != city.WoodProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
-            else 
+            else
             {
                 city.WoodProduction.ProductionAmount = (int)Math.Ceiling(city.WoodProduction.ProductionAmount * 1.2);
                 city.WoodProduction.UpgradeCost = upgradeCost;
                 city.WoodProduction.Stage += 1;
                 city.WoodProduction.BuildingCostId = upgradeCost.Id;
             }
-            
+
             return city;
         }
     }

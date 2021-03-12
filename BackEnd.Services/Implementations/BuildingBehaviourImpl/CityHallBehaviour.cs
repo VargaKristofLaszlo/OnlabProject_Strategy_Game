@@ -2,11 +2,11 @@
 using Services.Exceptions;
 using Services.Interfaces;
 
-namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingBehaviourImpl
 {
-    public class CityHallBehaviour : BuildingBehaviour
+    public class CityHallBehaviour : IBuildingBehaviour
     {
-        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.CityHall.Stage)
                 throw new InvalidBuildingStageModificationException();
@@ -18,7 +18,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             return city;
         }
 
-        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost == null)
             {
@@ -29,13 +29,13 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             }
             else if (upgradeCost.BuildingStage != city.CityHall.Stage)
                 throw new InvalidBuildingStageModificationException();
-            else 
+            else
             {
                 city.CityHall.UpgradeTimeReductionPercent += 5;
                 city.CityHall.UpgradeCost = upgradeCost;
                 city.CityHall.Stage += 1;
                 city.CityHall.BuildingCostId = upgradeCost.Id;
-            }            
+            }
             return city;
         }
     }

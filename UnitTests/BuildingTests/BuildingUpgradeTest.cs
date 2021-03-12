@@ -1,15 +1,12 @@
-using AutoMapper;
 using BackEnd.Infrastructure;
 using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using Moq;
 using Services.Exceptions;
-using Services.Implementations;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using System;
-using Services.Implementations.BuildingService;
 
 namespace UnitTests.BuildingTests
 {

@@ -2,12 +2,12 @@
 using Services.Exceptions;
 using Services.Interfaces;
 
-namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
+namespace Services.Implementations.BuildingBehaviourImpl
 {
-    public class BarrackBehaviour : BuildingBehaviour
+    public class BarrackBehaviour : IBuildingBehaviour
     {
 
-        public override City Downgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Downgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost.BuildingStage != city.Barrack.Stage)
                 throw new InvalidBuildingStageModificationException();
@@ -20,7 +20,7 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
 
 
 
-        public override City Upgrade(City city, BuildingUpgradeCost upgradeCost)
+        public City Upgrade(City city, BuildingUpgradeCost upgradeCost)
         {
             if (upgradeCost == null)
             {
@@ -30,13 +30,13 @@ namespace Services.Implementations.BuildingService.BuildingBehaviourImpl
             }
             else if (upgradeCost.BuildingStage - 2 != city.Barrack.Stage)
                 throw new InvalidBuildingStageModificationException();
-            else 
+            else
             {
                 city.Barrack.UpgradeCost = upgradeCost;
                 city.Barrack.Stage += 1;
                 city.Barrack.BuildingCostId = upgradeCost.Id;
             }
-            
+
 
             return city;
         }

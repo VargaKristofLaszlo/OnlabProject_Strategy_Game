@@ -5,6 +5,7 @@ using BackEnd.Repositories.Interfaces;
 using Game.Server.Extensions;
 using Hellang.Middleware.ProblemDetails;
 using Infrastructure;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Services.Implementations;
+using Services.Queries;
 
 namespace Game.Server
 {
@@ -55,11 +57,10 @@ namespace Game.Server
 
             services.AddIdentityConfig();           
             services.AddIdentityContextConfig();
-            services.AddMyServices();
             services.AddAutoMapperConfig();
             services.AddProblemDetailsConfig();
             services.AddTokenConfig();
-
+            services.AddMediatR(typeof(GetUserCredentials).Assembly);
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
