@@ -98,7 +98,7 @@ else
 
     public void Dispose()
     {
-        CityResourceState.OnChange += StateHasChanged;
+        CityResourceState.OnChange -= StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

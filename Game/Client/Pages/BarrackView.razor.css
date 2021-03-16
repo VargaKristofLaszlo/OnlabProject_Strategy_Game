@@ -1,0 +1,111 @@
+﻿.content {
+    position: relative;
+    height: 100%;
+    padding-top: 36px;
+    width: 714px;
+}
+
+.content-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 7px 0 7px 20px;
+    right: 2px;
+}
+
+    .content-header .list-btn {
+        position: absolute;
+        right: 0;
+        top: -1px;
+        padding: 0 0 0 64px;
+    }
+
+.list-btn {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.content-header h2,
+.content-header h3,
+.content-header h4 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 20px;
+    line-height: 110%;
+    margin: 0;
+}
+
+.box-outer {
+    margin: 2px 0 10px 0;
+    padding: 3px 3px 0 3px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+    .box-outer .headline {
+        height: 28px;
+        margin: -3px -3px 0 -3px;
+        border-bottom: 1px solid rgba(124, 54, 0, 0.4);
+    }
+
+.content-content .unit-wrapper {
+    width: 100%;
+    height: 211px;
+}
+table {
+    width: 100%;
+}
+
+    table tr td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+
+
+
+
+
+
+
+/* Pen-specific styles */
+html, body, section {
+    height: 100%;
+}
+
+body {
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 1.25rem;
+    line-height: 150%;
+    text-align: center;
+    text-shadow: 0 2px 2px #b6701e;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Pattern styles */
+.container {
+    display: flex;
+}
+
+.left-half {    
+    flex: 1;
+    padding: 1rem;
+}
+
+.right-half {  
+    flex: 1;
+    padding: 1rem;
+}
