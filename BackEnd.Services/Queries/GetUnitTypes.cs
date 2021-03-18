@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BackEnd.Repositories.Interfaces;
+using Game.Shared.Models.Response;
 using MediatR;
 using Services.Extensions;
 using Shared.Models;
-using Shared.Models.Response;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

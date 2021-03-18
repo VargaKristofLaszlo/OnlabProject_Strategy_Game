@@ -1,19 +1,11 @@
-﻿@page "/barrack"
+﻿@page "/barrack/{barrackLevel:int}"
 @inject HttpClient Http
 @inject Helpers.CityIndexState CityIndexState
 @inject Helpers.CityResourceState CityResourceState
-
-@* 
-    TODO
-    State for the unit amounts for instant update without browser refresh
-*@
+@inject Helpers.UnitsOfCityState UnitsOfCityState
 
 
-
-
-
-
-<div class="d-flex bd-highlight">  
+<div class="d-flex bd-highlight">
     <ResourceView CityIndex="@CityIndexState.Index" />
 </div>
 <div class="d-flex bd-highlight">
@@ -25,10 +17,10 @@
             <header class="content-header">
                 <h2 class="text-center">
                     Barrack
-                    <span>(Level 1)</span>
+                    <span>(Level @BarrackLevel)</span>
                 </h2>
             </header>
-
+            
             <div class="box-outer">
                 <div class="headline">
                     <div> Defensive units </div>
@@ -93,13 +85,17 @@
                 <tbody>
                     <tr>
                         <td>Name</td>
-                        <td>@_selectedUnit.Name</td>
+                        <td style="min-width: 150px">@_selectedUnit.Name</td>
                     </tr>
                     <tr>
-                        <td>Attack point</td>
+                        <td>Available at stage</td>
+                        <td>@_selectedUnit.MinBarrackStage</td>
+                    </tr>
+                    <tr>
+                        <td style="min-width: 150px">Attack point</td>
                         <td>@_selectedUnit.AttackPoint</td>
                     </tr>
-                    <tr><td>Defense points</td></tr>
+                    <tr><td style="min-width: 150px">Defense points</td></tr>
                     <tr>
                         <td>Cavalry</td>
                         <td>Infantry</td>
@@ -110,7 +106,7 @@
                         <td> @_selectedUnit.InfantryDefensePoint</td>
                         <td> @_selectedUnit.ArcherDefensePoint</td>
                     </tr>
-                    <tr><td>Production cost</td></tr>
+                    <tr><td style="min-width: 150px">Production cost</td></tr>
                     <tr>
                         <td><i class="fas fa-tree"></i></td>
                         <td><i class="fas fa-gem"></i></td>
@@ -125,9 +121,9 @@
                     </tr>
                 </tbody>
             </MudSimpleTable>
-            <input type="number" @bind="@_selectedAmount" @bind:event="oninput" />
+            <input type="number" @bind="@_selectedAmount" @bind:event="oninput" disabled="@(_selectedUnit.MinBarrackStage > BarrackLevel)" />
         }
-    </div>
+    </div>    
 </section>
 
 <footer class="d-flex justify-content-center mt-4">
@@ -136,31 +132,33 @@
     <span><MudIcon Icon="fas fa-coins" />  @_productionCost.Silver</span>
     <span><MudIcon Icon="fas fa-user" />  @_productionCost.Population</span>
 </footer>
-<div class="d-flex justify-content-center">
-    @if (CityResourceState.Wood >= _productionCost.Wood && CityResourceState.Stone >= _productionCost.Stone &&
-  CityResourceState.Silver >= _productionCost.Silver && CityResourceState.Population >= _productionCost.Population)
-    {
-        <MudButton Variant="Variant.Filled" @onclick="TrainTroops">Train selected troops</MudButton>
-    }
 
-</div>
+@if (CityResourceState.Wood >= _productionCost.Wood && CityResourceState.Stone >= _productionCost.Stone &&
+    CityResourceState.Silver >= _productionCost.Silver && CityResourceState.Population >= _productionCost.Population)
+{
+    <div class="horizontal-center"><MudButton Variant="Variant.Filled" @onclick="TrainTroops">Train selected troops</MudButton></div>
 
+}
 
-@code {
+@code { 
+    [Parameter]
+    public int BarrackLevel { get; set; }
+
 
     private List<(string name, int amount, string icon)> _defensiveUnits = new List<(string, int, string)>()
-{
+    {
         { ("Spearman" , 0,"/images/DefensiveUnits/Spearman.svg")},
         { ("Swordsman", 0,"/images/DefensiveUnits/Swordsman.svg")},
         { ("Archer", 0, "/images/DefensiveUnits/Archer.svg")},
         { ("Heavy Cavalry", 0, "/images/DefensiveUnits/Heavy Cavalry.svg")}
     };
     private List<(string name, int amount, string icon)> _offensiveUnits = new List<(string name, int amount, string icon)>
-{
+    {
         { ("Axe Fighter", 0, "/images/OffensiveUnits/Axe Fighter.svg")},
         { ("Light Cavalry", 0, "/images/OffensiveUnits/Light Cavalry.svg")},
         { ("Mounted Archer", 0, "/images/OffensiveUnits/Mounted Archer.svg")}
     };
+
 
     private List<Unit> _units;
     private Unit _selectedUnit;
@@ -174,45 +172,46 @@
             amount = value;
             int index;
             bool typeIsDefense = true;
-            var defenseUnit = _defensiveUnits.FirstOrDefault(x => x.name.Equals(_selectedUnit.Name));
-            if (defenseUnit.name == null)
+            var unit = _defensiveUnits.FirstOrDefault(x => x.name.Equals(_selectedUnit.Name));
+            if (unit.name == null)
             {
-                defenseUnit = _offensiveUnits.First(x => x.name.Equals(_selectedUnit.Name));
-                index = _offensiveUnits.IndexOf(defenseUnit);
+                unit = _offensiveUnits.First(x => x.name.Equals(_selectedUnit.Name));
+                index = _offensiveUnits.IndexOf(unit);
                 typeIsDefense = false;
             }
             else
-                index = _defensiveUnits.IndexOf(defenseUnit);
+                index = _defensiveUnits.IndexOf(unit);
 
 
-            if (amount > defenseUnit.amount)
+            if (amount > unit.amount)
             {
-                _productionCost.Population += (amount - defenseUnit.amount) * _selectedUnit.UnitCost.Population;
-                _productionCost.Wood += (amount - defenseUnit.amount) * _selectedUnit.UnitCost.Wood;
-                _productionCost.Stone += (amount - defenseUnit.amount) * _selectedUnit.UnitCost.Stone;
-                _productionCost.Silver += (amount - defenseUnit.amount) * _selectedUnit.UnitCost.Silver;
+                _productionCost.Population += (amount - unit.amount) * _selectedUnit.UnitCost.Population;
+                _productionCost.Wood += (amount - unit.amount) * _selectedUnit.UnitCost.Wood;
+                _productionCost.Stone += (amount - unit.amount) * _selectedUnit.UnitCost.Stone;
+                _productionCost.Silver += (amount - unit.amount) * _selectedUnit.UnitCost.Silver;
             }
-            else if (amount < defenseUnit.amount)
+            else if (amount < unit.amount)
             {
-                _productionCost.Population -= (defenseUnit.amount - amount) * _selectedUnit.UnitCost.Population;
-                _productionCost.Wood -= (defenseUnit.amount - amount) * _selectedUnit.UnitCost.Wood;
-                _productionCost.Stone -= (defenseUnit.amount - amount) * _selectedUnit.UnitCost.Stone;
-                _productionCost.Silver -= (defenseUnit.amount - amount) * _selectedUnit.UnitCost.Silver;
+                _productionCost.Population -= (unit.amount - amount) * _selectedUnit.UnitCost.Population;
+                _productionCost.Wood -= (unit.amount - amount) * _selectedUnit.UnitCost.Wood;
+                _productionCost.Stone -= (unit.amount - amount) * _selectedUnit.UnitCost.Stone;
+                _productionCost.Silver -= (unit.amount - amount) * _selectedUnit.UnitCost.Silver;
             }
 
-            defenseUnit.amount = value;
+            unit.amount = value;
             if (typeIsDefense)
-                _defensiveUnits[index] = defenseUnit;
+                _defensiveUnits[index] = unit;
             else
-                _offensiveUnits[index] = defenseUnit;
+                _offensiveUnits[index] = unit;
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
         var viewService = new ViewServices(Http);
-        var httpResponse = await viewService.GetProducibleUnits(CityIndexState.Index);
-        _units = await httpResponse.Content.ReadFromJsonAsync<List<Unit>>();
+        var httpResponse = await viewService.GetUnitTypes(0,20);
+        var content = await httpResponse.Content.ReadFromJsonAsync<Game.Shared.Models.Response.CollectionResponse<Unit>>();
+        _units = content.Records.ToList();
         if (_units.Count > 0)
             _selectedUnit = _units.First(x => x.Name.Equals("Spearman"));
     }
@@ -242,6 +241,7 @@
     private async Task TrainTroops()
     {
         var gameService = new GameServices(Http);
+        UnitsOfTheCity unitsOfTheCity = UnitsOfCityState.UnitsOfTheCity;
 
         for (int index = 0; index < _defensiveUnits.Count(); index++)
         {
@@ -258,6 +258,24 @@
                     var item = _defensiveUnits[index];
                     item.amount = 0;
                     _defensiveUnits[index] = item;
+
+                    switch (item.name)
+                    {
+                        case "Spearman":
+                            unitsOfTheCity.Spearmans += _selectedAmount;
+                            break;
+                        case "Swordsman":
+                            unitsOfTheCity.Swordsmans += _selectedAmount;
+                            break;
+                        case "Archer":
+                            unitsOfTheCity.Archers += _selectedAmount;
+                            break;
+                        case "Heavy Cavalry":
+                            unitsOfTheCity.HeavyCavalry += _selectedAmount;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -276,10 +294,35 @@
                     var item = _offensiveUnits[index];
                     item.amount = 0;
                     _offensiveUnits[index] = item;
+
+                    switch (item.name)
+                    {
+                        case "Axe Fighter":
+                            unitsOfTheCity.AxeFighers += _selectedAmount;
+                            break;
+                        case "Light Cavalry":
+                            unitsOfTheCity.LightCavalry += _selectedAmount;
+                            break;
+                        case "Mounted Archer":
+                            unitsOfTheCity.MountedArcher += _selectedAmount;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
         CityResourceState.SetResourceValueAfterUpgrade(_productionCost);
+        UnitsOfCityState.SetUnitsOfTheCity(unitsOfTheCity);
+        ResetProductionCost();
+    }
+
+    private void ResetProductionCost()
+    {
+        _productionCost.Wood = 0;
+        _productionCost.Stone = 0;
+        _productionCost.Silver = 0;
+        _productionCost.Population = 0;
     }
 }
 

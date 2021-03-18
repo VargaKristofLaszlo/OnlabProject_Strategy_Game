@@ -31,7 +31,16 @@ namespace Models.Profiles
                 .ForMember(detail => detail.StoneMineUpgradeCost, map => map.MapFrom(city => city.StoneProduction.UpgradeCost.UpgradeCost))
                 .ForMember(detail => detail.WarehouseStage, map => map.MapFrom(city => city.Warehouse.Stage))
                 .ForMember(detail => detail.WarehouseUpgradeCost, map => map.MapFrom(city => city.Warehouse.UpgradeCost.UpgradeCost))
-                .ForMember(detail => detail.LastResourceQueryTime, map => map.MapFrom(city => city.LastResourceQueryTime));
+                .ForMember(detail => detail.LastResourceQueryTime, map => map.MapFrom(city => city.LastResourceQueryTime))
+                .ForMember(detail => detail.CityWallMultiplier, map => map.MapFrom(city => city.CityWall.Stage * 0.05 + 1))
+                .ForMember(detail => detail.CityWallDefenseValue, map => map.MapFrom(city => (city.CityWall.Stage * 10)))
+                .ForMember(detail => detail.MaximumPopulation, map => map.MapFrom(city => (city.Farm.MaxPopulation)))
+                .ForMember(detail => detail.MaximumStorage, map => map.MapFrom(city => (city.Warehouse.MaxSilverStorageCapacity)))
+                .ForMember(detail => detail.MaximumStorage, map => map.MapFrom(city => (city.Warehouse.MaxSilverStorageCapacity)))
+                .ForMember(detail => detail.WoodProduction, map => map.MapFrom(city => (city.WoodProduction.ProductionAmount)))
+                .ForMember(detail => detail.StoneProduction, map => map.MapFrom(city => (city.StoneProduction.ProductionAmount)))
+                .ForMember(detail => detail.SilverProduction, map => map.MapFrom(city => (city.SilverProduction.ProductionAmount)))
+                ;
         }
     }
 }

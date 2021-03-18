@@ -1,7 +1,9 @@
 ﻿@inject HttpClient http
 @inject IJSRuntime JSRuntime
+@inject Helpers.UnitsOfCityState UnitsOfCityState
+@implements IDisposable
 
-@if (_units == null)
+@if (UnitsOfCityState.UnitsOfTheCity == null)
 {
 
 }
@@ -15,7 +17,7 @@ else
                         <img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.Spearmans</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.Spearmans</td></tr>
                 <tr id="tooltip-spearman-name"><td>Spearman</td></tr>
             </tbody>
             <tbody class="tooltip-swordsman">
@@ -24,7 +26,7 @@ else
                         <img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.Swordsmans</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.Swordsmans</td></tr>
                 <tr id="tooltip-swordsman-name"><td>Swordsman</td></tr>
             </tbody>
             <tbody class="tooltip-axe-fighter">
@@ -33,7 +35,7 @@ else
                         <img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.AxeFighers</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.AxeFighers</td></tr>
                 <tr id="tooltip-axe-fighter-name"><td>Axe fighter</td></tr>
             </tbody>
             <tbody class="tooltip-archer">
@@ -42,7 +44,7 @@ else
                         <img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.Archers</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.Archers</td></tr>
                 <tr id="tooltip-archer-name"><td>Archer</td></tr>
             </tbody>
             <tbody class="tooltip-light-cavalry">
@@ -51,7 +53,7 @@ else
                         <img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.LightCavalry</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.LightCavalry</td></tr>
                 <tr id="tooltip-light-cavalry-name"><td>Light cavalry</td></tr>
             </tbody>
             <tbody class="tooltip-mounted-archer">
@@ -60,7 +62,7 @@ else
                         <img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.MountedArcher</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.MountedArcher</td></tr>
                 <tr id="tooltip-mounted-archer-name"><td>Mounted archer</td></tr>
             </tbody>
             <tbody class="tooltip-heavy-cavalry">
@@ -69,7 +71,7 @@ else
                         <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
                     </td>
                 </tr>
-                <tr><td>@_units.HeavyCavalry</td></tr>
+                <tr><td>@UnitsOfCityState.UnitsOfTheCity.HeavyCavalry</td></tr>
                 <tr id="tooltip-heavy-cavalry-name"><td>Heavy cavalry</td></tr>
             </tbody>
         </table>
@@ -81,18 +83,27 @@ else
     [Parameter]
     public int CityIndex { get; set; } = 0;
 
-    private UnitsOfTheCity _units = null;
-
-
     protected override async Task OnInitializedAsync()
     {
         ViewServices viewServices = new ViewServices(http);
         var httpResponse = await viewServices.GetUnitsOfCity(CityIndex);
-        _units = await httpResponse.Content.ReadFromJsonAsync<UnitsOfTheCity>();
+        var units = await httpResponse.Content.ReadFromJsonAsync<UnitsOfTheCity>();
+
+        UnitsOfCityState.SetUnitsOfTheCity(units);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await JSRuntime.InvokeVoidAsync("HoverBehaviour");
+    }
+
+    protected override void OnInitialized()
+    {
+        UnitsOfCityState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UnitsOfCityState.OnChange -= StateHasChanged;
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Game.Shared.Models;
+using Game.Shared.Models.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Queries;
 using Shared.Models;
-using Shared.Models.Response;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Shared.Models;
+using System.Collections.Generic;
 
-namespace Shared.Models.Response
+namespace Game.Shared.Models.Response
 {
     public record CollectionResponse<T>
     {

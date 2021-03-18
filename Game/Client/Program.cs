@@ -1,3 +1,5 @@
+using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Game.Client.Helpers;
 using Game.Shared.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -27,9 +29,17 @@ namespace Game.Client
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Game.ServerAPI"));           
             builder.Services.AddApiAuthorization();
-            builder.Services.AddMudServices();          
+            builder.Services.AddMudServices();
+            builder.Services.AddBlazoredLocalStorage(config =>
+                config.JsonSerializerOptions.WriteIndented = true);
+            builder.Services.AddBlazoredSessionStorage(config =>
+               config.JsonSerializerOptions.WriteIndented = true);
+
+            //States helping with the data display without browser refresh
             builder.Services.AddSingleton<CityResourceState>();
             builder.Services.AddSingleton<CityIndexState>();
+            builder.Services.AddSingleton<UnitsOfCityState>();
+            builder.Services.AddScoped<CityDetailsState>();
 
             await builder.Build().RunAsync();
         }

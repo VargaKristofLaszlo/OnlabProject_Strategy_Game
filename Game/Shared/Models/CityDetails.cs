@@ -26,5 +26,14 @@ namespace Game.Shared.Models
         public Resources LumberUpgradeCost { get; set; }
         public int WarehouseStage { get; set; }
         public Resources WarehouseUpgradeCost { get; set; }
+
+
+        public float CityWallMultiplier { get; set; }
+        public int CityWallDefenseValue { get; set; }
+        public int MaximumPopulation { get; set; }
+        public int MaximumStorage { get; set; }
+        public int WoodProduction { get; set; }
+        public int StoneProduction { get; set; }
+        public int SilverProduction { get; set; }
     }
 }

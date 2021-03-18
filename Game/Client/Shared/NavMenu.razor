@@ -1,5 +1,9 @@
 ﻿@inject Helpers.CityIndexState CityIndexState
+@inject Helpers.CityResourceState CityResourceState
+@inject Helpers.CityDetailsState CityDetailsState
 @inject IDialogService DialogService
+@inject HttpClient http
+@inject NavigationManager NavigationManager
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Game</a>
@@ -21,42 +25,42 @@
         <AuthorizeView Roles="User">
             <Authorized>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="barrack" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" @onclick="NavigateToBarrack" Match="NavLinkMatch.All">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Barrack
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City hall"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> City hall
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City wall"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> City wall
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Farm"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Farm
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Lumber"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Lumber
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Silver mine"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Silver mine
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Stone mine"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Stone mine
                     </NavLink>
                 </li>
                 <li class="nav-item px-3">
-                    <NavLink class="nav-link">
+                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Warehouse"))">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Warehouse
                     </NavLink>
                 </li>
@@ -71,11 +75,104 @@
 @code {
     private bool collapseNavMenu = true;
     private bool barrackDialogIsVisisble = false;
-
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string _header;
+    private string _description;
+    private object _content;
+    private Resources _upgradeCost;
+    private string _imgSource;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+
+    private void NavigateToBarrack()
+    {
+        NavigationManager.NavigateTo($"barrack/{CityDetailsState.CityDetails.BarrackStage}");
+    }
+
+    private void OpenDialog(string buildingName)
+    {
+        DialogService.Show<Pages.GeneralBuildingDialog>("Simple Dialog");
+    }
+
+    private void SelectContentForDialog(string buildingName)
+    {
+        switch (buildingName)
+        {
+            case "City hall":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.CityHallStage})";
+                _description = "The city hall is the heart of your city. Upgrade it and your other buildings' upgrade time will decrease";
+                _content = null;
+                _upgradeCost = CityDetailsState.CityDetails.CityHallUpgradeCost;
+                _imgSource = "/images/buildings/cityHall.svg";
+                break;
+
+            case "City wall":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.CityWallStage})";
+                _description = "This building protects your village from attackers. Upgrade it to increase the defending bonuses it gives";
+                _content = new { DefenseValue = CityDetailsState.CityDetails.CityWallDefenseValue, Multiplier = CityDetailsState.CityDetails.CityWallMultiplier };
+                _upgradeCost = CityDetailsState.CityDetails.CityWallUpgradeCost;
+                _imgSource = "/images/buildings/wall.svg";
+                break;
+
+            case "Farm":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.CityWallStage})";
+                _description = "This building determines how much population you have." +
+                        "Population is used for upgrading buildings and producing units." +
+                        "Upgrade it to increase the maximum population of the city";
+                _content = new { Population = CityDetailsState.CityDetails.MaximumPopulation};
+                _upgradeCost = CityDetailsState.CityDetails.FarmUpgradeCost;
+                _imgSource = "/images/buildings/farm.svg";
+                break;
+
+            case "Lumber":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.LumberStage})";
+                _description =
+                    "This building produces the resource Wood in regular intervals. Upgrade this building to increase the production amount";
+                _content = new { Production = CityDetailsState.CityDetails.WoodProduction };
+                _upgradeCost = CityDetailsState.CityDetails.LumberUpgradeCost;
+                _imgSource = "/images/buildings/lumber.svg";
+                break;
+
+            case "Silver mine":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.SilverMineStage})";
+                _description =
+                    "This building produces the resource Silver in regular intervals. Upgrade this building to increase the production amount";
+                _content = new { Production = CityDetailsState.CityDetails.SilverProduction };
+                _upgradeCost = CityDetailsState.CityDetails.SilverMineUpgradeCost;
+                _imgSource = "/images/buildings/silver.svg";
+                break;
+            case "Stone mine":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.StoneMineStage})";
+                _description =
+                    "This building produces the resource Stone in regular intervals. Upgrade this building to increase the production amount";
+                _content = new { Production = CityDetailsState.CityDetails.StoneProduction };
+                _upgradeCost = CityDetailsState.CityDetails.StoneMineUpgradeCost;
+                _imgSource = "/images/buildings/stone.svg";
+                break;
+            case "Warehouse":
+                _header = $"{buildingName} (Level {CityDetailsState.CityDetails.WarehouseStage})";
+                _description =
+                    "This building stores the resources of the city. Upgrade this building to increase the stored amount";
+                _content = new { Storage = CityDetailsState.CityDetails.MaximumStorage };
+                _upgradeCost = CityDetailsState.CityDetails.WarehouseUpgradeCost;
+                _imgSource = "/images/buildings/warehouse.svg";
+                break;
+            default:
+                break;
+        }
+
+        var parameters = new DialogParameters();
+        parameters.Add("Description", _description);
+        parameters.Add("Content", _content);
+        parameters.Add("UpgradeCost", _upgradeCost);
+        parameters.Add("ImageSource", _imgSource);
+
+        DialogOptions noCloseButton = new DialogOptions() { CloseButton = false };
+
+        DialogService.Show<Pages.GeneralBuildingDialog>(_header, parameters: parameters);
     }
 }

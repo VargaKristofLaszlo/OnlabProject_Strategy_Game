@@ -109,3 +109,11 @@ h1 {
     flex: 1;
     padding: 1rem;
 }
+
+.horizontal-center {
+    margin: 0;
+    position: absolute;
+    left: 55%;
+    -ms-transform: translateX(-30%);
+    transform: translateX(-30%);
+}

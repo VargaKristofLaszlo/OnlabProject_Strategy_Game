@@ -51,7 +51,23 @@ namespace BackEnd.Repositories.Implementations
         {
             return await _db.Users
                 .Include(user => user.Cities)
-                .ThenInclude(city =>city.CityWall)
+                    .ThenInclude(city =>city.CityWall)
+                        .ThenInclude(building =>building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.Farm)
+                        .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.Warehouse)
+                        .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.StoneProduction)
+                        .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.SilverProduction)
+                        .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.WoodProduction)
+                        .ThenInclude(building => building.UpgradeCost)
                 .FirstOrDefaultAsync(user => user.Id.Equals(userId));
         }
 

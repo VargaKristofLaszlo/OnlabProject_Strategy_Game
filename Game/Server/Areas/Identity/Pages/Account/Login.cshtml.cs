@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using BackEnd.Models.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using BackEnd.Repositories.Interfaces;
-using Services.Exceptions;
-using System.Security.Claims;
-using BackEnd.Infrastructure;
-using System.IdentityModel.Tokens.Jwt;
-using Shared.Models.Response;
-using System.Text.Json;
-using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace Game.Server.Areas.Identity.Pages.Account
 {
