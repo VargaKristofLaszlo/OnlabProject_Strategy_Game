@@ -16,7 +16,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Repositories.Implementations;
+using Repositories.Interfaces;
 using Services.Implementations;
+using Services.Interfaces;
 using Services.Queries;
 
 namespace Game.Server
@@ -61,10 +64,12 @@ namespace Game.Server
             services.AddProblemDetailsConfig();
             services.AddTokenConfig();
             services.AddMediatR(typeof(GetUserCredentials).Assembly);
+            services.AddScoped<IReportSender, ReportSender>();
+
+
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
-
+            services.Configure<AuthMessageSenderOptions>(Configuration);           
 
             services.AddSwaggerGen(options =>
             {

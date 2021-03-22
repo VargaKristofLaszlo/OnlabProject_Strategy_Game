@@ -15,7 +15,7 @@ namespace BackEnd.Repositories.Implementations
         private IUpgradeCostRepository _upgradeCosts;
         private IUnitRepository _units;
         private ICityRepository _cities;
-        
+        private IReportRepository _reports;
 
         public EfUnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
@@ -23,6 +23,17 @@ namespace BackEnd.Repositories.Implementations
             _db = db;
         }
 
+
+        public IReportRepository Reports
+        {
+            get
+            {
+                if (_reports == null)
+                    _reports = new ReportRepository(_db);
+
+                return _reports;
+            }
+        }
 
         public IUsersRepository Users
         {

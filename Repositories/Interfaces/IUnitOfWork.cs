@@ -8,7 +8,9 @@ namespace BackEnd.Repositories.Interfaces
         IUsersRepository Users { get; }
         IUpgradeCostRepository UpgradeCosts { get; }
         IUnitRepository Units { get; }
-        ICityRepository Cities { get; }       
+        ICityRepository Cities { get; }
+        IReportRepository Reports { get; }
         Task<int> CommitChangesAsync();
+        
     }
 }

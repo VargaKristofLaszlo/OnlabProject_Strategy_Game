@@ -14,6 +14,7 @@ namespace BackEnd.Repositories.Interfaces
         Task<string> FindUserRoleAsync(ApplicationUser user);
         Task<(IEnumerable<ApplicationUser> Users, int Count)> GetAllUsersAsync(int pageNumber, int pageSize);
         Task<ApplicationUser> GetUserWithCities(string userId);
+        Task<(List<ApplicationUser> Users, int Count)> GetAllUsersWithCities(int pageNumber, int pageSize, string senderId);
 
         //Token generation methods
         Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user);

@@ -10,9 +10,9 @@ namespace Services.Implementations.AttackService.Troops
 {
     public class DefendingTroops : ITroopsBehaviour
     {
-        public Dictionary<Unit, int> InfantryPhaseDefendingUnits { get; set; }
-        public Dictionary<Unit, int> CavalryPhaseDefendingUnits { get; set; }
-        public Dictionary<Unit, int> ArcheryPhaseDefendingUnits { get; set; }
+        public Dictionary<Unit, int> InfantryPhaseDefendingUnits { get; set; } = new Dictionary<Unit, int>();
+        public Dictionary<Unit, int> CavalryPhaseDefendingUnits { get; set; } = new Dictionary<Unit, int>();
+        public Dictionary<Unit, int> ArcheryPhaseDefendingUnits { get; set; } = new Dictionary<Unit, int>();
 
         public DefendingTroops(IEnumerable<UnitsInCity> defendingTroops, double infantryProvisionPercentage,
             double cavalryProvisionPercentage, double archeryProvisionPercentage)
@@ -22,7 +22,7 @@ namespace Services.Implementations.AttackService.Troops
                 InfantryPhaseDefendingUnits.Add(item.Unit, (int)Math.Floor(item.Amount * infantryProvisionPercentage));
                 CavalryPhaseDefendingUnits.Add(item.Unit, (int)Math.Floor(item.Amount * cavalryProvisionPercentage));
                 ArcheryPhaseDefendingUnits.Add(item.Unit, (int)Math.Floor(item.Amount * archeryProvisionPercentage));
-            }
+            }            
         }
 
         public void AddSurvivorsOfPreviousPhase(Dictionary<Unit, int> survivedTroops, Dictionary<Unit, int> troopsOfNextPhase)

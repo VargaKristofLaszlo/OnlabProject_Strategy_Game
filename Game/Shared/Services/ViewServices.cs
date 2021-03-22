@@ -72,5 +72,18 @@ namespace Game.Shared.Services
             builder.SetQueryStringWithCityIndex(cityIndex);
             return await _httpClient.GetAsync(builder.ToString());
         }
+
+        public async Task<HttpResponseMessage> GetOtherUsersCities(int pageNumber, int pageSize)
+        {
+            var builder = new UriBuilder(_httpClient.BaseAddress + _viewController + "/Users/Others/Cities");
+            builder.SetPagingQueryString(pageNumber, pageSize);
+            return await _httpClient.GetAsync(builder.ToString());
+        }
+        public async Task<HttpResponseMessage> GetReports(int pageNumber, int pageSize)
+        {
+            var builder = new UriBuilder(_httpClient.BaseAddress + _viewController + "/Reports");
+            builder.SetPagingQueryString(pageNumber, pageSize);
+            return await _httpClient.GetAsync(builder.ToString());
+        }
     }
 }

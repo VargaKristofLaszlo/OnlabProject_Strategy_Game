@@ -15,9 +15,18 @@ namespace Services.Implementations.AttackService.Troops
         public Dictionary<BackEnd.Models.Models.Unit, int> InfantryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
         public Dictionary<BackEnd.Models.Models.Unit, int> CavalryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
         public Dictionary<BackEnd.Models.Models.Unit, int> ArcheryPhaseTroops { get; set; } = new Dictionary<BackEnd.Models.Models.Unit, int>();
-        public double InfantryProvisionPercentage => _infantryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
-        public double CavalryProvisionPercentage => _cavalryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
-        public double ArcheryProvisionPercentage => _archeryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision);
+        public double InfantryProvisionPercentage 
+        { 
+            get { return (double)_infantryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision); }            
+        } 
+        public double CavalryProvisionPercentage
+        {
+            get { return (double)_cavalryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision); }
+        }
+        public double ArcheryProvisionPercentage
+        {
+            get { return (double)_archeryProvision / (_infantryProvision + _cavalryProvision + _archeryProvision); }
+        }
 
 
         public AttackingTroops(Dictionary<BackEnd.Models.Models.Unit, int> unitsAndAmounts)
@@ -27,15 +36,15 @@ namespace Services.Implementations.AttackService.Troops
                 switch (item.Key.UnitType)
                 {
                     case UnitType.Infantry:
-                        _infantryProvision += item.Key.UnitCost.Population;
+                        _infantryProvision += item.Key.UnitCost.Population * item.Value;
                         InfantryPhaseTroops.Add(item.Key, item.Value);
                         break;
                     case UnitType.Cavalry:
-                        _cavalryProvision += item.Key.UnitCost.Population;
+                        _cavalryProvision += item.Key.UnitCost.Population * item.Value;
                         CavalryPhaseTroops.Add(item.Key, item.Value);
                         break;
                     case UnitType.Archer:
-                        _archeryProvision += item.Key.UnitCost.Population;
+                        _archeryProvision += item.Key.UnitCost.Population * item.Value;
                         ArcheryPhaseTroops.Add(item.Key, item.Value);
                         break;
                     default:
@@ -111,7 +120,8 @@ namespace Services.Implementations.AttackService.Troops
 
             else
                 foreach (var item in survivedTroops)
-                    troopsOfNextPhase[item.Key] += item.Value;
+                    troopsOfNextPhase.Add(item.Key, item.Value);
+                        // troopsOfNextPhase[item.Key] += item.Value;
 
         }
     }

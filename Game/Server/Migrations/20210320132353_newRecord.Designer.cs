@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210320132353_newRecord")]
+    partial class newRecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -682,106 +684,40 @@ namespace Game.Server.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ArcherAttackerCountAfter")
-                        .HasColumnType("int");
+                    b.Property<string>("AttackerId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ArcherAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArcherDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArcherDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Attacker")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AttackerCityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AxeFighterAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterDefenderCountBefore")
-                        .HasColumnType("int");
+                    b.Property<string>("AttackingForcesId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Defender")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("DefenderId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DefendingCityName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("DefendingForcesId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("HeavyCavalryAttackerCountAfter")
-                        .HasColumnType("int");
+                    b.Property<string>("SurvivedAttackingForcesId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("HeavyCavalryAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalryDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalryDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanDefenderCountBefore")
-                        .HasColumnType("int");
+                    b.Property<string>("SurvivedDefendingForcesId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AttackerId");
+
+                    b.HasIndex("AttackingForcesId");
+
+                    b.HasIndex("DefenderId");
+
+                    b.HasIndex("DefendingForcesId");
+
+                    b.HasIndex("SurvivedAttackingForcesId");
+
+                    b.HasIndex("SurvivedDefendingForcesId");
 
                     b.ToTable("Reports");
                 });
@@ -1078,6 +1014,45 @@ namespace Game.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Models.Models.Report", b =>
+                {
+                    b.HasOne("BackEnd.Models.Models.ApplicationUser", "Attacker")
+                        .WithMany()
+                        .HasForeignKey("AttackerId");
+
+                    b.HasOne("BackEnd.Models.Models.UnitsInCity", "AttackingForces")
+                        .WithMany()
+                        .HasForeignKey("AttackingForcesId");
+
+                    b.HasOne("BackEnd.Models.Models.ApplicationUser", "Defender")
+                        .WithMany()
+                        .HasForeignKey("DefenderId");
+
+                    b.HasOne("BackEnd.Models.Models.UnitsInCity", "DefendingForces")
+                        .WithMany()
+                        .HasForeignKey("DefendingForcesId");
+
+                    b.HasOne("BackEnd.Models.Models.UnitsInCity", "SurvivedAttackingForces")
+                        .WithMany()
+                        .HasForeignKey("SurvivedAttackingForcesId");
+
+                    b.HasOne("BackEnd.Models.Models.UnitsInCity", "SurvivedDefendingForces")
+                        .WithMany()
+                        .HasForeignKey("SurvivedDefendingForcesId");
+
+                    b.Navigation("Attacker");
+
+                    b.Navigation("AttackingForces");
+
+                    b.Navigation("Defender");
+
+                    b.Navigation("DefendingForces");
+
+                    b.Navigation("SurvivedAttackingForces");
+
+                    b.Navigation("SurvivedDefendingForces");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Models.ApplicationUser", b =>

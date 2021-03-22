@@ -5,7 +5,7 @@
 
 <MudDialog>
     <DialogContent>
-       Do you want to downgrade the @BuildingName?
+        Do you want to downgrade the @BuildingName?
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -16,37 +16,35 @@
 
 
 @code {
-    @code {
-        [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-        [Parameter]
-        public int CurrentStage { get; set; }
+    [Parameter]
+    public int CurrentStage { get; set; }
 
-        [Parameter]
-        public string BuildingName { get; set; }
+    [Parameter]
+    public string BuildingName { get; set; }
 
-        [Parameter]
-        public int CityIndex { get; set; }
+    [Parameter]
+    public int CityIndex { get; set; }
 
-        async Task Submit()
+    async Task Submit()
+    {
+        GameServices gameServices = new GameServices(http);
+        var httpResponse = await gameServices.DowngradeBuilding(CityIndex, BuildingName, CurrentStage - 1);
+        var previousStageCostResponse = await new ViewServices(http).GetBuildingUpgradeCost(BuildingName, CurrentStage);
+
+        if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            GameServices gameServices = new GameServices(http);
-            var httpResponse = await gameServices.DowngradeBuilding(CityIndex, BuildingName, CurrentStage - 1);
-            var previousStageCostResponse = await new ViewServices(http).GetBuildingUpgradeCost(BuildingName, CurrentStage);
+            var content = await httpResponse.Content.ReadFromJsonAsync<SuccessfulBuildingStageModification>();
 
-            if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var content = await httpResponse.Content.ReadFromJsonAsync<SuccessfulBuildingStageModification>();
-
-                MudDialog.Close(DialogResult.Ok(content));
-            }
-            else
-            {
-                MudDialog.Close(DialogResult.Cancel());
-            }
-
+            MudDialog.Close(DialogResult.Ok(content));
         }
-        void Cancel() => MudDialog.Cancel();
-    }
+        else
+        {
+            MudDialog.Close(DialogResult.Cancel());
+        }
 
+    }
+    void Cancel() => MudDialog.Cancel();
 }
+

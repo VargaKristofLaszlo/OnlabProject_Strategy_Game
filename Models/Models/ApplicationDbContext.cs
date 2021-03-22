@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Models.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +28,7 @@ namespace BackEnd.Models.Models
         public DbSet<MaxBuildingStage> MaxBuildingStages { get; set; }
         public DbSet<UnitsInCity> UnitsInCities { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

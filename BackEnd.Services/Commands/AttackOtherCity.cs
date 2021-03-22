@@ -6,6 +6,7 @@ using MediatR;
 using Services.Exceptions;
 using Services.Implementations.AttackService.AttackPhaseBehaviourImpl;
 using Services.Implementations.AttackService.Troops;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,13 @@ namespace Services.Commands
         {
             private readonly IIdentityContext _identityContext;
             private readonly IUnitOfWork _unitOfWork;
+            private readonly IReportSender _reportSender;
 
-            public Handler(IUnitOfWork unitOfWork, IIdentityContext identityContext)
+            public Handler(IUnitOfWork unitOfWork, IIdentityContext identityContext, IReportSender reportSender)
             {
                 _unitOfWork = unitOfWork;
                 _identityContext = identityContext;
+                _reportSender = reportSender;
             }
 
             public async Task<MediatR.Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -52,12 +55,19 @@ namespace Services.Commands
 
                 var archeryPhaseResult = new ArcheryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
 
+                await _reportSender.CreateReport(initValues.attackerName, initValues.attackerCityName,
+                   initValues.defenderName, initValues.defenderCityName,
+                   archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
+                   request.Request.AttackingForces, initValues.defendingUnits);
+
                 //Update the attacking and defending side
                 foreach (var item in archeryPhaseResult.attackerTroops)
-                    unitsOfAttacker.Where(u => u.Unit.Name.Equals(item.Key.Name)).First().Amount = item.Value;
+                    unitsOfAttacker.First(u => u.Unit.Name.Equals(item.Key.Name)).Amount 
+                        -= request.Request.AttackingForces.First(x => x.Key.Equals(item.Key.Name)).Value - item.Value;
+                         
 
                 foreach (var item in archeryPhaseResult.defendingTroops)
-                    defendingUnits.Where(d => d.Unit.Name.Equals(item.Key.Name)).First().Amount = item.Value;
+                    defendingUnits.First(d => d.Unit.Name.Equals(item.Key.Name)).Amount = item.Value;
 
                 await _unitOfWork.CommitChangesAsync();
 
@@ -65,7 +75,8 @@ namespace Services.Commands
             }
 
             private async Task<(AttackingTroops attackingTroops, DefendingTroops defendingTroops,
-           IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits, int wallStage)> InitAttackProcess(AttackRequest request)
+           IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits, int wallStage,
+                string attackerName, string attackerCityName, string defenderName, string defenderCityName)> InitAttackProcess(AttackRequest request)
             {
                 var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
                 var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUserId);
@@ -76,6 +87,11 @@ namespace Services.Commands
                 if (attackingCity == null)
                     throw new NotFoundException();
 
+                var defendingCity = defendingUser.Cities.ElementAt(request.AttackedCityIndex);
+                if (defendingCity == null)
+                    throw new NotFoundException();
+
+
                 var unitsOfAttacker = await _unitOfWork.Units.GetUnitsInCityByBarrackId(attackingCity.BarrackId);
                 IEnumerable<BackEnd.Models.Models.Unit> allUnitTypes = await _unitOfWork.Units.GetAllUnitsAsync();
 
@@ -84,7 +100,7 @@ namespace Services.Commands
                 try
                 {
                     foreach (var item in request.AttackingForces)
-                        attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item)), item.Value);
+                        attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item.Key)), item.Value);
                 }
                 catch (InvalidOperationException) { throw new BadRequestException("Invalid unit type name"); }
 
@@ -99,7 +115,8 @@ namespace Services.Commands
 
                 int wallStage = defendingUser.Cities.ElementAt(request.AttackedCityIndex).CityWall.Stage;
 
-                return (attackingTroops, defendingTroops, unitsOfAttacker, defendingUnits, wallStage);
+                return (attackingTroops, defendingTroops, unitsOfAttacker, defendingUnits, wallStage,
+                     attackingUser.UserName, attackingCity.CityName, defendingUser.UserName, defendingCity.CityName);
             }
         }
     }

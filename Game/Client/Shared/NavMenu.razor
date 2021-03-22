@@ -25,6 +25,17 @@
         <AuthorizeView Roles="User">
             <Authorized>
                 <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Attack" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Attack
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/Reports" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Reports
+                    </NavLink>
+                </li>
+
+                <li class="nav-item px-3">
                     <NavLink class="nav-link" @onclick="NavigateToBarrack" Match="NavLinkMatch.All">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Barrack
                     </NavLink>

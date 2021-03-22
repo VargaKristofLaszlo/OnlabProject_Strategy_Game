@@ -160,5 +160,16 @@ namespace BackEnd.Repositories.Implementations
 
             return UsermanagerResponse.TaskFailed(errors);
         }
+
+
+        public async Task<(List<ApplicationUser> Users, int Count)> GetAllUsersWithCities(int pageNumber, int pageSize, string senderId) 
+        {
+            return (await _db.Users
+                .Where(x => x.Id.Equals(senderId) == false)
+                .Skip((pageNumber) * pageSize)
+                .Take(pageSize)
+                .Include(user => user.Cities)
+                .ToListAsync(), _db.Users.ToListAsync().Result.Count);
+        }
     }
 }

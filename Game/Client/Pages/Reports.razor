@@ -1,0 +1,184 @@
+﻿@page "/Reports"
+@inject HttpClient httpClient
+@inject Helpers.CityIndexState CityIndexState
+@using Game.Shared.Models.Response
+
+<div class="d-flex bd-highlight">
+    <ResourceView CityIndex="@CityIndexState.Index" />
+</div>
+<div class="d-flex bd-highlight">
+    <UnitsOfCityView CityIndex="@CityIndexState.Index" />
+</div>
+
+@if (pageData != null)
+{
+    @if (pageData.Count() != 0)
+    {
+        <MudExpansionPanels>
+            @foreach (var item in pageData)
+            {
+                <MudExpansionPanel Text="@string.Format("Date: " + item.CreationTime.ToString() + "    Attacker: " + item.Attacker +
+               "    Attacking city:  " + item.AttackerCityName + "    Defender: " + item.Defender + "    Defending city:  "
+               + item.DefendingCityName)" MaxHeight="400">
+                    <MudSimpleTable Class="mt-4">
+
+                        <thead>
+                            <tr>
+                                <td>Units</td>
+                                <td>
+                                    <img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" />
+                                </td>
+                                <td>
+                                    <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>Attacker</tr>
+                            <tr>
+                                <td>Amount</td>
+                                <td>@item.SpearmanAttackerCountBefore</td>
+                                <td>@item.SwordsmanAttackerCountBefore</td>
+                                <td>@item.AxeFighterAttackerCountBefore</td>
+                                <td>@item.ArcherAttackerCountBefore</td>
+                                <td>@item.LightCavalryAttackerCountBefore</td>
+                                <td>@item.MountedArcherAttackerCountBefore</td>
+                                <td>@item.HeavyCavalryAttackerCountBefore</td>
+                            </tr>
+                            <tr>
+                                <td>Survived</td>
+                                <td style="color:red">@item.SpearmanAttackerCountAfter</td>
+                                <td style="color:red">@item.SwordsmanAttackerCountAfter</td>
+                                <td style="color:red">@item.AxeFighterAttackerCountAfter</td>
+                                <td style="color:red">@item.ArcherAttackerCountAfter</td>
+                                <td style="color:red">@item.LightCavalryAttackerCountAfter</td>
+                                <td style="color:red">@item.MountedArcherAttackerCountAfter</td>
+                                <td style="color:red">@item.HeavyCavalryAttackerCountAfter</td>
+                            </tr>
+                            <tr>Defender</tr>
+                            <tr>
+                                <td>Amount</td>
+                                <td>@item.SpearmanDefenderCountBefore</td>
+                                <td>@item.SwordsmanDefenderCountBefore</td>
+                                <td>@item.AxeFighterDefenderCountBefore</td>
+                                <td>@item.ArcherDefenderCountBefore</td>
+                                <td>@item.LightCavalryDefenderCountBefore</td>
+                                <td>@item.MountedArcherDefenderCountBefore</td>
+                                <td>@item.HeavyCavalryDefenderCountBefore</td>
+                            </tr>
+                            <tr>
+                                <td>Survived</td>
+                                <td style="color:red">@item.SpearmanDefenderCountAfter</td>
+                                <td style="color:red">@item.SwordsmanDefenderCountAfter</td>
+                                <td style="color:red">@item.AxeFighterDefenderCountAfter</td>
+                                <td style="color:red">@item.ArcherDefenderCountAfter</td>
+                                <td style="color:red">@item.LightCavalryDefenderCountAfter</td>
+                                <td style="color:red">@item.MountedArcherDefenderCountAfter</td>
+                                <td style="color:red">@item.HeavyCavalryDefenderCountAfter</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                        </tbody>
+                    </MudSimpleTable>
+                </MudExpansionPanel>
+            }
+
+        </MudExpansionPanels>
+        <row>
+            <MudText>Page size:</MudText>
+            <MudButton Variant="Variant.Filled" @onclick="() => TableResize(5)">5</MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="() => TableResize(10)">10</MudButton>
+        </row>
+        <row>
+            <MudButton Variant="Variant.Filled" @onclick="() => NewPage(true)" Disabled="@_disableNextButton">Next</MudButton>
+            <MudButton Variant="Variant.Filled" @onclick="() => NewPage(false)" Disabled="_disablePreviousButton">Previous</MudButton>
+        </row>
+    }
+    else
+    {
+        <MudText>You dont have any reports of previous fights</MudText>
+    }
+}
+
+
+
+
+@code {
+    private List<Report> pageData;
+    private int _pageNumber = 0;
+    private int _pageSize = 5;
+    private bool _disableNextButton = false;
+    private bool _disablePreviousButton = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var viewService = new ViewServices(httpClient);
+        var response = await viewService.GetReports(_pageNumber, _pageSize);
+
+        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
+
+        pageData = res.Records.ToList();
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+    }
+    private async Task TableResize(int size)
+    {
+        var viewService = new ViewServices(httpClient);
+        var response = await viewService.GetReports(_pageNumber, size);
+
+        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
+
+        pageData = res.Records.ToList();
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+    }
+
+    private async Task NewPage(bool forward)
+    {
+        var viewService = new ViewServices(httpClient);
+
+
+        HttpResponseMessage response;
+
+        if (forward)
+            _pageNumber += 1;
+        else
+            _pageNumber -= 1;
+
+        response = await viewService.GetReports(_pageNumber, _pageSize);
+
+        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
+
+        if (res.PagingInformations.PagesCount == _pageNumber)
+            _disableNextButton = true;
+        else
+            _disableNextButton = false;
+
+        if (_pageNumber == 0)
+            _disablePreviousButton = true;
+        else
+            _disablePreviousButton = false;
+
+        pageData = res.Records.ToList();
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+
+        StateHasChanged();
+    }
+
+}

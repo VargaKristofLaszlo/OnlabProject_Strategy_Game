@@ -1,0 +1,219 @@
+﻿@inject IDialogService DialogService
+@inject Helpers.UnitsOfCityState UnitsOfTheCity
+@inject Helpers.CityIndexState CityIndexState
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <thead>
+                <tr>
+                    <td>Unit type</td>
+                    <td>Available amount</td>
+                    <td>Used amount</td>
+                </tr>
+            </thead>          
+            <tbody>
+                <MudTr>
+                    <MudTd><img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Spearmans</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedSpearman" Immediate="true" T="int"  Variant="Variant.Filled"  />
+                    </MudTd>
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Swordsmans</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedSwordsman" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Archers</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedHeavyCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.AxeFighers</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedAxeFighter" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.LightCavalry</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedLightCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+                </MudTr>
+                <MudTr>
+                    <MudTd><img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
+                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.MountedArcher</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="SelectedMountedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
+                    </MudTd>
+                </MudTr>
+            </tbody>
+        </MudSimpleTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Attack</MudButton>
+
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [Parameter]
+    public CityPagingData CityPagingData { get; set; }
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private bool _invalidAmount = false;
+
+    private int _selectedSperman = 0;
+    private int SelectedSpearman
+    {
+        get { return _selectedSperman; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.Spearmans)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedSperman = value;
+        }
+    }
+
+    private int _selectedSwordsman = 0;
+    private int SelectedSwordsman
+    {
+        get { return _selectedSwordsman; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.Swordsmans)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedSwordsman = value;
+        }
+    }
+
+    private int _selectedArcher = 0;
+    private int SelectedArcher
+    {
+        get { return _selectedArcher; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.Archers)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedArcher = value;
+        }
+    }
+
+    private int _selectedHeavyCavalry = 0;
+    private int SelectedHeavyCavalry
+    {
+        get { return _selectedHeavyCavalry; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedHeavyCavalry = value;
+        }
+    }
+
+    private int _selectedAxeFighter = 0;
+    private int SelectedAxeFighter
+    {
+        get { return _selectedAxeFighter; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.AxeFighers)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedAxeFighter = value;
+        }
+    }
+
+    private int _selectedLightCavalry = 0;
+    private int SelectedLightCavalry
+    {
+        get { return _selectedLightCavalry; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.LightCavalry)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedLightCavalry = value;
+        }
+    }
+
+    private int _selectedMountedArcher = 0;
+    private int SelectedMountedArcher
+    {
+        get { return _selectedMountedArcher; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.MountedArcher)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedMountedArcher = value;
+        }
+    }
+
+
+
+    private void Submit()
+    {
+        if (_invalidAmount)
+        {
+            Snackbar.Add("You dont have the requited amount of units", Severity.Error);
+        }
+        else
+        {
+            Game.Shared.Models.Request.AttackRequest content = new Game.Shared.Models.Request.AttackRequest()
+            {
+                AttackType = AttackType.Looting,
+                AttackingForces = new Dictionary<string, int>()
+{
+                { "Swordsman" , SelectedSwordsman},
+                { "Heavy Cavalry" , SelectedHeavyCavalry},
+                { "Mounted Archer" , SelectedMountedArcher},
+                { "Light Cavalry" , SelectedLightCavalry},
+                { "Spearman" , SelectedSpearman},
+                { "Archer" , SelectedArcher},
+                { "Axe Fighter" , SelectedAxeFighter}
+            },
+                AttackedUserId = CityPagingData.OwnerId,
+                AttackedCityIndex = CityPagingData.Index,
+                AttackerCityIndex = CityIndexState.Index
+            };
+
+            MudDialog.Close(DialogResult.Ok(content));
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+}

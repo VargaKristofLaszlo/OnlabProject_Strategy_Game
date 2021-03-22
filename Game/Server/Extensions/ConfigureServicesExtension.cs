@@ -63,6 +63,7 @@ namespace Game.Server.Extensions
                 config.AddProfile(new ResourceMapper());
                 config.AddProfile(new UnitProfile());
                 config.AddProfile(new CityProfile());
+                config.AddProfile(new ReportProfile());
             }).CreateMapper());
 
             return services;

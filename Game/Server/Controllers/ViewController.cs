@@ -154,5 +154,20 @@ namespace Game.Server.Controllers
             var response = await _mediator.Send(new GetUnitsOfCity.Query(cityIndex));
             return Ok(response);
         }
+
+        [HttpGet("Users/Others/Cities")]
+        public async Task<IActionResult> GetCitiesOfOtherUsers([FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        {
+            var response = await _mediator.Send(new GetOtherUsersCities.Query(pageNumber, pageSize));
+            return Ok(response);
+        }
+
+
+        [HttpGet("Reports")]
+        public async Task<IActionResult> GetReports([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            var response = await _mediator.Send(new GetReports.Query(pageNumber, pageSize));
+            return Ok(response);
+        }
     }
 }
