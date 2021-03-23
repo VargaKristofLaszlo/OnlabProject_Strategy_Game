@@ -1,8 +1,7 @@
 ﻿@page "/Attack"
 
-@using System.Net.Http.Json
-@using Game.Shared.Models.Response
 @inject HttpClient httpClient
+@inject Game.Shared.IServices.IViewService IViewService
 @inject IDialogService DialogService
 @inject Helpers.UnitsOfCityState UnitsOfCityState
 @inject Helpers.CityIndexState CityIndexState
@@ -51,10 +50,8 @@
     /// </summary>
     private async Task<TableData<CityPagingData>> ServerReload(TableState state)
     {
-        var viewService = new ViewServices(httpClient);
-        var response = await viewService.GetOtherUsersCities(state.Page, state.PageSize);
 
-        var collectionResponse = await response.Content.ReadFromJsonAsync<CollectionResponse<CityPagingData>>();
+        var collectionResponse = await IViewService.GetOtherUsersCities(state.Page, state.PageSize);
 
         IEnumerable<CityPagingData> data = collectionResponse.Records;
 
@@ -115,9 +112,8 @@
             var gameService = new GameServices(httpClient);
             await gameService.AttackOtherCity(dialogResult.Data as Game.Shared.Models.Request.AttackRequest);
 
-            ViewServices viewServices = new ViewServices(httpClient);
-            var httpResponse = await viewServices.GetUnitsOfCity(CityIndexState.Index);
-            var units = await httpResponse.Content.ReadFromJsonAsync<UnitsOfTheCity>();
+
+            var units = await IViewService.GetUnitsOfCity(CityIndexState.Index);
 
             UnitsOfCityState.SetUnitsOfTheCity(units);
         }

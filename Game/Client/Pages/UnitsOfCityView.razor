@@ -1,4 +1,4 @@
-﻿@inject HttpClient http
+﻿@inject Game.Shared.IServices.IViewService IViewService
 @inject IJSRuntime JSRuntime
 @inject Helpers.UnitsOfCityState UnitsOfCityState
 @implements IDisposable
@@ -85,10 +85,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ViewServices viewServices = new ViewServices(http);
-        var httpResponse = await viewServices.GetUnitsOfCity(CityIndex);
-        var units = await httpResponse.Content.ReadFromJsonAsync<UnitsOfTheCity>();
-
+        var units = await IViewService.GetUnitsOfCity(CityIndex);
         UnitsOfCityState.SetUnitsOfTheCity(units);
     }
 

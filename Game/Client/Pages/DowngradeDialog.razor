@@ -1,5 +1,4 @@
-﻿@inject HttpClient http
-
+﻿@inject Game.Shared.IServices.IGameService IGameService
 @inject IDialogService DialogService
 
 
@@ -29,22 +28,15 @@
 
     async Task Submit()
     {
-        GameServices gameServices = new GameServices(http);
-        var httpResponse = await gameServices.DowngradeBuilding(CityIndex, BuildingName, CurrentStage - 1);
-        var previousStageCostResponse = await new ViewServices(http).GetBuildingUpgradeCost(BuildingName, CurrentStage);
+        var response = await IGameService.DowngradeBuilding(CityIndex, BuildingName, CurrentStage - 1);
 
-        if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK)
-        {
-            var content = await httpResponse.Content.ReadFromJsonAsync<SuccessfulBuildingStageModification>();
+        if (response.IsSuccessStatusCode)
+            MudDialog.Close(DialogResult.Ok(response.Content));
 
-            MudDialog.Close(DialogResult.Ok(content));
-        }
         else
-        {
             MudDialog.Close(DialogResult.Cancel());
-        }
-
     }
+
     void Cancel() => MudDialog.Cancel();
 }
 

@@ -117,3 +117,8 @@ h1 {
     -ms-transform: translateX(-30%);
     transform: translateX(-30%);
 }
+
+.selected {
+    border-style: solid;
+    color: orange
+}

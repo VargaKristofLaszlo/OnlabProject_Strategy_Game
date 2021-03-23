@@ -1,9 +1,9 @@
 ﻿@page "/barrack/{barrackLevel:int}"
-@inject HttpClient Http
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
 @inject Helpers.CityIndexState CityIndexState
 @inject Helpers.CityResourceState CityResourceState
 @inject Helpers.UnitsOfCityState UnitsOfCityState
-
 
 <div class="d-flex bd-highlight">
     <ResourceView CityIndex="@CityIndexState.Index" />
@@ -20,7 +20,7 @@
                     <span>(Level @BarrackLevel)</span>
                 </h2>
             </header>
-            
+
             <div class="box-outer">
                 <div class="headline">
                     <div> Defensive units </div>
@@ -36,7 +36,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <img src="@unit.icon" width="34" height="34" class="mt-2 mb-2"
+                                            <img src="@unit.icon" width="34" height="34" class="mt-2 mb-2 @(unit.selected ? "selected" : "")"
                                                  @onclick="() => SetSelectedUnitInfoByName(unit.name)" />
                                         </td>
                                     </tr>
@@ -63,7 +63,7 @@
                                     <tr>
 
                                         <td>
-                                            <img src="@unit.icon" width="34" height="34" class="mt-2 mb-2"
+                                            <img src="@unit.icon" width="34" height="34" class="mt-2 mb-2 @(unit.selected ? "selected" : "")"
                                                  @onclick="() => SetSelectedUnitInfoByName(unit.name)" />
                                         </td>
                                     </tr>
@@ -123,7 +123,7 @@
             </MudSimpleTable>
             <input type="number" @bind="@_selectedAmount" @bind:event="oninput" disabled="@(_selectedUnit.MinBarrackStage > BarrackLevel)" />
         }
-    </div>    
+    </div>
 </section>
 
 <footer class="d-flex justify-content-center mt-4">
@@ -134,29 +134,29 @@
 </footer>
 
 @if (CityResourceState.Wood >= _productionCost.Wood && CityResourceState.Stone >= _productionCost.Stone &&
-    CityResourceState.Silver >= _productionCost.Silver && CityResourceState.Population >= _productionCost.Population)
+   CityResourceState.Silver >= _productionCost.Silver && CityResourceState.Population >= _productionCost.Population)
 {
     <div class="horizontal-center"><MudButton Variant="Variant.Filled" @onclick="TrainTroops">Train selected troops</MudButton></div>
 
 }
 
-@code { 
+@code {
     [Parameter]
     public int BarrackLevel { get; set; }
 
 
-    private List<(string name, int amount, string icon)> _defensiveUnits = new List<(string, int, string)>()
-    {
-        { ("Spearman" , 0,"/images/DefensiveUnits/Spearman.svg")},
-        { ("Swordsman", 0,"/images/DefensiveUnits/Swordsman.svg")},
-        { ("Archer", 0, "/images/DefensiveUnits/Archer.svg")},
-        { ("Heavy Cavalry", 0, "/images/DefensiveUnits/Heavy Cavalry.svg")}
+    private List<(string name, int amount, string icon, bool selected)> _defensiveUnits = new List<(string, int, string, bool)>()
+{
+        { ("Spearman" , 0,"/images/DefensiveUnits/Spearman.svg", true)},
+        { ("Swordsman", 0,"/images/DefensiveUnits/Swordsman.svg", false)},
+        { ("Archer", 0, "/images/DefensiveUnits/Archer.svg", false)},
+        { ("Heavy Cavalry", 0, "/images/DefensiveUnits/Heavy Cavalry.svg", false)}
     };
-    private List<(string name, int amount, string icon)> _offensiveUnits = new List<(string name, int amount, string icon)>
-    {
-        { ("Axe Fighter", 0, "/images/OffensiveUnits/Axe Fighter.svg")},
-        { ("Light Cavalry", 0, "/images/OffensiveUnits/Light Cavalry.svg")},
-        { ("Mounted Archer", 0, "/images/OffensiveUnits/Mounted Archer.svg")}
+    private List<(string name, int amount, string icon, bool selected)> _offensiveUnits = new List<(string, int, string, bool)>
+{
+        { ("Axe Fighter", 0, "/images/OffensiveUnits/Axe Fighter.svg", false)},
+        { ("Light Cavalry", 0, "/images/OffensiveUnits/Light Cavalry.svg", false)},
+        { ("Mounted Archer", 0, "/images/OffensiveUnits/Mounted Archer.svg", false)}
     };
 
 
@@ -208,51 +208,73 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var viewService = new ViewServices(Http);
-        var httpResponse = await viewService.GetUnitTypes(0,20);
-        var content = await httpResponse.Content.ReadFromJsonAsync<Game.Shared.Models.Response.CollectionResponse<Unit>>();
-        _units = content.Records.ToList();
+        var unitCollection = await IViewService.GetUnitTypes(0, 20);
+        _units = unitCollection.Records.ToList();
         if (_units.Count > 0)
             _selectedUnit = _units.First(x => x.Name.Equals("Spearman"));
     }
 
     private void SetSelectedUnitInfoByName(string unitName)
     {
-        foreach (var item in _defensiveUnits)
+        for (int i = 0; i < _defensiveUnits.Count(); i++)
         {
-            if (item.name.Equals(unitName))
+            if (_defensiveUnits.ElementAt(i).name.Equals(unitName))
             {
                 amount = _defensiveUnits.First(x => x.name.Equals(unitName)).amount;
                 _selectedUnit = _units.FirstOrDefault(x => x.Name.Equals(unitName));
-                return;
+                var tmp = _defensiveUnits[i];
+                tmp.selected = true;
+                _defensiveUnits[i] = tmp;
             }
+            else
+            {
+                var tmp = _defensiveUnits[i];
+                tmp.selected = false;
+                _defensiveUnits[i] = tmp;
+            }
+
         }
-        foreach (var item in _offensiveUnits)
+        for (int i = 0; i < _offensiveUnits.Count(); i++)
         {
-            if (item.name.Equals(unitName))
+            if (_offensiveUnits.ElementAt(i).name.Equals(unitName))
             {
                 amount = _offensiveUnits.First(x => x.name.Equals(unitName)).amount;
                 _selectedUnit = _units.FirstOrDefault(x => x.Name.Equals(unitName));
-                return;
+                var tmp = _offensiveUnits[i];
+                tmp.selected = true;
+                _offensiveUnits[i] = tmp;
+            }
+            else
+            {
+                var tmp = _offensiveUnits[i];
+                tmp.selected = false;
+                _offensiveUnits[i] = tmp;
             }
         }
     }
 
     private async Task TrainTroops()
     {
-        var gameService = new GameServices(Http);
+
         UnitsOfTheCity unitsOfTheCity = UnitsOfCityState.UnitsOfTheCity;
 
         for (int index = 0; index < _defensiveUnits.Count(); index++)
         {
             if (_defensiveUnits[index].amount > 0)
             {
-                var response = await gameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest
+                var response = await IGameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest
                 {
                     NameOfUnitType = _defensiveUnits[index].name,
                     Amount = _defensiveUnits[index].amount,
                     CityIndex = CityIndexState.Index
                 });
+
+                //var response = await gameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest
+                //{
+                //    NameOfUnitType = _defensiveUnits[index].name,
+                //    Amount = _defensiveUnits[index].amount,
+                //    CityIndex = CityIndexState.Index
+                //});
                 if (response.IsSuccessStatusCode)
                 {
                     var item = _defensiveUnits[index];
@@ -283,7 +305,7 @@
         {
             if (_offensiveUnits[index].amount > 0)
             {
-                var response = await gameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest
+                var response = await IGameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest
                 {
                     NameOfUnitType = _offensiveUnits[index].name,
                     Amount = _offensiveUnits[index].amount,

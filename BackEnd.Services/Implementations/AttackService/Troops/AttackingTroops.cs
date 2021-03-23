@@ -102,7 +102,10 @@ namespace Services.Implementations.AttackService.Troops
             }
 
             foreach (var item in defendingTroops)
-                defendingTroops[item.Key] = defendingTroops[item.Key] - (int)Math.Ceiling(defendingTroops[item.Key] * casualtyRatio);
+                if (defendingTroops[item.Key] != 0) 
+                {
+                    defendingTroops[item.Key] = defendingTroops[item.Key] - (int)Math.Ceiling(defendingTroops[item.Key] * casualtyRatio);
+                }               
 
             return (attackingTroops, defendingTroops);
         }

@@ -19,12 +19,12 @@ namespace Game.Client.Helpers
         private const string _wareHouse = "Warehouse";
 
         private readonly CityResourceState _cityResourceState;
-        private readonly HttpClient _http;
+        private readonly Game.Shared.IServices.IViewService _viewService;
 
-        public CityDetailsState(CityResourceState cityResourceState, HttpClient http)
+        public CityDetailsState(CityResourceState cityResourceState, Game.Shared.IServices.IViewService viewService)
         {
             _cityResourceState = cityResourceState;
-            _http = http;
+            _viewService = viewService;
         }
 
         public CityDetails CityDetails { get; private set; }
@@ -79,8 +79,7 @@ namespace Game.Client.Helpers
                     _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.WarehouseUpgradeCost);
                     CityDetails.WarehouseUpgradeCost = newUpgradeCost;
                     CityDetails.WarehouseStage = newStage;
-                    var httpResponse = await new ViewServices(_http).GetWarehouseCapacity(cityIndex);
-                    var capacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+                    var capacity = await _viewService.GetWarehouseCapacity(cityIndex);                   
                     _cityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
                     break;
                 default:

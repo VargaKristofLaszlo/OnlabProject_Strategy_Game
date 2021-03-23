@@ -1,17 +1,13 @@
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Game.Client.Helpers;
-using Game.Shared.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
+using Refit;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Game.Client
@@ -40,6 +36,18 @@ namespace Game.Client
             builder.Services.AddSingleton<CityIndexState>();
             builder.Services.AddSingleton<UnitsOfCityState>();
             builder.Services.AddScoped<CityDetailsState>();
+
+            builder.Services.AddRefitClient<Game.Shared.IServices.IViewService>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "api/View"))
+                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+            builder.Services.AddRefitClient<Game.Shared.IServices.IGameService>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "api/Game"))
+                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+            builder.Services.AddRefitClient<Game.Shared.IServices.IAdminService>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "api/Admin"))
+                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             await builder.Build().RunAsync();
         }

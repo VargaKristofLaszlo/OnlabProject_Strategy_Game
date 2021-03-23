@@ -1,13 +1,14 @@
-﻿@inject HttpClient http
-@inject IDialogService DialogService
+﻿@inject IDialogService DialogService
+@inject Game.Shared.IServices.IViewService IViewService
 @inject Helpers.CityResourceState CityResourceState
 @inject Helpers.CityDetailsState CityDetailsState
 @implements IDisposable
 
 
+
 @if (CityDetailsState != null && CityDetailsState.CityDetails != null)
 {
-    
+
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
             <tr>
@@ -35,125 +36,125 @@
                                                              CityIndex)"></i>
                 </td>
             </tr>
-               <tr>
-            <td>City hall</td>
-            <td>@CityDetailsState.CityDetails.CityHallStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+            <tr>
+                <td>City hall</td>
+                <td>@CityDetailsState.CityDetails.CityHallStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.CityHallUpgradeCost,
                                                          CityDetailsState.CityDetails.CityHallStage,
                                                          _cityHall,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.CityHallStage,
                                                          _cityHall,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>City wall</td>
-            <td>@CityDetailsState.CityDetails.CityWallStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>City wall</td>
+                <td>@CityDetailsState.CityDetails.CityWallStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.CityWallUpgradeCost,
                                                          CityDetailsState.CityDetails.CityWallStage,
                                                          _cityWall,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.CityWallStage,
                                                          _cityWall,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>Farm</td>
-            <td>@CityDetailsState.CityDetails.FarmStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>Farm</td>
+                <td>@CityDetailsState.CityDetails.FarmStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.FarmUpgradeCost,
                                                          CityDetailsState.CityDetails.FarmStage,
                                                          _farm,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.FarmStage,
                                                          _farm,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>Lumber</td>
-            <td>@CityDetailsState.CityDetails.LumberStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>Lumber</td>
+                <td>@CityDetailsState.CityDetails.LumberStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.LumberUpgradeCost,
                                                          CityDetailsState.CityDetails.LumberStage,
                                                          _lumber,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.LumberStage,
                                                          _lumber,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>Silver mine</td>
-            <td>@CityDetailsState.CityDetails.SilverMineStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>Silver mine</td>
+                <td>@CityDetailsState.CityDetails.SilverMineStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.SilverMineUpgradeCost,
                                                          CityDetailsState.CityDetails.SilverMineStage,
                                                          _silverMine,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.SilverMineStage,
                                                          _silverMine,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>Stone mine</td>
-            <td>@CityDetailsState.CityDetails.StoneMineStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>Stone mine</td>
+                <td>@CityDetailsState.CityDetails.StoneMineStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.StoneMineUpgradeCost,
                                                          CityDetailsState.CityDetails.StoneMineStage,
                                                          _stoneMine,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.StoneMineStage,
                                                          _stoneMine,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
-        <tr>
-            <td>Warehouse</td>
-            <td>@CityDetailsState.CityDetails.WarehouseStage</td>
-            <td>
-                <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                </td>
+            </tr>
+            <tr>
+                <td>Warehouse</td>
+                <td>@CityDetailsState.CityDetails.WarehouseStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
                                                          CityDetailsState.CityDetails.WarehouseUpgradeCost,
                                                          CityDetailsState.CityDetails.WarehouseStage,
                                                          _wareHouse,
                                                          CityIndex)"></i>
-            </td>
-            <td>
-                <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
                                                          CityDetailsState.CityDetails.WarehouseStage,
                                                          _wareHouse,
                                                          CityIndex)"></i>
-            </td>
-        </tr>
+                </td>
+            </tr>
         </tbody>
     </MudSimpleTable>
 }
@@ -175,14 +176,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ViewServices viewServices = new ViewServices(http);
-        var httpResponse = await viewServices.GetCityDetails(CityIndex);
-        var cityDetails = await httpResponse.Content.ReadFromJsonAsync<CityDetails>();
+        var cityDetails = await IViewService.GetCityDetails(CityIndex);
         CityDetailsState.Init(cityDetails);
     }
-
-
-
 
     private async Task OpenUpgradeDialog(Resources upgradeCost, int currentStage, string buildingName, int cityIndex)
     {
@@ -257,8 +253,7 @@
                     case _wareHouse:
                         CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
                         CityDetailsState.BuildingDowngrade(buildingName, dialogData.NewUpgradeCost, dialogData.NewStage);
-                        var httpResponse = await new ViewServices(http).GetWarehouseCapacity(CityIndex);
-                        var capacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+                        var capacity = await IViewService.GetWarehouseCapacity(CityIndex);
                         CityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
                         break;
 

@@ -1,5 +1,5 @@
 ﻿@page "/Reports"
-@inject HttpClient httpClient
+@inject Game.Shared.IServices.IViewService IViewService
 @inject Helpers.CityIndexState CityIndexState
 @using Game.Shared.Models.Response
 
@@ -120,61 +120,58 @@
 
 @code {
     private List<Report> pageData;
-    private int _pageNumber = 0;
+    private int _pageNumber = 1;
     private int _pageSize = 5;
     private bool _disableNextButton = false;
-    private bool _disablePreviousButton = false;
+    private bool _disablePreviousButton = true;
 
     protected override async Task OnInitializedAsync()
     {
-        var viewService = new ViewServices(httpClient);
-        var response = await viewService.GetReports(_pageNumber, _pageSize);
+        var response = await IViewService.GetReports(_pageNumber, _pageSize);
 
-        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
-
-        pageData = res.Records.ToList();
+        pageData = response.Records.ToList();
 
         pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
     }
     private async Task TableResize(int size)
     {
-        var viewService = new ViewServices(httpClient);
-        var response = await viewService.GetReports(_pageNumber, size);
+        _pageNumber = 1;
+        _pageSize = size;
+        var response = await IViewService.GetReports(_pageNumber, size);
 
-        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
+        pageData = response.Records.ToList();
 
-        pageData = res.Records.ToList();
+        if (response.PagingInformations.PagesCount == _pageNumber)
+            _disableNextButton = true;
+        else
+            _disableNextButton = false;
+
 
         pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
     }
 
     private async Task NewPage(bool forward)
     {
-        var viewService = new ViewServices(httpClient);
-
-
-        HttpResponseMessage response;
-
         if (forward)
             _pageNumber += 1;
-        else
+
+        if (forward == false && _pageNumber > 1)
             _pageNumber -= 1;
 
-        response = await viewService.GetReports(_pageNumber, _pageSize);
 
-        var res = await response.Content.ReadFromJsonAsync<CollectionResponse<Report>>();
+        var response = await IViewService.GetReports(_pageNumber, _pageSize);
 
-        if (res.PagingInformations.PagesCount == _pageNumber)
+        if (response.PagingInformations.PagesCount == _pageNumber)
             _disableNextButton = true;
         else
             _disableNextButton = false;
 
-        if (_pageNumber == 0)
+        if (_pageNumber == 1)
             _disablePreviousButton = true;
         else
             _disablePreviousButton = false;
 
-        pageData = res.Records.ToList();
+        pageData = response.Records.ToList();
 
         pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
 

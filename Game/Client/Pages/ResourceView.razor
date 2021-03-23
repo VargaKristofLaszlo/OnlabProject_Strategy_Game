@@ -1,4 +1,4 @@
-﻿@inject HttpClient http
+﻿@inject Game.Shared.IServices.IViewService IViewService
 @inject IJSRuntime JSRuntime
 @inject Helpers.CityResourceState CityResourceState
 @implements IDisposable
@@ -71,16 +71,12 @@ else
     [Parameter]
     public int CityIndex { get; set; } = 0;
 
-    private CityResources _cityResources = null;    
+    private CityResources _cityResources = null;
 
     protected override async Task OnInitializedAsync()
     {
-        ViewServices viewServices = new ViewServices(http);
-        var httpResponse = await viewServices.GetResourcesOfTheCity(CityIndex);
-        _cityResources = await httpResponse.Content.ReadFromJsonAsync<CityResources>();
-
-        httpResponse = await viewServices.GetWarehouseCapacity(CityIndex);
-        WarehouseCapacity _warehouseCapacity = await httpResponse.Content.ReadFromJsonAsync<WarehouseCapacity>();
+        _cityResources = await IViewService.GetResourcesOfTheCity(CityIndex);
+        WarehouseCapacity warehouseCapacity = await IViewService.GetWarehouseCapacity(CityIndex);
 
         CityResourceState.SetInitValue(new Resources
         {
@@ -88,7 +84,7 @@ else
             Stone = _cityResources.StoneAmount,
             Silver = _cityResources.SilverAmount,
             Population = _cityResources.FreePopulation
-        },_warehouseCapacity);
+        }, warehouseCapacity);
     }
 
     protected override void OnInitialized()

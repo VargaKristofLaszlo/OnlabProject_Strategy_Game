@@ -1,7 +1,11 @@
-﻿@inject HttpClient http
-@using System.Collections.Generic
+﻿@using System.Collections.Generic
+@inject Game.Shared.IServices.IViewService IViewService
 @inject Helpers.CityIndexState CityIndexState
 @implements IDisposable
+
+
+
+
 @if (_cityNames == null)
 {
     <p>Loading..</p>
@@ -27,9 +31,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        ViewServices viewServices = new ViewServices(http);
-        var httpResponse = await viewServices.GetCityNamesOfUser();
-        var names = await httpResponse.Content.ReadFromJsonAsync<IEnumerable<string>>();
+        var names = await IViewService.GetCityNamesOfUser();
         _cityNames = names.ToList();
     }
 
@@ -49,6 +51,5 @@ else
         CityIndexState.SetIndex(i);
 
         Console.WriteLine(CityIndexState.Index);
-
     }
 }
