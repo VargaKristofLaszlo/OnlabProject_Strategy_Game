@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Queries;
-using Shared.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,7 +23,7 @@ namespace Game.Server.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("Credentials")]
         [SwaggerOperation(
             Summary = "Returns a list containing user informations for the admins",
@@ -57,7 +56,7 @@ namespace Game.Server.Controllers
             return Ok(response);
         }
 
-       
+      
         [HttpGet("CityNames")]
         [SwaggerOperation(
             Summary = "Returns a list containing the name of the cities",
@@ -68,13 +67,29 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The user could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<string>))]
-        public async Task<IActionResult> GetCityNamesOfUser() 
+        public async Task<IActionResult> GetCityNamesOfLoggedInUser()
         {
             var response = await _mediator.Send(new GetCityNamesOfUser.Query());
             return Ok(response);
         }
 
-        
+        [HttpGet("CityNames/{id}")]
+        [SwaggerOperation(
+          Summary = "Returns a list containing the name of the cities",
+          Description = "Returns a list containing the name of the cities." +
+          "Can be used to either list the names for the admin or in-game for a user" +
+          "<b>Using this end-point requires the user to log in<b>"
+      )]
+        [SwaggerResponse(404, "The user could not be found")]
+        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<string>))]
+        public async Task<IActionResult> GetCityNamesOfUserById(string id)
+        {
+            var response = await _mediator.Send(new GetCityNamesOfUser.Query(id));
+            return Ok(response);
+        }
+
+
         [HttpGet("Units")]
         [SwaggerOperation(
             Summary = "Returns a list containing informations about the unit types",
@@ -108,22 +123,22 @@ namespace Game.Server.Controllers
         }
 
 
-        [HttpGet("Units/Producible")]
-        [SwaggerOperation(
-            Summary = "Returns a list containing information about the producible units",
-            Description = "Returns a list containing information about the producible units" +
-            "Use this endpoint to get the data for a page where you can select a unit for production" +
-            "<b>Using this end-point requires the user to log in<b>"
-        )]
-        [SwaggerResponse(404, "The city could not be found")]
-        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
-        [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<Shared.Models.Unit>))]
-        public async Task<IActionResult> GetProducibleUnits([FromQuery] int cityIndex) 
+        [HttpGet("Units/{unitName}")]
+       
+        public async Task<IActionResult> GetUnitByName(string unitName) 
         {
-            var response = await _mediator.Send(new GetProducibleUnitTypes.Query(cityIndex));
+            var response = await _mediator.Send(new GetUnitByName.Query(unitName));
             return Ok(response);
         }
-    
+        [HttpGet("Building/{buildingName}/Upgradecost")]
+
+        public async Task<IActionResult> GetBuildingUpgradeCosts(string buildingName)
+        {
+            var response = await _mediator.Send(new GetBuildingUpgradeCostsByName.Query(buildingName));
+            return Ok(response);
+        }
+
+
         //Call this when we need to refresh the resources of the city
         [HttpGet("City/Resources")]
         [SwaggerOperation(

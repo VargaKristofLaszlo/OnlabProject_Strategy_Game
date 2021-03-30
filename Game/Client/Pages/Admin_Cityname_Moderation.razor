@@ -1,0 +1,114 @@
+﻿@page "/Admin/Users/{UserId}/Cities"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IAdminService IAdminService
+@using Game.Shared.Models.Request
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<string>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Cities</MudText>
+        <MudToolBarSpacer />
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="nr_name" T="string">City name</MudTableSortLabel></MudTh>
+        <MudTh>Edit</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="nr_name">@context</MudTd>
+        @if (editEnabled == true && selectedCityName.Equals(context))
+        {
+            <MudTh>
+                <MudTextField @bind-Value="newCityName" Placeholder="New city name" Variant="Variant.Text"
+                              AutoFocus="true"></MudTextField>
+            </MudTh>
+            <MudTh>
+                <MudIconButton Icon="fas fa-check" Color="Color.Error" OnClick="() => Edit(context)">Edit</MudIconButton>
+                <MudIconButton Icon="fas fa-times" Color="Color.Error" OnClick="() => editEnabled = false">Cancel</MudIconButton>
+            </MudTh>
+        }
+        else
+        {
+            <MudTh>
+                <MudIconButton Icon="fas fa-edit" Color="Color.Error" OnClick="() => EnableEdit(context)">Edit</MudIconButton>
+            </MudTh>
+        }
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter] public string UserId { get; set; }
+    
+    private IEnumerable<string> pagedData;
+    private MudTable<string> table;
+    private string newCityName;
+    private int totalItems;
+    private string searchString = null;
+    private bool editEnabled = false;
+    private string selectedCityName;
+
+    /// <summary>
+    /// Here we simulate getting the paged, filtered and ordered data from the server
+    /// </summary>
+    private async Task<TableData<string>> ServerReload(TableState state)
+    {
+
+        var allCityNames = await IViewService.GetCityNamesByUserId(UserId);
+
+        allCityNames = allCityNames.Where(element =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (element.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }).ToArray();
+
+
+        totalItems = allCityNames.Count();
+        switch (state.SortLabel)
+        {
+            case "nr_name":
+                allCityNames = allCityNames.OrderByDirection(state.SortDirection, o => o);
+                break;
+        }
+
+        pagedData = allCityNames.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new TableData<string>() { TotalItems = totalItems, Items = pagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+
+    private async Task Edit(string oldName)
+    {
+        editEnabled = false;
+
+        if (string.IsNullOrEmpty(oldName))
+            return;
+
+        var response = await IAdminService.ModerateCityName(new CityNameModerationRequest()
+        {
+            UserId = UserId,
+            OldCityName = oldName,
+            NewCityName = newCityName
+        });
+
+        await table.ReloadServerData();
+    }
+
+    void EnableEdit(string cityName)
+    {
+        editEnabled = true;
+        selectedCityName = cityName;
+    }
+}

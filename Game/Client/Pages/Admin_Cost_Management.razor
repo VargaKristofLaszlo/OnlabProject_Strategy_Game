@@ -1,0 +1,234 @@
+﻿@page "/Admin/Cost"
+
+@using Game.Shared.Models.Request 
+@using Microsoft.AspNetCore.Authorization
+@using Game.Client.Helpers
+@using Microsoft.AspNetCore.Mvc
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IAdminService IAdminService
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@attribute [Authorize(Roles = "Admin")]
+
+@if (optionWasSelected == false)
+{
+    <h1>Choose what type of cost you want to modify</h1>
+    <MudMenu Label="Open Menu" Variant="Variant.Filled" Color="Color.Primary">
+        @foreach (var option in selectOption)
+        {
+            <MudMenuItem OnClick="() => OptionClicked(option)">@Enum.GetName(typeof(SelectOptions), option)</MudMenuItem>
+        }
+    </MudMenu>
+}
+else
+{
+    <h1>Choose what @selectedEnumOption.ToString().ToLower()'s cost you want to modify</h1>
+    <MudMenu  Label="@(string.IsNullOrEmpty(selectedItemShowedName) ? selectedEnumOption.ToString() : selectedItemShowedName)" 
+             Variant="Variant.Filled" Color="Color.Primary"
+             MaxHeight="200" Class="w-25">
+        @foreach (var option in selectedOptionValues)
+        {
+            <MudMenuItem OnClick="() => ItemClicked(option)">@option.showed</MudMenuItem>
+        }
+    </MudMenu>
+    <MudButton Class="ml-2"
+               Variant="Variant.Filled" Color="Color.Primary"
+               OnClick="() => { optionWasSelected = false; tableIsEnabled = false; }">Reset</MudButton>
+}
+@if (tableIsEnabled)
+{
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            <th>@selectedItemShowedName's costs</th>
+        </tr>
+        <tr>
+            <th><i class="fas fa-tree"></i></th>
+            <th><i class="fas fa-gem"></i></th>
+            <th><i class="fas fa-coins"></i></th>
+            <th><i class="fas fa-user"></i></th>
+            @if(selectedEnumOption == SelectOptions.Building) 
+            {
+                <th>Upgrade time</th>
+                <th>Stage</th>
+            }
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (selectedEnumOption == SelectOptions.Unit)
+        {
+            <tr>
+                <td>@UnitCost.Wood</td>
+                <td>@UnitCost.Stone</td>
+                <td>@UnitCost.Silver</td>
+                <td>@UnitCost.Population</td>
+                <td><i class="fas fa-edit" @onclick="() => EditCost(UnitCost)"></i></td>
+            </tr>
+        }
+        else if (selectedEnumOption == SelectOptions.Building)
+        {
+            @foreach (var cost in UgpradeCosts)
+            {
+                <tr>                    
+                    <td>@cost.UpgradeCost.Wood</td>
+                    <td>@cost.UpgradeCost.Stone</td>
+                    <td>@cost.UpgradeCost.Silver</td>
+                    <td>@cost.UpgradeCost.Population</td>
+                    <td>@(new TimeSpan(0, 0, cost.UpgradeTimeInSeconds))</td>
+                    <td>@cost.BuildingStage</td>
+                    <td><i class="fas fa-edit" @onclick="() => EditCost(cost)"></i></td>
+                </tr>
+            }
+        }
+    </tbody>
+
+    @if (selectedEnumOption == SelectOptions.Building)
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary"
+                   OnClick="CreateNewBuildingStage"
+                   Class="justify-content-center mt-2">
+            Create the next stage of the building
+        </MudButton>
+    }
+
+</MudSimpleTable>
+}
+
+
+
+@code {
+    private bool optionWasSelected = false;
+    private bool tableIsEnabled = false;
+    private Array selectOption = Enum.GetValues(typeof(SelectOptions));
+    private List<(string actual, string showed)> selectedOptionValues = new List<(string, string)>();
+    private Resources UnitCost = new Resources();
+    private List<UpgradeCostCreationRequest> UgpradeCosts = new List<UpgradeCostCreationRequest>();
+    private SelectOptions selectedEnumOption;
+    private string selectedItemActualName;
+    private string selectedItemShowedName;
+
+    private void OptionClicked(object selectedOption)
+    {
+        selectedEnumOption = (SelectOptions)selectedOption;
+        selectedOptionValues.Clear();
+        var enumValues = SelectOptionsTransformer.GetEnumValues(selectedEnumOption);
+
+        foreach (var item in enumValues)
+        {
+            if (item.GetType() == typeof(UnitSelector))
+                selectedOptionValues.Add((item.ToString(), (UnitSelectorTransformer.GetEnumName(item.ToString()))));
+            else if (item.GetType() == typeof(BuildingSelector))
+                selectedOptionValues.Add((item.ToString(), BuildingSelectorTransformer.GetEnumName(item.ToString())));
+        }
+        optionWasSelected = true;
+    }
+
+    private async Task ItemClicked((string actual, string showed) selectedItem)
+    {
+        tableIsEnabled = true;
+
+
+        switch (selectedEnumOption)
+        {
+            case SelectOptions.Building:
+                UgpradeCosts = await IViewService.GetBuildingUpgradeCostsByName(selectedItem.actual);
+                UgpradeCosts = UgpradeCosts.OrderBy(o => o.UpgradeCost.Wood).ToList();
+                break;
+            case SelectOptions.Unit:
+                UnitCost = await IViewService.GetUnitCostByName(selectedItem.showed);
+                break;
+            default:
+                break;
+        }
+        selectedItemActualName = selectedItem.actual;
+        selectedItemShowedName = selectedItem.showed;
+    }
+
+    private async Task CreateNewBuildingStage()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Cost", new Resources());
+        parameters.Add("UpgradeTime", -1);
+        parameters.Add("Name", selectedItemActualName);
+        parameters.Add("Stage", UgpradeCosts.Count() + 1);
+
+        var dialog = DialogService.Show<EditBuildingUpgradeCostDialog>("Edit cost", parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Cancelled == false)
+        {
+            var creationRequest = result.Data as UpgradeCostCreationRequest;
+
+            var response = await IAdminService.CreateBuildingUpgradeCost(creationRequest);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.ResetContent)
+                UgpradeCosts.Add(creationRequest);
+        }
+    }
+
+    private async Task EditCost(Resources cost)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Cost", cost);
+        IDialogReference dialog = DialogService.Show<EditUnitCostDialog>("Edit unit cost", parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Cancelled == false)
+        {
+            var newCost = result.Data as Resources;
+
+            var response = await IAdminService.ModifyUnitCost(new Game.Shared.Models.Request.UnitCostModificationRequest()
+            {
+                Name = selectedItemShowedName,
+                Wood = newCost.Wood,
+                Stone = newCost.Stone,
+                Silver = newCost.Silver,
+                Population = newCost.Population
+            });
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                UnitCost = newCost;
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var content = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+                Snackbar.Add(content.Title, Severity.Error);
+            }
+        }
+    }
+
+    private async Task EditCost(UpgradeCostCreationRequest oldCost)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("Cost", oldCost.UpgradeCost);
+        parameters.Add("UpgradeTime", oldCost.UpgradeTimeInSeconds);
+        parameters.Add("Name", oldCost.BuildingName);
+        parameters.Add("Stage", oldCost.BuildingStage);
+
+        IDialogReference dialog = DialogService.Show<EditBuildingUpgradeCostDialog>("Edit building cost", parameters);
+
+        var result = await dialog.Result;
+
+        if (result.Cancelled == false)
+        {
+            var newCost = result.Data as Game.Shared.Models.Request.UpgradeCostCreationRequest;
+            var response = await IAdminService.ModifyBuildingUpgradeCost(newCost);
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                EditTableCell(oldCost, newCost);
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var content = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+                Snackbar.Add(content.Title, Severity.Error);
+            }
+        }
+    }
+
+    void EditTableCell(UpgradeCostCreationRequest oldValue, UpgradeCostCreationRequest newValue)
+    {
+        int index = UgpradeCosts.IndexOf(oldValue);
+
+        UgpradeCosts.ElementAt(index).UpgradeCost = newValue.UpgradeCost;
+        UgpradeCosts.ElementAt(index).UpgradeTimeInSeconds = newValue.UpgradeTimeInSeconds;
+    }
+}

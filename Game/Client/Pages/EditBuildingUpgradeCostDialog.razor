@@ -1,0 +1,144 @@
+﻿@inject IDialogService DialogService
+
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" @bind-IsValid="@success">
+            <MudSimpleTable Style="overflow-x: auto;">
+                <tbody>
+                    <tr>
+                        <td>
+                            <MudTextField @bind-Value="wood" Label="Wood"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          AutoFocus="true"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Wood cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="stone" Label="Stone"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Stone cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="silver" Label="Silver"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Silver cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="population" Label="Population"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Population cost is required" />
+                        </td>
+                    </tr>
+
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>
+                            <MudTextField @bind-Value="days" Label="Days"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Day value is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="hours" Label="Hours"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Hour value is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="minutes" Label="Minutes"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Minute value is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="seconds" Label="Seconds"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Second value is required" />
+                        </td>
+                    </tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">@(creation ? "Create" : "Edit")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Resources Cost { get; set; }
+    [Parameter] public int UpgradeTime { get; set; }
+    [Parameter] public string Name { get; set; }
+    [Parameter] public int Stage { get; set; }
+    private int wood;
+    private int stone;
+    private int silver;
+    private int population;
+    private bool success;
+    private int days;
+    private int hours;
+    private int minutes;
+    private int seconds;
+    MudForm form;
+    private bool creation = false;
+    protected override void OnInitialized()
+    {
+        if (UpgradeTime == -1)
+        {
+            creation = true;
+            days =  0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+        }
+        else
+        {
+            days = UpgradeTime / 86_400; UpgradeTime -= days * 86_400;
+            hours = UpgradeTime / 3_600; UpgradeTime -= hours * 3_600;
+            minutes = UpgradeTime / 60; UpgradeTime -= minutes * 60;
+            seconds = UpgradeTime;
+        }
+
+        wood = Cost.Wood;
+        stone = Cost.Stone;
+        silver = Cost.Silver;
+        population = Cost.Population;
+
+    }
+
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(new Game.Shared.Models.Request.UpgradeCostCreationRequest()
+        {
+            BuildingName = Name,
+            BuildingStage = Stage,
+            UpgradeCost = new Resources()
+            {
+                Wood = wood,
+                Stone = stone,
+                Silver = silver,
+                Population = population
+            },
+            UpgradeTimeInSeconds = days * 86_400 + hours * 3_600 + minutes * 60 + seconds
+        }));
+
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    private IEnumerable<string> InputCheck(int input)
+    {
+        if (input < 0)
+            yield return "The minimum input value is 0";
+    }
+}

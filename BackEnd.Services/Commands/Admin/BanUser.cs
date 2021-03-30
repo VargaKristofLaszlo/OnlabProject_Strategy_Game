@@ -30,9 +30,10 @@ namespace Services.Commands.Admin
                 if (user == null)
                     throw new NotFoundException();
 
-                user.IsBanned = true;
+                user.IsBanned = !user.IsBanned;
 
-                await _emailSender.SendEmailAsync(user.Email, request.Request.CauseOfBan,
+                if(user.IsBanned)
+                    await _emailSender.SendEmailAsync(user.Email, request.Request.CauseOfBan,
                         request.Request.Message);
              
                 await _unitOfWork.CommitChangesAsync();

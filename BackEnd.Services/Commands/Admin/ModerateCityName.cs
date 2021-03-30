@@ -26,12 +26,12 @@ namespace Services.Commands.Admin
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await _unitOfWork.Users.FindUserByUsernameOrNullAsync(request.Request.Username);
+                var user = await _unitOfWork.Users.GetUserWithCities(request.Request.UserId);
 
                 if (user == null)
                     throw new NotFoundException();
 
-                var city = user.Cities
+                var city = user.Cities                    
                     .Where(city => city.CityName.Equals(request.Request.OldCityName))
                     .FirstOrDefault();
 

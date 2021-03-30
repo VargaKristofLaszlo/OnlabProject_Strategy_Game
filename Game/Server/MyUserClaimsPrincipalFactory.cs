@@ -24,19 +24,22 @@ namespace Game.Server
         {
             _unitOfWork = unitOfWork;
         }
-
-
-       
+             
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
         {
             var identity = await base.GenerateClaimsAsync(user);
-           
+
             var userRole = await _unitOfWork.Users.FindUserRoleAsync(user);
+            var isAdmin = userRole.Equals("Admin");
 
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
             identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
             identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            identity.AddClaim(new Claim(ClaimTypes.Role, userRole));           
+            identity.AddClaim(new Claim(ClaimTypes.Role, userRole));
+
+            if(isAdmin)
+                identity.AddClaim(new Claim("IsAdmin", isAdmin.ToString()));
+
             return identity;
         }
     }
@@ -58,16 +61,21 @@ namespace Game.Server
             var userId = existingClaimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = await _unitOfWork.Users.FindUserByIdOrNullAsync(userId);
             var userRole = await _unitOfWork.Users.FindUserRoleAsync(user);
+            var isAdmin = userRole.Equals("Admin");
             if (user != null)
             {
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
                 existingClaimsIdentity.AddClaim(new Claim(ClaimTypes.Role, userRole));
+
+                if(isAdmin)
+                    existingClaimsIdentity.AddClaim(new Claim("IsAdmin", isAdmin.ToString()));
             }
 
 
             return new ClaimsPrincipal(principal);
+
         }
     }
 }

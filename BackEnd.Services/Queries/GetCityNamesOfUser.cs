@@ -1,4 +1,5 @@
 ﻿using BackEnd.Infrastructure;
+using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using MediatR;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Services.Queries
 {
     public static class GetCityNamesOfUser
     {
-        public record Query() : IRequest<IEnumerable<string>>;
+        public record Query(string UserId = null) : IRequest<IEnumerable<string>>;
 
         public class Handler : IRequestHandler<Query, IEnumerable<string>>
         {
@@ -19,13 +20,18 @@ namespace Services.Queries
 
             public Handler(IUnitOfWork unitOfWork, IIdentityContext identityOptions)
             {
-                _unitOfWork = unitOfWork;               
+                _unitOfWork = unitOfWork;
                 _identityContext = identityOptions;
             }
 
             public async Task<IEnumerable<string>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
+                ApplicationUser user;
+                if (string.IsNullOrEmpty(request.UserId))
+                    user = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
+
+                else
+                    user = await _unitOfWork.Users.GetUserWithCities(request.UserId);
 
                 return user.Cities.Select(city => city.CityName);
             }

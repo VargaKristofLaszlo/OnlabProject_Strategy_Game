@@ -1,0 +1,47 @@
+﻿@inject IDialogService DialogService
+@using Game.Shared.Models.Request
+
+<MudDialog>
+    <DialogContent>
+        <div style="max-width: 400px;">
+            <MudCard>
+                <MudCardContent>
+                    <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                        <MudTextField T="string" Label="The cause of the ban"
+                                      Required="true" RequiredError="The cause of the ban is required!" 
+                                      @bind-Value="@UserBanRequest.CauseOfBan"/>                        
+                        <MudTextField T="string" Label="Message"
+                                      @bind-Value="@UserBanRequest.Message"/>
+                    </MudForm>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto"
+                               OnClick="SendRequest">Send</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="ml-auto"
+                               OnClick="Cancel">Cancel</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Username { get; set; }
+
+    UserBanRequest UserBanRequest = new UserBanRequest();
+
+    bool success;
+    string[] errors = { };
+    MudForm form;
+
+    void SendRequest() => MudDialog.Close(DialogResult.Ok(UserBanRequest));
+
+    void Cancel() => MudDialog.Cancel();
+
+    protected override void OnInitialized() => UserBanRequest.Username = Username;
+
+}

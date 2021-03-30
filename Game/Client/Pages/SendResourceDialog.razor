@@ -1,0 +1,78 @@
+﻿@inject IDialogService DialogService
+@inject Helpers.CityResourceState CityResourceState
+@inject Game.Shared.IServices.IGameService IGameService
+@inject ISnackbar Snackbar
+@using Game.Shared.Models.Request
+
+<MudDialog>
+    <DialogContent>
+        <MudSlider @bind-Value="_woodSlider" Min="0" Max="CityResourceState.Wood">
+            <MudIcon Icon="fas fa-tree" />  @_woodSlider
+        </MudSlider>
+        <MudSlider @bind-Value="_stoneSlider" Min="0" Max="CityResourceState.Stone">
+            <MudIcon Icon="fas fa-gem" />  @_stoneSlider
+        </MudSlider>
+        <MudSlider @bind-Value="_silverSlider" Min="0" Max="CityResourceState.Silver">
+            <MudIcon Icon="fas fa-coins" />  @_silverSlider
+        </MudSlider>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Send</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [Parameter]
+    public CityPagingData CityPagingData { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+
+
+    private int _woodSlider;
+    private int _stoneSlider;
+    private int _silverSlider;
+
+    protected override void OnInitialized()
+    {
+        _woodSlider = CityResourceState.Wood;
+        _stoneSlider = CityResourceState.Stone;
+        _silverSlider = CityResourceState.Silver;
+    }
+
+    private async Task Submit()
+    {
+        var request = new SendResourceToOtherPlayerRequest()
+        {
+            Wood = _woodSlider,
+            Silver = _silverSlider,
+            Stone = _stoneSlider,
+            FromCityIndex = CityPagingData.Index,
+            ToUserName = CityPagingData.OwnerName,
+            ToCityIndex = CityPagingData.Index
+        };
+
+        var response = await IGameService.SendResourcesToOtherPlayer(request);
+        if (response.IsSuccessStatusCode)
+        {
+            MudDialog.Close();         
+            CityResourceState.SetResourceValueAfterUpgrade(new Resources()
+            {
+                Population = 0,
+                Wood = _woodSlider,
+                Stone = _stoneSlider,
+                Silver = _silverSlider
+            });
+        }
+        else
+        {
+            Snackbar.Add("Insufficient resource amount", Severity.Error);
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

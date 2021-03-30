@@ -1,0 +1,92 @@
+﻿@inject IDialogService DialogService
+
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" @bind-IsValid="@success">
+            <MudSimpleTable Style="overflow-x: auto;">
+                <thead>
+                    <tr>
+                        <td><MudIcon Icon="fas fa-tree" /></td>
+                        <td><MudIcon Icon="fas fa-gem" /></td>
+                        <td><MudIcon Icon="fas fa-coins" /></td>
+                        <td><MudIcon Icon="fas fa-user" /></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <MudTextField @bind-Value="wood" Label="Wood"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          AutoFocus="true"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Wood cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="stone" Label="Stone"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Stone cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="silver" Label="Silver"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Silver cost is required" />
+                        </td>
+                        <td>
+                            <MudTextField @bind-Value="population" Label="Population"
+                                          Variant="Variant.Text" InputType="InputType.Number"
+                                          Validation="@(new Func<int, IEnumerable<string>>(InputCheck))"
+                                          Required="true" RequiredError="Population cost is required" />
+                        </td>
+                    </tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!success)">Edit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Resources Cost { get; set; }
+    private int wood;
+    private int stone;
+    private int silver;
+    private int population;
+    private bool success;
+    MudForm form;
+
+    protected override void OnInitialized()
+    {
+        wood = Cost.Wood;
+        stone = Cost.Stone;
+        silver = Cost.Silver;
+        population = Cost.Population;
+    }
+
+    void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(new Resources()
+        {
+            Wood = wood,
+            Stone = stone,
+            Silver = silver,
+            Population = population
+        }));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+    private IEnumerable<string> InputCheck(int input)
+    {
+        if (input < 0)
+            yield return "The minimum input value is 0";
+    }
+}

@@ -18,7 +18,7 @@ namespace Game.Shared.IServices
         Task<HttpResponseMessage> ProduceUnits([Body]UnitProductionRequest request);
 
         [Post("/Resources/Send")]
-        Task SendResourcesToOtherPlayer([Body]SendResourceToOtherPlayerRequest request);
+        Task<HttpResponseMessage> SendResourcesToOtherPlayer([Body]SendResourceToOtherPlayerRequest request);
         
     }
 }

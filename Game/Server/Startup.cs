@@ -85,7 +85,10 @@ namespace Game.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
+            });
 
             
         }
@@ -111,18 +114,14 @@ namespace Game.Server
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "StrategyGame Web API V1");
             });
 
-
-
             app.UseHttpsRedirection();
+            app.UseStaticFiles();                 
             app.UseBlazorFrameworkFiles();
-
+            app.UseIdentityServer();
             app.UseProblemDetails();
 
-            app.UseStaticFiles();
 
-            app.UseRouting();
-
-            app.UseIdentityServer();
+            app.UseRouting();            
             app.UseAuthentication();
             app.UseAuthorization();
 

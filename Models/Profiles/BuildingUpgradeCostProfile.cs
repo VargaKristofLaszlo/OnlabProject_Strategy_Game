@@ -21,7 +21,14 @@ namespace Models.Profiles
                 .ForMember(dto => dto.BuildingStage, model => model.MapFrom(cost => cost.BuildingStage))
                 .ForMember(dto => dto.UpgradeTime, model => model.MapFrom(cost => new TimeSpan(0, 0, cost.UpgradeTimeInSeconds)))
                 .ForMember(dto => dto.UpgradeCost, model => model.MapFrom(cost => cost.UpgradeCost));
-               
+
+
+
+            CreateMap<BackEnd.Models.Models.BuildingUpgradeCost, UpgradeCostCreationRequest>()
+                .ForMember(s => s.UpgradeCost, m => m.MapFrom(t => t.UpgradeCost))
+                .ForMember(s => s.UpgradeTimeInSeconds, m => m.MapFrom(t => t.UpgradeTime.TotalSeconds))
+                .ForMember(s => s.BuildingName, m => m.MapFrom(t => t.BuildingName))
+                .ForMember(s => s.BuildingStage, m => m.MapFrom(t => t.BuildingStage));
 
         }        
     }

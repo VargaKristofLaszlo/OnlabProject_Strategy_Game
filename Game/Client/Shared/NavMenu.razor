@@ -4,6 +4,7 @@
 @inject IDialogService DialogService
 @inject HttpClient http
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Game</a>
@@ -14,84 +15,100 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
 
 
+        @if (AdminLogin)
+        {
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Admin/Account/management" style="color:white">
+                            <span class="oi oi-list-rich" aria-hidden="true" style="color:brown"></span> Account management
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Admin/Cost" style="color:white">
+                            <span class="oi oi-list-rich" aria-hidden="true" style="color:brown"></span> Cost management
+                        </NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+        }
+        else
+        {
+            <AuthorizeView Roles="User">
+                <Authorized>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span> Home
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/map" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span> Map
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="/Reports" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span> Reports
+                        </NavLink>
+                    </li>
 
-        <AuthorizeView Roles="User">
-            <Authorized>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Attack" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Attack
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Reports" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Reports
-                    </NavLink>
-                </li>
-
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="NavigateToBarrack" Match="NavLinkMatch.All">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Barrack
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City hall"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> City hall
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City wall"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> City wall
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Farm"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Farm
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Lumber"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Lumber
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Silver mine"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Silver mine
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Stone mine"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Stone mine
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Warehouse"))">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Warehouse
-                    </NavLink>
-                </li>
-            </Authorized>
-        </AuthorizeView>
-
-        <AdminRoleNavMenuItems />
-
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="NavigateToBarrack" Match="NavLinkMatch.All">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Barrack
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City hall"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> City hall
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("City wall"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> City wall
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Farm"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Farm
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Lumber"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Lumber
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Silver mine"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Silver mine
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Stone mine"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Stone mine
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick="@( () =>SelectContentForDialog("Warehouse"))">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Warehouse
+                        </NavLink>
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+        }
     </ul>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-    private bool barrackDialogIsVisisble = false;
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     private string _header;
     private string _description;
     private object _content;
     private Resources _upgradeCost;
     private string _imgSource;
+    private bool AdminLogin = false;
 
     private void ToggleNavMenu()
     {
@@ -134,7 +151,7 @@
                 _description = "This building determines how much population you have." +
                         "Population is used for upgrading buildings and producing units." +
                         "Upgrade it to increase the maximum population of the city";
-                _content = new { Population = CityDetailsState.CityDetails.MaximumPopulation};
+                _content = new { Population = CityDetailsState.CityDetails.MaximumPopulation };
                 _upgradeCost = CityDetailsState.CityDetails.FarmUpgradeCost;
                 _imgSource = "/images/buildings/farm.svg";
                 break;
@@ -185,5 +202,18 @@
         DialogOptions noCloseButton = new DialogOptions() { CloseButton = false };
 
         DialogService.Show<Pages.GeneralBuildingDialog>(_header, parameters: parameters);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
+        var roleClaim = authState.User.Claims.FirstOrDefault(x => x.Type.Equals("role"));
+
+        if (roleClaim != null && roleClaim.Value.Equals("Admin"))
+            AdminLogin = true;
+
+        else
+            AdminLogin = false;
     }
 }

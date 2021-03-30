@@ -1,0 +1,132 @@
+﻿@page "/Admin/Account/management"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IAdminService IAdminService
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<MudTable ServerData="@(new Func<TableState, Task<TableData<Credentials>>>(ServerReload))"
+          Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Users</MudText>
+        <MudToolBarSpacer />
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="id_field" T="Credentials">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="username_field" T="Credentials">Username</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="email_field" T="Credentials">Email</MudTableSortLabel></MudTh>
+        <MudTh>Ban user</MudTh>
+        <MudTh>Unban user</MudTh>
+
+    </HeaderContent>
+    <RowTemplate Context="TableContent">
+            <MudTd DataLabel="id_field" Style="@(TableContent.IsBanned ? "color: red" : "")"
+                   @onclick="() => ModerateCityNames(TableContent)">@TableContent.Id</MudTd>
+            <MudTd DataLabel="username_field" Style="@(TableContent.IsBanned ? "color: red" : "")"
+                   @onclick="() => ModerateCityNames(TableContent)">@TableContent.Username</MudTd>
+            <MudTd DataLabel="email_field" Style="@(TableContent.IsBanned ? "color: red" : "")"
+                   @onclick="() => ModerateCityNames(TableContent)">@TableContent.Email</MudTd>
+
+            <MudTh>
+                <MudIconButton Icon="fas fa-ban" OnClick="() => BanUser(TableContent)"
+                               Disabled="@(TableContent.IsBanned)"></MudIconButton>
+            </MudTh>
+            <MudTh>
+                <MudIconButton Icon="fas fa-backspace" OnClick="() => UnBanUser(TableContent)"
+                               Disabled="@(!TableContent.IsBanned)"></MudIconButton>
+            </MudTh>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+
+    @code {
+        private IEnumerable<Credentials> pagedData;
+        private MudTable<Credentials> table;
+
+        private int totalItems;
+        private string searchString = null;
+
+        private async Task<TableData<Credentials>> ServerReload(TableState state)
+        {
+
+            var collectionResponse = await IViewService.GetUserCredentials(state.Page, state.PageSize);
+
+            IEnumerable<Credentials> data = collectionResponse.Records;            
+
+            data = data.Where(element =>
+            {
+                if (string.IsNullOrWhiteSpace(searchString))
+                    return true;
+                if (element.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    return true;
+                if (element.Username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    return true;
+                if (element.Id.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    return true;
+                return false;
+            }).ToArray();
+
+
+            totalItems = data.Count();
+            switch (state.SortLabel)
+            {
+                case "id_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Id);
+                    break;
+                case "username_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Username);
+                    break;
+                case "email_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Email);
+                    break;
+            }
+
+            pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+            return new TableData<Credentials>() { TotalItems = totalItems, Items = pagedData };
+        }
+
+        private void OnSearch(string text)
+        {
+            searchString = text;
+            table.ReloadServerData();
+        }
+
+        private async Task BanUser(Credentials userCredentials)
+        {
+            var parameters = new DialogParameters();
+            parameters.Add("Username", userCredentials.Username);
+            var res = DialogService.Show<UserBanDialog>($"Ban {userCredentials.Username}'s account", parameters: parameters);
+            var dialogResult = await res.Result;
+
+            if (dialogResult.Cancelled == false)
+            {
+                var dialogData = dialogResult.Data as Game.Shared.Models.Request.UserBanRequest;
+                await IAdminService.BanUser(dialogData);
+
+                var data = pagedData.FirstOrDefault(x => x.Id.Equals(userCredentials.Id));
+                if (data != null)
+                    data.IsBanned = true;
+            }
+        }
+
+        private async Task UnBanUser(Credentials userCredentials)
+        {
+            await IAdminService.BanUser(new Game.Shared.Models.Request.UserBanRequest()
+            {
+                Username = userCredentials.Username
+            });
+
+            var data = pagedData.FirstOrDefault(x => x.Id.Equals(userCredentials.Id));
+            if (data != null)
+                data.IsBanned = false;
+        }
+
+        private void ModerateCityNames(Credentials credentials) => NavigationManager.NavigateTo($"/Admin/Users/{credentials.Id}/Cities");        
+        
+    }

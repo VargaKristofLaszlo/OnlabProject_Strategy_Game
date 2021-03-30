@@ -1,7 +1,6 @@
 ﻿using Game.Shared.Models;
 using Game.Shared.Models.Response;
 using Refit;
-using Shared.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,7 +15,10 @@ namespace Game.Shared.IServices
         Task<CollectionResponse<Credentials>> GetBuildingUpgradeCost(string buildingName, int buildingStage);
 
         [Get("/CityNames")]
-        Task<List<string>> GetCityNamesOfUser();
+        Task<IEnumerable<string>> GetCityNamesOfLoggedInUser();
+
+        [Get("/CityNames/{id}")]
+        Task<IEnumerable<string>> GetCityNamesByUserId(string id);
 
         [Get("/Units")]
         Task<CollectionResponse<Unit>> GetUnitTypes(int pageNumber, int pageSize);
@@ -24,8 +26,11 @@ namespace Game.Shared.IServices
         [Get("/City")]
         Task<CityDetails> GetCityDetails(int cityIndex);
 
-        [Get("/Units/Producible")]
-        Task<IEnumerable<Unit>> GetProducibleUnits(int cityIndex);
+        [Get("/Units/{unitName}")]
+        Task<Resources> GetUnitCostByName(string unitName);
+
+        [Get("/Building/{buildingName}/Upgradecost")]
+        Task<List<Models.Request.UpgradeCostCreationRequest>> GetBuildingUpgradeCostsByName(string buildingName);
 
         [Get("/City/Resources")]
         Task<CityResources> GetResourcesOfTheCity(int cityIndex);

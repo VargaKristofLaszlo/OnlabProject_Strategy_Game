@@ -48,7 +48,7 @@ namespace Services.Queries
                     woodAmount = city.Resources.Wood + city.WoodProduction.ProductionAmount * hourDifference;
                     city.LastResourceQueryTime = DateTime.UtcNow;
 
-                   // CheckWarehouseCapacity(ref stoneAmount, ref silverAmount, ref woodAmount, city.Warehouse);
+                    CheckWarehouseCapacity(ref stoneAmount, ref silverAmount, ref woodAmount, city.Warehouse);
 
                     //updating the resources if the city with the storable amount
                     city.Resources.Stone = stoneAmount;

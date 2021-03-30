@@ -20,7 +20,9 @@ namespace Repositories.Implementations
 
         public async Task<Unit> FindUnitByName(string name)
         {
-            return await _db.Units.FirstOrDefaultAsync(unit => unit.Name.Equals(name));
+            return await _db.Units
+                .Include(unit => unit.UnitCost)
+                .FirstOrDefaultAsync(unit => unit.Name.Equals(name));
         }
 
         public async Task<(IEnumerable<Unit> Units, int Count)> GetAllUnitsAsync(int pageNumber, int pageSize)

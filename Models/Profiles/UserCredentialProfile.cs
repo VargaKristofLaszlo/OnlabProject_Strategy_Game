@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BackEnd.Models.Models;
-using Shared.Models;
+using Game.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,7 @@ namespace Models.Profiles
             CreateMap<ApplicationUser, Credentials>()
                 .ForMember(credential => credential.Username, map => map.MapFrom(user => user.UserName))
                 .ForMember(credential => credential.Email, map => map.MapFrom(user => user.Email))
+                .ForMember(credential => credential.IsBanned, map => map.MapFrom(user => user.IsBanned))
                 .ForMember(credential => credential.Id, map => map.MapFrom(user => user.Id));
         }
     }

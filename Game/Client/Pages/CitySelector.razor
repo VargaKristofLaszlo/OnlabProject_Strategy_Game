@@ -2,7 +2,7 @@
 @inject Game.Shared.IServices.IViewService IViewService
 @inject Helpers.CityIndexState CityIndexState
 @implements IDisposable
-
+@inject HttpClient http
 
 
 
@@ -31,7 +31,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var names = await IViewService.GetCityNamesOfUser();
+        var names = await IViewService.GetCityNamesOfLoggedInUser();
+
         _cityNames = names.ToList();
     }
 

@@ -12,7 +12,7 @@ namespace BackEnd.Services.Extensions
             previousCost.UpgradeCost.Silver = newCost.UpgradeCost.Silver;
             previousCost.UpgradeCost.Stone = newCost.UpgradeCost.Stone;
             previousCost.UpgradeCost.Population = newCost.UpgradeCost.Population;
-            previousCost.UpgradeTime = TimeSpan.FromSeconds(newCost.UpgradeTimeInSeconds);
+           // previousCost.UpgradeTime = TimeSpan.FromSeconds(newCost.UpgradeTimeInSeconds);
             return previousCost;
         }
 

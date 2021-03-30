@@ -1,7 +1,8 @@
-﻿@page "/Attack"
+﻿@page "/map"
 
 @inject HttpClient httpClient
 @inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
 @inject IDialogService DialogService
 @inject Helpers.UnitsOfCityState UnitsOfCityState
 @inject Helpers.CityIndexState CityIndexState
@@ -25,13 +26,15 @@
         <MudTh><MudTableSortLabel SortLabel="nr_field" T="CityPagingData">City index</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="name_field" T="CityPagingData">City name</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="owner_field" T="CityPagingData">Owner name</MudTableSortLabel></MudTh>
+        <MudTh>Send resources</MudTh>
         <MudTh>Attack</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.Index.</MudTd>
         <MudTd DataLabel="City name">@context.Name</MudTd>
         <MudTd DataLabel="Owner name">@context.OwnerName</MudTd>
-        <MudTd DataLabel="Attack"><i class="fas fa-khanda" @onclick="() => OpenDialog(context)"></i></MudTd>
+        <MudTd DataLabel="Send resources"><span class="oi oi-transfer" @onclick="() =>OpenSendResourceDialog(context)"></span></MudTd>
+        <MudTd DataLabel="Attack"><i class="fas fa-khanda" @onclick="() => OpenAttackDialog(context)"></i></MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
@@ -96,7 +99,15 @@
         table.ReloadServerData();
     }
 
-    private async Task OpenDialog(CityPagingData cityPagingData)
+    void OpenSendResourceDialog(CityPagingData cityPagingData)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("CityPagingData", cityPagingData);
+
+        var res = DialogService.Show<SendResourceDialog>($"Send resources to {cityPagingData.OwnerName}'s city", parameters: parameters);
+    }
+
+    private async Task OpenAttackDialog(CityPagingData cityPagingData)
     {
         var parameters = new DialogParameters();
         parameters.Add("CityPagingData", cityPagingData);

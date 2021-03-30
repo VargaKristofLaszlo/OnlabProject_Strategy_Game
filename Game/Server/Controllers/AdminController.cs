@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Game.Server.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     [ApiController]
     public class AdminController : ControllerBase
     {      

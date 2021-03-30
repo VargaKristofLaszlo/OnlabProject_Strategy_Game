@@ -16,6 +16,7 @@ namespace Game.Shared.Models.Request
         public Resources UpgradeCost { get; set; }
 
         [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "The upgrade time  {0} must be greater than {1}.")]
         public int UpgradeTimeInSeconds { get; set; }
     }
 }

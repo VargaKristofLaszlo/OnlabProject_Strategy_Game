@@ -8,7 +8,7 @@ namespace Game.Shared.Models.Request
 {
     public class CityNameModerationRequest
     {
-        public string Username { get; set; }
+        public string UserId { get; set; }
         public string OldCityName { get; set; }
         public string NewCityName { get; set; }
     }

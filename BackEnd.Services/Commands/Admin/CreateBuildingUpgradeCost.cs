@@ -40,7 +40,7 @@ namespace Services.Commands.Admin
                             " create a cost for stage 1 first");
                 }
 
-                await _unitOfWork.UpgradeCosts.CreateAsync(_mapper.Map<BackEnd.Models.Models.BuildingUpgradeCost>(request));
+                await _unitOfWork.UpgradeCosts.CreateAsync(_mapper.Map<BackEnd.Models.Models.BuildingUpgradeCost>(request.request));
                 await _unitOfWork.CommitChangesAsync();
 
                 return new Unit();

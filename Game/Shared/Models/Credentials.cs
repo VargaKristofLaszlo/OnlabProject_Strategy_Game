@@ -1,12 +1,14 @@
-﻿namespace Shared.Models
+﻿namespace Game.Shared.Models
 {
-    public record Credentials
+    public class Credentials
     {
-        public string Username { get; init; }
+        public string Username { get; set; }
 
-        public string Email { get; init; }
+        public string Email { get; set; }
 
-        public string Id { get; init; }
-        
+        public string Id { get; set; }
+
+        public bool IsBanned { get; set; }
+
     }
 }

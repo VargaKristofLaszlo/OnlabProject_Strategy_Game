@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BackEnd.Repositories.Interfaces;
+using Game.Shared.Models;
 using Game.Shared.Models.Response;
 using MediatR;
 using Services.Extensions;
