@@ -11,6 +11,9 @@ namespace Game.Shared.IServices
         [Patch("/{buildingName}/Upgrade")]
         Task<ApiResponse<SuccessfulBuildingStageModification>> UpgradeBuilding(int cityIndex, string buildingName, int newStage);
 
+        [Patch("/test/{buildingName}/Upgrade")]
+        Task<HttpResponseMessage> TestUpgradeBuilding(int cityIndex, string buildingName, int newStage);
+
         [Patch("/{buildingName}/Downgrade")]
         Task<ApiResponse<SuccessfulBuildingStageModification>> DowngradeBuilding(int cityIndex, string buildingName, int newStage);
 

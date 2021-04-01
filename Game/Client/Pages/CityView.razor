@@ -2,6 +2,8 @@
 @inject Game.Shared.IServices.IViewService IViewService
 @inject Helpers.CityResourceState CityResourceState
 @inject Helpers.CityDetailsState CityDetailsState
+@inject Helpers.UpgradeQueueState UpgradeQueueState
+@inject ISnackbar Snackbar
 @implements IDisposable
 
 
@@ -157,10 +159,20 @@
             </tr>
         </tbody>
     </MudSimpleTable>
+    <MudButton OnClick="Test">Test</MudButton>
 }
 
-
+@inject HttpClient http
 @code {
+    private async Task Test()
+    {
+        var response = await http.PatchAsync("Game/test/Barrack/Upgrade?cityIndex=0&newStage=1", null);
+        Console.WriteLine("response.StatusCode\t" + response.StatusCode);
+    }
+
+
+
+
     [Parameter]
     public int CityIndex { get; set; }
     private const string _barrack = "Barrack";
@@ -188,6 +200,11 @@
         parameters.Add("BuildingName", buildingName);
         parameters.Add("CityIndex", cityIndex);
 
+        if (UpgradeQueueState.QueueIsFull(cityIndex) == true)
+        {
+            Snackbar.Add("Your building slots are full", Severity.Error);
+            return;
+        }
 
         var res = DialogService.Show<UpgradeDialog>($"Upgrade the {buildingName}", parameters: parameters);
 
@@ -195,10 +212,16 @@
 
         if (dialogResult.Cancelled == false)
         {
-            var dialogData = dialogResult.Data as SuccessfulBuildingStageModification;
-
-            await CityDetailsState.BuildingUpgrade(buildingName, dialogData.NewUpgradeCost, dialogData.NewStage, cityIndex);
-
+            var dialogData = dialogResult.Data as List<Game.Shared.Models.Request.UpgradeCostCreationRequest>;
+            int upgradeTimeInSeconds = dialogData.ElementAt(currentStage).UpgradeTimeInSeconds;
+            CityResourceState.SetResourceValueAfterUpgrade(dialogData.ElementAt(currentStage).UpgradeCost);
+            UpgradeQueueState.AddToQueue(new Helpers.QueueData()
+            {
+                BuildingName = buildingName,
+                BuildingStage = currentStage + 1,
+                CityIndex = cityIndex,
+                UpgradeTime = new System.TimeSpan(0, 0, upgradeTimeInSeconds)
+            });
             StateHasChanged();
         }
     }

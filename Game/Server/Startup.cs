@@ -6,21 +6,21 @@ using Game.Server.Extensions;
 using Hellang.Middleware.ProblemDetails;
 using Infrastructure;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Repositories.Implementations;
-using Repositories.Interfaces;
 using Services.Implementations;
 using Services.Interfaces;
 using Services.Queries;
+using Hangfire;
+using Hangfire.SqlServer;
+using System;
+using Hangfire.MediatR;
 
 namespace Game.Server
 {
@@ -37,6 +37,33 @@ namespace Game.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add Hangfire services.
+            services.AddHangfire(configuration =>
+            {
+                configuration
+                            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                            .UseSimpleAssemblyNameTypeSerializer()
+                            .UseRecommendedSerializerSettings()
+                            .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                            {
+                                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                QueuePollInterval = TimeSpan.Zero,
+                                UseRecommendedIsolationLevel = true,
+                                DisableGlobalLocks = true
+                            });
+                configuration.UseMediatR();
+            }); 
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer(options => 
+            {
+                
+            });
+
+
+
+
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseSqlServer(
                      Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
@@ -94,7 +121,7 @@ namespace Game.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -115,7 +142,9 @@ namespace Game.Server
             });
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();                 
+            app.UseStaticFiles();
+            app.UseHangfireDashboard();
+            backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
             app.UseBlazorFrameworkFiles();
             app.UseIdentityServer();
             app.UseProblemDetails();

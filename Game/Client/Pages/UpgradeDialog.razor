@@ -1,5 +1,5 @@
 ﻿@inject Game.Shared.IServices.IGameService IGameService
-
+@inject Game.Shared.IServices.IViewService IViewService 
 <MudDialog>
     <DialogContent>
         <MudSimpleTable Style="overflow-x: auto;">
@@ -21,10 +21,14 @@
                         <td>@UpgradeCost.Stone </td>
                         <td>@UpgradeCost.Silver </td>
                         <td>@UpgradeCost.Population </td>
-
-
                     </tr>
                 </tbody>
+                <thead>
+                    <tr>
+                        <td>The upgrade time is</td>
+                        <td>@upgradeTime</td>
+                    </tr>
+                </thead>
             }
             else
             {
@@ -38,7 +42,7 @@
         {
             <MudButton Color="Color.Primary" OnClick="Submit">Upgrade</MudButton>
         }
-        </DialogActions>
+    </DialogActions>
 </MudDialog>
 
 @code {
@@ -55,13 +59,35 @@
     [Parameter]
     public int CityIndex { get; set; }
 
+    private TimeSpan upgradeTime { get; set; } = new TimeSpan();
+
+    private List<Game.Shared.Models.Request.UpgradeCostCreationRequest> BuildingUpgradeCosts;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        BuildingUpgradeCosts = await IViewService.GetBuildingUpgradeCostsByName(BuildingName);
+        BuildingUpgradeCosts = BuildingUpgradeCosts.OrderBy(o => o.UpgradeCost.Wood).ToList();
+        try
+        {
+            upgradeTime = new System.TimeSpan(0, 0, BuildingUpgradeCosts.ElementAt(CurrentStage).UpgradeTimeInSeconds);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+
+        }
+
+    }
+
     async Task Submit()
     {
-        var response = await IGameService.UpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
+        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
+        //var response = await IGameService.UpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
 
-        if (response.IsSuccessStatusCode)   
-            MudDialog.Close(DialogResult.Ok(response.Content));
-        
+        if (response.IsSuccessStatusCode)
+            MudDialog.Close(DialogResult.Ok(BuildingUpgradeCosts));
+        //MudDialog.Close(DialogResult.Ok(response.Content));
+
         else
             MudDialog.Close(DialogResult.Cancel());
     }

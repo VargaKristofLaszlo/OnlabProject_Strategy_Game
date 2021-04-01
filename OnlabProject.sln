@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D4313832-2B93-48E3-B190-3061F50F39CD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.MediatR", "Hangfire.MediatR\Hangfire.MediatR.csproj", "{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{D4313832-2B93-48E3-B190-3061F50F39CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4313832-2B93-48E3-B190-3061F50F39CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4313832-2B93-48E3-B190-3061F50F39CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,6 +75,7 @@ Global
 		{7C67C3F8-B87D-4186-876C-FC5441FF548C} = {15DEA3DC-D6FA-4A9F-B77E-C701972C0A84}
 		{7FE3464F-B503-4D96-A991-D0468DC63E60} = {15DEA3DC-D6FA-4A9F-B77E-C701972C0A84}
 		{6D348207-B37B-4E12-983B-4961ECF6E3BB} = {15DEA3DC-D6FA-4A9F-B77E-C701972C0A84}
+		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1} = {15DEA3DC-D6FA-4A9F-B77E-C701972C0A84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {48A9B61D-6C77-4F03-81FD-59B27A631CD2}

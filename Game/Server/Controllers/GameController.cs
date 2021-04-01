@@ -1,4 +1,7 @@
-﻿using Game.Shared.Models.Request;
+﻿using BackEnd.Infrastructure;
+using Game.Shared.Models.Request;
+using Hangfire;
+using Hangfire.MediatR;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +10,8 @@ using Services.Commands.Buildings;
 using Services.Commands.Game;
 using Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Game.Server.Controllers
@@ -21,6 +26,21 @@ namespace Game.Server.Controllers
         public GameController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPatch("test/{buildingName}/Upgrade")]
+        public async Task<IActionResult> TestUpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
+        {
+            var identityContext = new IdentityContext(HttpContext);
+
+            var upgradeTime = await _mediator.Send(new WiP_Upgrade_Start.Command(cityIndex, buildingName, newStage, identityContext));
+
+            BackgroundJob.Schedule(
+                () => _mediator.Enqueue(
+                        $"{identityContext.UserId} upgrades {buildingName} to stage {newStage}",
+                        new WiP_UpgradeProcess.Command(cityIndex, buildingName, newStage, identityContext)),
+                 upgradeTime);  
+            return Ok();
         }
 
 

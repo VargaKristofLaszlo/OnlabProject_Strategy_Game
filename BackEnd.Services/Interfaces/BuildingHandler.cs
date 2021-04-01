@@ -1,5 +1,6 @@
 ﻿using Services.Exceptions;
 using Services.Implementations.BuildingBehaviourImpl;
+using System.Collections.Generic;
 
 namespace Services.Interfaces
 {
@@ -19,6 +20,15 @@ namespace Services.Interfaces
                 "Warehouse" => new WarehouseBehaviour(),
                 _ => throw new NotFoundException(),
             };
+        }
+
+        protected static void ValidateBuildingName(string buildingName) 
+        {
+            if (new List<string>()
+            {
+                "Barrack","CityHall", "CityWall", "Farm", "SilverMine", "StoneMine", "Lumber", "Warehouse"
+            }.Contains(buildingName) == false)
+                throw new NotFoundException();
         }
     }
 }

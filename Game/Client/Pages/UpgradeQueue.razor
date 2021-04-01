@@ -1,0 +1,56 @@
+﻿@inject Helpers.UpgradeQueueState UpgradeQueueState
+@inject Helpers.CityIndexState CityIndexState
+@implements IDisposable
+<table>
+    @foreach (var item in UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index))
+    {
+        <tr>
+            <td>Upgrading @item.BuildingName</td>
+            <td>To stage @item.BuildingStage</td>
+            <td>@item.UpgradeTime</td>
+        </tr>
+    }
+    @for (int i = 0; i < 3 - UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index).Count(); i++)
+    {
+        <tr>
+            <td>Building name spaceholder</td>
+            <td>Building stage placeholder</td>
+            <td>Upgrade time placeholder</td>
+        </tr>
+    }
+
+</table>
+
+@code {       
+    //private System.Timers.Timer timer;
+
+    protected override void OnInitialized()
+    {
+        UpgradeQueueState.OnChange += StateHasChanged;
+        //var timer = new System.Timers.Timer(1000);
+        //timer.Elapsed += (sender, eventArgs) => OnTimerCallback();
+        //timer.AutoReset = true;
+        //timer.Start();
+    }
+
+    //private void OnTimerCallback()
+    //{
+    //    var item = UpgradeQueueState.GetFirstItemFromQueue(CityIndexState.Index);
+
+    //    if (item == null)
+    //    {
+    //        timer.Stop();
+    //        return;
+    //    }
+
+    //    item.UpgradeTime = item.UpgradeTime - TimeSpan.FromSeconds(1);
+    //    InvokeAsync(StateHasChanged);
+    //    if (item.UpgradeTime.TotalSeconds == 0)
+    //        UpgradeQueueState.RemoveFromQueue(CityIndexState.Index, item.BuildingName, item.BuildingStage);
+    //}
+
+    public void Dispose()
+    {
+        UpgradeQueueState.OnChange -= StateHasChanged;
+    }
+}
