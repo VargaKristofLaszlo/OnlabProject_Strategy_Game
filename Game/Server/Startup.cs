@@ -51,7 +51,7 @@ namespace Game.Server
                                 QueuePollInterval = TimeSpan.Zero,
                                 UseRecommendedIsolationLevel = true,
                                 DisableGlobalLocks = true
-                            });
+                            });               
                 configuration.UseMediatR();
             }); 
 

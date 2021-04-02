@@ -29,6 +29,7 @@ namespace BackEnd.Models.Models
         public DbSet<UnitsInCity> UnitsInCities { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<HangFireJob> HangFireJobs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

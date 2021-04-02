@@ -12,9 +12,9 @@ namespace Services.Commands.Buildings
 {
     public static class WiP_Upgrade_Start
     {
-        public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext) : IRequest<TimeSpan>;
+        public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext) : IRequest<DateTime>;
 
-        public class Handler : BuildingHandler, IRequestHandler<Command, TimeSpan>
+        public class Handler : BuildingHandler, IRequestHandler<Command, DateTime>
         {
             private readonly IUnitOfWork _unitOfWork;           
 
@@ -23,7 +23,7 @@ namespace Services.Commands.Buildings
                 _unitOfWork = unitOfWork;         
             }
 
-            public async Task<TimeSpan> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<DateTime> Handle(Command request, CancellationToken cancellationToken)
             {
                 ValidateBuildingName(request.BuildingName);
 
@@ -37,9 +37,16 @@ namespace Services.Commands.Buildings
                 var upgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(request.BuildingName, request.NewStage);
 
                 ResourceCostRemoval.PayTheCost(city, upgradeCost.UpgradeCost);
+
+                var finishTime = await _unitOfWork.HangFire.GetFinishTime(request.IdentityContext.UserId);
+                var newFinishTime = finishTime.Add(upgradeCost.UpgradeTime);
+                await _unitOfWork.HangFire.AddNewJob(request.IdentityContext.UserId, finishTime, newFinishTime
+                    ,request.BuildingName, request.NewStage, request.CityIndex);
+
                 await _unitOfWork.CommitChangesAsync();
 
-                return upgradeCost.UpgradeTime;
+
+                return finishTime.Add(upgradeCost.UpgradeTime);
             }
 
             private async Task<bool> IsUpgradeable(string buildingName, int newStage)

@@ -1,12 +1,15 @@
 ﻿@inject Helpers.UpgradeQueueState UpgradeQueueState
 @inject Helpers.CityIndexState CityIndexState
 @implements IDisposable
+@inject AuthenticationStateProvider AuthStateProvider
+@inject Game.Shared.IServices.IViewService IViewService 
+
 <table>
     @foreach (var item in UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index))
     {
         <tr>
-            <td>Upgrading @item.BuildingName</td>
-            <td>To stage @item.BuildingStage</td>
+            <td class="mr-2">Upgrading @item.BuildingName</td>
+            <td class="mr-2">To stage @item.NewStage</td>
             <td>@item.UpgradeTime</td>
         </tr>
     }
@@ -22,32 +25,20 @@
 </table>
 
 @code {       
-    //private System.Timers.Timer timer;
 
     protected override void OnInitialized()
     {
         UpgradeQueueState.OnChange += StateHasChanged;
-        //var timer = new System.Timers.Timer(1000);
-        //timer.Elapsed += (sender, eventArgs) => OnTimerCallback();
-        //timer.AutoReset = true;
-        //timer.Start();
+
     }
 
-    //private void OnTimerCallback()
-    //{
-    //    var item = UpgradeQueueState.GetFirstItemFromQueue(CityIndexState.Index);
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+        await UpgradeQueueState.InitBuildingQueue(userId);
+    }
 
-    //    if (item == null)
-    //    {
-    //        timer.Stop();
-    //        return;
-    //    }
-
-    //    item.UpgradeTime = item.UpgradeTime - TimeSpan.FromSeconds(1);
-    //    InvokeAsync(StateHasChanged);
-    //    if (item.UpgradeTime.TotalSeconds == 0)
-    //        UpgradeQueueState.RemoveFromQueue(CityIndexState.Index, item.BuildingName, item.BuildingStage);
-    //}
 
     public void Dispose()
     {

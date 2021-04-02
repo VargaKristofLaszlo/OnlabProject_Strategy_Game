@@ -215,10 +215,13 @@
             var dialogData = dialogResult.Data as List<Game.Shared.Models.Request.UpgradeCostCreationRequest>;
             int upgradeTimeInSeconds = dialogData.ElementAt(currentStage).UpgradeTimeInSeconds;
             CityResourceState.SetResourceValueAfterUpgrade(dialogData.ElementAt(currentStage).UpgradeCost);
-            UpgradeQueueState.AddToQueue(new Helpers.QueueData()
+            var timeNow = System.DateTime.Now;  
+            UpgradeQueueState.AddToQueue(new Game.Shared.Models.QueueData()
             {
+                CreationTime = timeNow,
+                FinishTime = timeNow.Add(new System.TimeSpan(0, 0, upgradeTimeInSeconds)),
                 BuildingName = buildingName,
-                BuildingStage = currentStage + 1,
+                NewStage = currentStage + 1,
                 CityIndex = cityIndex,
                 UpgradeTime = new System.TimeSpan(0, 0, upgradeTimeInSeconds)
             });

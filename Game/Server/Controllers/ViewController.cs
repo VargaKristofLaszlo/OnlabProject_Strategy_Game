@@ -184,5 +184,13 @@ namespace Game.Server.Controllers
             var response = await _mediator.Send(new GetReports.Query(pageNumber, pageSize));
             return Ok(response);
         }
+
+        [HttpGet("BuildingQueue/{userId}")]
+        public async Task<IActionResult> GetBuildingQueue(string userId) 
+        {
+            var response = await _mediator.Send(new GetBuildingQueueByUserID.Query(userId));
+
+            return Ok(response);
+        }
     }
 }

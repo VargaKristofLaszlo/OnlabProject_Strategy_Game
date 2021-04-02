@@ -1,18 +1,18 @@
 ﻿using BackEnd.Infrastructure;
 using BackEnd.Repositories.Interfaces;
-using Game.Shared.Models;
 using MediatR;
 using Services.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Resources = Game.Shared.Models.Resources;
 
 namespace Services.Commands.Buildings
 {
     public static class WiP_UpgradeProcess
     {
-        public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext) : IRequest<MediatR.Unit>;
+        public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext,
+            DateTime FinishTime) : IRequest<MediatR.Unit>;
 
         public class Handler : BuildingHandler, IRequestHandler<Command, MediatR.Unit>
         {
@@ -36,6 +36,10 @@ namespace Services.Commands.Buildings
 
                 //Upgrade the building
                 buildingBehaviour.Upgrade(city, newUpgradeCost);
+
+                var job = await _unitOfWork.HangFire.GetJobByFinishTime(request.FinishTime);
+                _unitOfWork.HangFire.RemoveJob(job);
+
                 await _unitOfWork.CommitChangesAsync();
 
                 return new MediatR.Unit();

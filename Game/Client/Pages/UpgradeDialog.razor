@@ -81,12 +81,10 @@
 
     async Task Submit()
     {
-        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
-        //var response = await IGameService.UpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);
+        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);        
 
         if (response.IsSuccessStatusCode)
-            MudDialog.Close(DialogResult.Ok(BuildingUpgradeCosts));
-        //MudDialog.Close(DialogResult.Ok(response.Content));
+            MudDialog.Close(DialogResult.Ok(BuildingUpgradeCosts));        
 
         else
             MudDialog.Close(DialogResult.Cancel());

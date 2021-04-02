@@ -1,19 +1,20 @@
 ﻿using MediatR;
-
+using System;
 namespace Hangfire.MediatR
 {
     public static class MediatorExtensions
     {
-        public static void Enqueue(this IMediator mediator, string jobName, IRequest<Unit> request)
+        public static string Enqueue(this IMediator mediator, string jobName, IRequest<Unit> request)
         {
             var client = new BackgroundJobClient();
-            client.Enqueue<MediatorHangfireBridge>(bridge => bridge.Send(jobName, request));
+            return client.Enqueue<MediatorHangfireBridge>(bridge => bridge.Send(jobName, request));
         }
 
-      /*  public static void Enqueue(this IMediator mediator, IRequest request)
+
+        public static string Schedule(this IMediator mediator, string jobName, IRequest<Unit> request, DateTime startTime)
         {
             var client = new BackgroundJobClient();
-            client.Enqueue<MediatorHangfireBridge>(bridge => bridge.Send(request));
-        }*/
+            return client.Schedule<MediatorHangfireBridge>(bridge => bridge.Send(jobName, request), startTime);
+        }
     }
 }

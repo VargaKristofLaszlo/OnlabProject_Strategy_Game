@@ -16,6 +16,7 @@ namespace BackEnd.Repositories.Implementations
         private IUnitRepository _units;
         private ICityRepository _cities;
         private IReportRepository _reports;
+        private IHangFireRepository _hangFire;
 
         public EfUnitOfWork(UserManager<ApplicationUser> userManager, ApplicationDbContext db)
         {
@@ -23,6 +24,15 @@ namespace BackEnd.Repositories.Implementations
             _db = db;
         }
 
+        public IHangFireRepository HangFire 
+        {
+            get 
+            {
+                if (_hangFire == null)
+                    _hangFire = new HangFireRepository(_db);
+                return _hangFire;
+            }
+        }
 
         public IReportRepository Reports
         {

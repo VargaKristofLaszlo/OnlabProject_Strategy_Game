@@ -46,5 +46,8 @@ namespace Game.Shared.IServices
 
         [Get("/Reports")]
         Task<CollectionResponse<Report>> GetReports(int pageNumber, int pageSize);
+
+        [Get("/BuildingQueue/{userId}")]
+        Task<BuildingQueue> GetBuildingQueueById(string userId);
     }
 }

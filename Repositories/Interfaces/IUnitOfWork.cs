@@ -10,6 +10,7 @@ namespace BackEnd.Repositories.Interfaces
         IUnitRepository Units { get; }
         ICityRepository Cities { get; }
         IReportRepository Reports { get; }
+        IHangFireRepository HangFire { get; }
         Task<int> CommitChangesAsync();
         
     }
