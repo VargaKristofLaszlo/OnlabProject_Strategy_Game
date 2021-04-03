@@ -62,6 +62,18 @@ namespace Repositories.Implementations
             return job;
         }
 
+        public async Task<HangFireJob> GetJobByJobId(string jobId)
+        {
+            return await _db.HangFireJobs.FirstOrDefaultAsync(x => x.JobId.Equals(jobId));
+        }
+
+        public async Task<List<HangFireJob>> GetUserBuildingQueue(string userId, int cityIndex)
+        {
+            return await _db.HangFireJobs
+                .Where(x => x.UserId.Equals(userId) &&x.CityIndex == cityIndex)
+                .ToListAsync();
+        }
+
         public async Task<List<HangFireJob>> GetUserBuildingQueue(string userId)
         {
             return await _db.HangFireJobs

@@ -1,5 +1,7 @@
 ﻿@inject Game.Shared.IServices.IGameService IGameService
 @inject Game.Shared.IServices.IViewService IViewService 
+@inject Helpers.UpgradeQueueState UpgradeQueueState
+@inject Helpers.CityResourceState CityResourceState
 <MudDialog>
     <DialogContent>
         <MudSimpleTable Style="overflow-x: auto;">
@@ -26,7 +28,7 @@
                 <thead>
                     <tr>
                         <td>The upgrade time is</td>
-                        <td>@upgradeTime</td>
+                        <td>@UpgradeTime</td>
                     </tr>
                 </thead>
             }
@@ -40,7 +42,7 @@
         <MudButton OnClick="Cancel">Cancel</MudButton>
         @if (UpgradeCost != null)
         {
-            <MudButton Color="Color.Primary" OnClick="Submit">Upgrade</MudButton>
+            <MudButton Color="Color.Primary" Disabled="@disableUpgrade" OnClick="Submit">Upgrade</MudButton>
         }
     </DialogActions>
 </MudDialog>
@@ -59,32 +61,37 @@
     [Parameter]
     public int CityIndex { get; set; }
 
-    private TimeSpan upgradeTime { get; set; } = new TimeSpan();
+    [Parameter]
+    public TimeSpan UpgradeTime { get; set; }
 
     private List<Game.Shared.Models.Request.UpgradeCostCreationRequest> BuildingUpgradeCosts;
+
+    private bool disableUpgrade = false;
 
 
     protected override async Task OnInitializedAsync()
     {
         BuildingUpgradeCosts = await IViewService.GetBuildingUpgradeCostsByName(BuildingName);
         BuildingUpgradeCosts = BuildingUpgradeCosts.OrderBy(o => o.UpgradeCost.Wood).ToList();
-        try
-        {
-            upgradeTime = new System.TimeSpan(0, 0, BuildingUpgradeCosts.ElementAt(CurrentStage).UpgradeTimeInSeconds);
-        }
-        catch (ArgumentOutOfRangeException)
-        {
 
-        }
-
+        if (UpgradeCost != null) 
+            disableUpgrade = 
+                CityResourceState.Wood <= UpgradeCost.Wood ||
+                CityResourceState.Stone <= UpgradeCost.Stone ||
+                CityResourceState.Silver <= UpgradeCost.Silver ||
+                CityResourceState.Population <= UpgradeCost.Population;
     }
 
     async Task Submit()
     {
-        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1);        
+        var upgradesInQueue = UpgradeQueueState.GetUpgradeStage(BuildingName);
+
+        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1 + upgradesInQueue);
 
         if (response.IsSuccessStatusCode)
-            MudDialog.Close(DialogResult.Ok(BuildingUpgradeCosts));        
+            MudDialog.Close(DialogResult.Ok(
+                new Tuple<List<Game.Shared.Models.Request.UpgradeCostCreationRequest>,string>(
+                    BuildingUpgradeCosts,response.Content)));
 
         else
             MudDialog.Close(DialogResult.Cancel());

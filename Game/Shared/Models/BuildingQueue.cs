@@ -18,5 +18,6 @@ namespace Game.Shared.Models
         public int NewStage { get; set; }
         public int CityIndex { get; set; }
         public TimeSpan UpgradeTime { get; set; }
+        public string JobId { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace Models.Profiles
                 .ForMember(s => s.CityIndex, m => m.MapFrom(d => d.CityIndex))
                 .ForMember(s => s.CreationTime, m => m.MapFrom(d => d.CreationTime))
                 .ForMember(s => s.FinishTime, m => m.MapFrom(d => d.FinishTime))
+                .ForMember(s => s.JobId, m => m.MapFrom(d => d.JobId))
                 .ForMember(s => s.NewStage, m => m.MapFrom(d => d.NewStage));
         }
     }

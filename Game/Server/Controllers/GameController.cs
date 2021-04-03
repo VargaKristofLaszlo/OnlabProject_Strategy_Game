@@ -28,6 +28,18 @@ namespace Game.Server.Controllers
             _mediator = mediator;
         }
 
+        [HttpPost("cancel/building/upgrade")]
+        public async Task<IActionResult> CancelUpgrade([FromQuery] string jobId) 
+        {
+            await _mediator.Send(new RemoveHangFireJob.Command(jobId));
+            var client = new BackgroundJobClient();
+
+            client.Delete(jobId);
+            RecurringJob.RemoveIfExists(jobId);
+
+            return Ok();
+        }
+
         [HttpPatch("test/{buildingName}/Upgrade")]
         public async Task<IActionResult> TestUpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
@@ -36,12 +48,14 @@ namespace Game.Server.Controllers
             var startTime = await _mediator.Send(new WiP_Upgrade_Start.Command(cityIndex, buildingName, newStage, identityContext));
 
 
-            _mediator.Schedule(
+            var jobId = _mediator.Schedule(
                 $"{identityContext.UserId} upgrades {buildingName} to stage {newStage}",
                 new WiP_UpgradeProcess.Command(cityIndex, buildingName, newStage, identityContext, startTime),
                 startTime);
 
-            return Ok();
+            await _mediator.Send(new AddJobIdToHangFireJobEntity.Command(jobId, identityContext.UserId, buildingName, cityIndex, newStage));
+
+            return Ok(jobId);
         }
 
 

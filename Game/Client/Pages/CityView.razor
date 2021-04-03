@@ -194,11 +194,37 @@
 
     private async Task OpenUpgradeDialog(Resources upgradeCost, int currentStage, string buildingName, int cityIndex)
     {
+        var upgradesInQueue = UpgradeQueueState.GetUpgradeStage(buildingName);
+        TimeSpan upgradeTime = new TimeSpan(0,0,0);
+        var costResponse = await IViewService.GetBuildingUpgradeCostsByName(buildingName);
+        costResponse = costResponse.OrderBy(o => o.UpgradeCost.Wood).ToList();
+        if (upgradesInQueue != 0)
+        {
+
+            try
+            {
+                var tmp = costResponse.ElementAt(currentStage + upgradesInQueue);
+                upgradeCost = tmp.UpgradeCost;
+                upgradeTime = new System.TimeSpan(0, 0, tmp.UpgradeTimeInSeconds);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                upgradeCost = null;
+            }
+        }
+        else
+        {
+            var tmp = costResponse.ElementAt(currentStage);
+            upgradeTime = new System.TimeSpan(0,0,tmp.UpgradeTimeInSeconds);
+        }
+
+
         var parameters = new DialogParameters();
         parameters.Add("UpgradeCost", upgradeCost);
         parameters.Add("CurrentStage", currentStage);
         parameters.Add("BuildingName", buildingName);
         parameters.Add("CityIndex", cityIndex);
+        parameters.Add("UpgradeTime", upgradeTime);
 
         if (UpgradeQueueState.QueueIsFull(cityIndex) == true)
         {
@@ -206,24 +232,25 @@
             return;
         }
 
-        var res = DialogService.Show<UpgradeDialog>($"Upgrade the {buildingName}", parameters: parameters);
+        var res = DialogService.Show<UpgradeDialog>($"Upgrade the {buildingName} to stage {currentStage + upgradesInQueue + 1}", parameters: parameters);
 
         var dialogResult = await res.Result;
 
         if (dialogResult.Cancelled == false)
         {
-            var dialogData = dialogResult.Data as List<Game.Shared.Models.Request.UpgradeCostCreationRequest>;
-            int upgradeTimeInSeconds = dialogData.ElementAt(currentStage).UpgradeTimeInSeconds;
-            CityResourceState.SetResourceValueAfterUpgrade(dialogData.ElementAt(currentStage).UpgradeCost);
-            var timeNow = System.DateTime.Now;  
+            var dialogData = dialogResult.Data as Tuple<List<Game.Shared.Models.Request.UpgradeCostCreationRequest>, string>;
+            int upgradeTimeInSeconds = dialogData.Item1.ElementAt(currentStage).UpgradeTimeInSeconds;
+            CityResourceState.SetResourceValueAfterUpgrade(dialogData.Item1.ElementAt(currentStage).UpgradeCost);
+            var timeNow = System.DateTime.Now;
             UpgradeQueueState.AddToQueue(new Game.Shared.Models.QueueData()
             {
                 CreationTime = timeNow,
                 FinishTime = timeNow.Add(new System.TimeSpan(0, 0, upgradeTimeInSeconds)),
                 BuildingName = buildingName,
-                NewStage = currentStage + 1,
+                NewStage = currentStage + 1 + upgradesInQueue,
                 CityIndex = cityIndex,
-                UpgradeTime = new System.TimeSpan(0, 0, upgradeTimeInSeconds)
+                UpgradeTime = upgradeTime,
+                JobId = dialogData.Item2
             });
             StateHasChanged();
         }

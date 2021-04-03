@@ -3,15 +3,23 @@
 @implements IDisposable
 @inject AuthenticationStateProvider AuthStateProvider
 @inject Game.Shared.IServices.IViewService IViewService 
+@inject Game.Shared.IServices.IGameService IGameService
 
 <table>
     @foreach (var item in UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index))
     {
-        <tr>
-            <td class="mr-2">Upgrading @item.BuildingName</td>
-            <td class="mr-2">To stage @item.NewStage</td>
-            <td>@item.UpgradeTime</td>
-        </tr>
+    <tr>
+        <td class="mr-2">Upgrading @item.BuildingName</td>
+        <td class="mr-2">To stage @item.NewStage</td>
+        <td class="mr-2">@item.UpgradeTime</td>
+
+
+        @if (item.Equals(UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index).Last()))
+        {
+            <td @onclick="() => Remove(item.JobId)">Remove</td>
+        }
+
+    </tr>
     }
     @for (int i = 0; i < 3 - UpgradeQueueState.GetUpgradeQueueOfCity(CityIndexState.Index).Count(); i++)
     {
@@ -26,10 +34,11 @@
 
 @code {       
 
+  
+
     protected override void OnInitialized()
     {
-        UpgradeQueueState.OnChange += StateHasChanged;
-
+        UpgradeQueueState.OnChange += StateHasChanged;    
     }
 
     protected override async Task OnInitializedAsync()
@@ -43,5 +52,11 @@
     public void Dispose()
     {
         UpgradeQueueState.OnChange -= StateHasChanged;
+    }
+
+    async Task Remove(string jobId)
+    {
+        await UpgradeQueueState.RemoveFromQueue(jobId);
+
     }
 }
