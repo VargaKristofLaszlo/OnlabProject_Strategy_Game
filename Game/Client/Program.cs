@@ -37,6 +37,7 @@ namespace Game.Client
             builder.Services.AddSingleton<UnitsOfCityState>();
             builder.Services.AddScoped<CityDetailsState>();
             builder.Services.AddScoped<UpgradeQueueState>();
+            builder.Services.AddScoped<UnitProductionQueueState>();
 
             builder.Services.AddRefitClient<Game.Shared.IServices.IViewService>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "api/View"))

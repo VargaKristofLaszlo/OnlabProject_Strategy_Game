@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Services.Commands.Buildings
 {
-    public static class WiP_UpgradeProcess
+    public static class UpgradeProcess
     {
         public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext,
             DateTime FinishTime) : IRequest<MediatR.Unit>;
@@ -37,8 +37,9 @@ namespace Services.Commands.Buildings
                 //Upgrade the building
                 buildingBehaviour.Upgrade(city, newUpgradeCost);
 
-                var job = await _unitOfWork.HangFire.GetJobByFinishTime(request.FinishTime);
-                _unitOfWork.HangFire.RemoveJob(job);
+                var job = await _unitOfWork.HangFire
+                    .GetBuildingJobByFinishTime(request.FinishTime,request.CityIndex, request.IdentityContext.UserId);
+                _unitOfWork.HangFire.RemoveBuildingJob(job);
 
                 await _unitOfWork.CommitChangesAsync();
 

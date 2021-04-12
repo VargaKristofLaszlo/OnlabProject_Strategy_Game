@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Services.Commands
 {
-    public static class AddJobIdToHangFireJobEntity
+    public static class AddJobIdToUnitQueue
     {
         public record Command(string JobId, string UserId,
-            string BuildingName, int CityIndex, int NewStage) : IRequest<Unit>;
+            string UnitName, int CityIndex, int Amount) : IRequest<Unit>;
 
         public class Handler : IRequestHandler<Command, Unit>
         {
@@ -22,12 +22,12 @@ namespace Services.Commands
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var jobs = await _unitOfWork.HangFire.GetUserBuildingQueue(request.UserId, request.CityIndex);
+                var jobs = await _unitOfWork.HangFire.GetUserUnitProductionQueue(request.UserId, request.CityIndex);
 
-                var job = jobs.FirstOrDefault(x => 
-                    x.BuildingName.Equals(request.BuildingName) &&
+                var job = jobs.FirstOrDefault(x =>
+                    x.UnitName.Equals(request.UnitName) &&
                     x.CityIndex == request.CityIndex &&
-                    x.NewStage == request.NewStage);
+                    x.Amount == request.Amount);
 
                 if (job == null)
                     return new Unit();

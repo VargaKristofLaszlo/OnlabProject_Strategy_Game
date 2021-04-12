@@ -4,7 +4,7 @@
 @inject Helpers.CityIndexState CityIndexState
 
 <AuthorizeView>
-    <Authorized>   
+    <Authorized>
         <div class="d-flex bd-highlight">
             <CitySelector CityIndex="@_cityIndex" />
             <ResourceView CityIndex="@_cityIndex" />
@@ -17,7 +17,10 @@
             <CityView CityIndex="@_cityIndex" />
         </div>
         <div class="d-dflex bd-highlight mt-2">
-            <UpgradeQueue/>
+            <UpgradeQueue />
+        </div>
+        <div class="d-dflex bd-highlight mt-2">
+            <RecruitQueue />
         </div>
 
     </Authorized>

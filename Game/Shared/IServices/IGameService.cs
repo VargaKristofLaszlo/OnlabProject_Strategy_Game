@@ -10,12 +10,11 @@ namespace Game.Shared.IServices
     {
         [Post("/cancel/building/upgrade")]
         Task RemoveUpgradeFromQueue(string jobId);
+        [Post("/cancel/recruitment")]
+        Task RemoveRecruitmentFromQueue(string jobId);
 
         [Patch("/{buildingName}/Upgrade")]
-        Task<ApiResponse<SuccessfulBuildingStageModification>> UpgradeBuilding(int cityIndex, string buildingName, int newStage);
-
-        [Patch("/test/{buildingName}/Upgrade")]
-        Task<ApiResponse<string>> TestUpgradeBuilding(int cityIndex, string buildingName, int newStage);
+        Task<ApiResponse<string>> UpgradeBuilding(int cityIndex, string buildingName, int newStage);       
 
         [Patch("/{buildingName}/Downgrade")]
         Task<ApiResponse<SuccessfulBuildingStageModification>> DowngradeBuilding(int cityIndex, string buildingName, int newStage);

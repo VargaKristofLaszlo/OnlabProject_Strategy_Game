@@ -49,5 +49,7 @@ namespace Game.Shared.IServices
 
         [Get("/BuildingQueue/{userId}")]
         Task<BuildingQueue> GetBuildingQueueById(string userId);
+        [Get("/UnitRecruitQueue/{userId}")]
+        Task<UnitQueue> GetUnitQueueById(string userId);
     }
 }

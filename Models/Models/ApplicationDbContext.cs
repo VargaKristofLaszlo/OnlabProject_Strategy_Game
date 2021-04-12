@@ -29,7 +29,8 @@ namespace BackEnd.Models.Models
         public DbSet<UnitsInCity> UnitsInCities { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Report> Reports { get; set; }
-        public DbSet<HangFireJob> HangFireJobs { get; set; }
+        public DbSet<UpgradeQueueItem> UpgradeQueueItems { get; set; }
+        public DbSet<UnitProductionQueueItem> UnitProductionQueueItems{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,7 +51,6 @@ namespace BackEnd.Models.Models
                 .WithMany(u => u.UnitsInCity)
                 .HasForeignKey(pr => pr.UnitId)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
             builder.Entity<City>()
                 .HasOne(c => c.StoneProduction)

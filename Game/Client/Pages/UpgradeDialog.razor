@@ -86,7 +86,7 @@
     {
         var upgradesInQueue = UpgradeQueueState.GetUpgradeStage(BuildingName);
 
-        var response = await IGameService.TestUpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1 + upgradesInQueue);
+        var response = await IGameService.UpgradeBuilding(CityIndex, BuildingName, CurrentStage + 1 + upgradesInQueue);
 
         if (response.IsSuccessStatusCode)
             MudDialog.Close(DialogResult.Ok(

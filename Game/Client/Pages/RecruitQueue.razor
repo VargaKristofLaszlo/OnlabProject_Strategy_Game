@@ -1,0 +1,60 @@
+﻿@inject Helpers.UnitProductionQueueState RecruitState
+@inject Helpers.CityIndexState CityIndexState
+@implements IDisposable
+@inject AuthenticationStateProvider AuthStateProvider
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
+
+<table>
+    @foreach (var item in RecruitState.GetUnitQueueOfCity(CityIndexState.Index))
+    {
+        <tr>
+            <td class="mr-2">Recruiting @item.Amount</td>
+            <td class="mr-2"> @item.UnitName</td>
+            <td class="mr-2">@item.RecruitTime</td>
+
+
+            @if (item.Equals(RecruitState.GetUnitQueueOfCity(CityIndexState.Index).Last()))
+            {
+                <td @onclick="() => Remove(item.JobId)">Remove</td>
+            }
+
+        </tr>
+    }
+    @for (int i = 0; i < 3 - RecruitState.GetUnitQueueOfCity(CityIndexState.Index).Count(); i++)
+    {
+        <tr>
+            <td>Recruitment spaceholder</td>            
+        </tr>
+    }
+
+</table>
+
+@code {
+
+
+
+    protected override void OnInitialized()
+    {
+        RecruitState.OnChange += StateHasChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+        await RecruitState.InitRecruitmentQueue(userId);
+    }
+
+
+    public void Dispose()
+    {
+        RecruitState.OnChange -= StateHasChanged;
+    }
+
+    async Task Remove(string jobId)
+    {
+        await RecruitState.RemoveFromQueue(jobId);
+
+    }
+}

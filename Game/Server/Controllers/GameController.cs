@@ -27,11 +27,11 @@ namespace Game.Server.Controllers
         {
             _mediator = mediator;
         }
-
-        [HttpPost("cancel/building/upgrade")]
-        public async Task<IActionResult> CancelUpgrade([FromQuery] string jobId) 
+      
+        [HttpPost("cancel/recruitment")]
+        public async Task<IActionResult> CancelRecruitment([FromQuery] string jobId)
         {
-            await _mediator.Send(new RemoveHangFireJob.Command(jobId));
+            await _mediator.Send(new RemoveRecruitmentJob.Command(jobId));
             var client = new BackgroundJobClient();
 
             client.Delete(jobId);
@@ -40,41 +40,36 @@ namespace Game.Server.Controllers
             return Ok();
         }
 
-        [HttpPatch("test/{buildingName}/Upgrade")]
-        public async Task<IActionResult> TestUpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
+        [HttpPost("cancel/building/upgrade")]
+        public async Task<IActionResult> CancelUpgrade([FromQuery] string jobId) 
+        {
+            await _mediator.Send(new RemoveBuildingUpgradeJob.Command(jobId));
+            var client = new BackgroundJobClient();
+
+            client.Delete(jobId);
+            RecurringJob.RemoveIfExists(jobId);
+
+            return Ok();
+        }
+
+        [HttpPatch("{buildingName}/Upgrade")]
+        public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
             var identityContext = new IdentityContext(HttpContext);
 
-            var startTime = await _mediator.Send(new WiP_Upgrade_Start.Command(cityIndex, buildingName, newStage, identityContext));
-
+            var startTime = await _mediator.Send(new UpgradeStart.Command(cityIndex, buildingName, newStage, identityContext));
+            
 
             var jobId = _mediator.Schedule(
                 $"{identityContext.UserId} upgrades {buildingName} to stage {newStage}",
-                new WiP_UpgradeProcess.Command(cityIndex, buildingName, newStage, identityContext, startTime),
+                new UpgradeProcess.Command(cityIndex, buildingName, newStage, identityContext, startTime),
                 startTime);
 
-            await _mediator.Send(new AddJobIdToHangFireJobEntity.Command(jobId, identityContext.UserId, buildingName, cityIndex, newStage));
+            await _mediator.Send(new AddJobIdToBuildingQueue.Command(jobId, identityContext.UserId, buildingName, cityIndex, newStage));
 
             return Ok(jobId);
         }
-
-
-        [HttpPatch("{buildingName}/Upgrade")]
-        [SwaggerOperation(
-            Summary = "Upgrade a building",
-            Description = "Find the city where the building needs to be upgraded using the index of the city " +
-            "and find the building which needs to upgraded using it's name." +
-            "<b>Using this end-point requires the user to log in<b>"
-        )]
-        [SwaggerResponse(200, "The upgrade was successful")]
-        [SwaggerResponse(400, "The upgrade failed")]
-        [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
-        [SwaggerResponse(404, "The building was not found")]
-        public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
-        {
-            var response = await _mediator.Send(new UpgradeBuilding.Command(cityIndex, buildingName, newStage));
-            return Ok(response);
-        }
+             
 
         [HttpPatch("{buildingName}/Downgrade")]
         [SwaggerOperation(
@@ -105,8 +100,18 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The unit type could not be found")]
         public async Task<IActionResult> ProduceUnits([FromBody] UnitProductionRequest request)
         {
-            await _mediator.Send(new ProduceUnits.Command(request));
-            return Ok();
+            var identityContext = new IdentityContext(HttpContext);
+            var startTime = await _mediator.Send(new UnitProductionStart.Command(request, identityContext));
+
+            var jobId = _mediator.Schedule(
+               $"{identityContext.UserId} creates {request.Amount} {request.NameOfUnitType}",
+               new UnitProductionProcess.Command(request.CityIndex, request.NameOfUnitType, request.Amount, identityContext,startTime),
+               startTime);
+
+            await _mediator.Send(new AddJobIdToUnitQueue.Command(jobId, identityContext.UserId, request.NameOfUnitType,
+                request.CityIndex, request.Amount));
+
+            return Ok(jobId);
         }
 
         [HttpPost("Resources/Send")]

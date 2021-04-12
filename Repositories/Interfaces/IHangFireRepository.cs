@@ -9,13 +9,21 @@ namespace Repositories.Interfaces
 {
     public interface IHangFireRepository
     {
-        Task AddNewJob(string userId, DateTime startingTime, DateTime finishTime, string buildingName,
-            int newStage, int cityIndex);        
-        Task<DateTime> GetFinishTime(string userId);        
-        Task<HangFireJob> GetJobByFinishTime(DateTime FinishTime);
-        Task<HangFireJob> GetJobByJobId(string jobId);
-        void RemoveJob(HangFireJob hangFireJob);
-        Task<List<HangFireJob>> GetUserBuildingQueue(string userId, int cityIndex);
-        Task<List<HangFireJob>> GetUserBuildingQueue(string userId);
+        Task AddNewBuildingJob(string userId, DateTime startingTime, DateTime finishTime, string buildingName,
+            int newStage, int cityIndex);
+        Task AddNewUnitProductionJob(string userId, DateTime startingTime, DateTime finishTime, string unitName,
+            int amount, int cityIndex);
+        Task<DateTime> GetBuildingFinishTime(string userId);
+        Task<DateTime> GetUnitFinishTime(string userId);
+        Task<UpgradeQueueItem> GetBuildingJobByFinishTime(DateTime FinishTime, int cityIndex, string userId);
+        Task<UnitProductionQueueItem> GetUnitJobByFinishTime(DateTime finishTime, int cityIndex, string userId);
+        Task<UpgradeQueueItem> GetBuildingJobByJobId(string jobId);
+        Task<UnitProductionQueueItem> GetRecruitmentJobByJobId(string jobId);
+        void RemoveBuildingJob(UpgradeQueueItem hangFireJob);
+        void RemoveBuildingJob(UnitProductionQueueItem hangFireJob);
+        Task<List<UpgradeQueueItem>> GetUserBuildingQueue(string userId, int cityIndex);
+        Task<List<UpgradeQueueItem>> GetUserBuildingQueue(string userId);
+        Task<List<UnitProductionQueueItem>> GetUserUnitProductionQueue(string userId, int cityIndex);
+        Task<List<UnitProductionQueueItem>> GetUserUnitProductionQueue(string userId);
     }
 }

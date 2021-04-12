@@ -21,6 +21,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using System;
 using Hangfire.MediatR;
+using Hangfire.Common;
 
 namespace Game.Server
 {
@@ -110,6 +111,11 @@ namespace Game.Server
                 options.EnableAnnotations();
             });
 
+            services.ConfigureApplicationCookie(options => 
+            {   
+               // options.LoginPath = "/";
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddAuthorization(options => 
@@ -121,7 +127,7 @@ namespace Game.Server
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IWebHostEnvironment env)
+        public void Configure(IUnitOfWork unitOfWork, IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IMediator mediatr, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -144,7 +150,12 @@ namespace Game.Server
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseHangfireDashboard();
-            backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
+
+            var manager = new RecurringJobManager();
+            
+            manager.AddOrUpdate("IncreaseResources", Job.FromExpression(() => new ProduceResources(unitOfWork).Produce()), Cron.Hourly());
+                       
+
             app.UseBlazorFrameworkFiles();
             app.UseIdentityServer();
             app.UseProblemDetails();

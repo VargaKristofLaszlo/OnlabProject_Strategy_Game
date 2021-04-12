@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System;
 namespace Services.Commands.Buildings
 {
-    public static class WiP_Upgrade_Start
+    public static class UpgradeStart
     {
         public record Command(int CityIndex, string BuildingName, int NewStage, IIdentityContext IdentityContext) : IRequest<DateTime>;
 
@@ -38,15 +38,15 @@ namespace Services.Commands.Buildings
 
                 ResourceCostRemoval.PayTheCost(city, upgradeCost.UpgradeCost);
 
-                var finishTime = await _unitOfWork.HangFire.GetFinishTime(request.IdentityContext.UserId);
+                var finishTime = await _unitOfWork.HangFire.GetBuildingFinishTime(request.IdentityContext.UserId);
                 var newFinishTime = finishTime.Add(upgradeCost.UpgradeTime);
-                await _unitOfWork.HangFire.AddNewJob(request.IdentityContext.UserId, finishTime, newFinishTime
-                    ,request.BuildingName, request.NewStage, request.CityIndex);
+                await _unitOfWork.HangFire.AddNewBuildingJob(request.IdentityContext.UserId, finishTime, newFinishTime,
+                    request.BuildingName, request.NewStage, request.CityIndex);
 
                 await _unitOfWork.CommitChangesAsync();
 
 
-                return finishTime.Add(upgradeCost.UpgradeTime);
+                return newFinishTime;
             }
 
             private async Task<bool> IsUpgradeable(string buildingName, int newStage)

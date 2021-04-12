@@ -4,6 +4,7 @@ using BackEnd.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -171,5 +172,5 @@ namespace BackEnd.Repositories.Implementations
                 .Include(user => user.Cities)
                 .ToListAsync(), _db.Users.ToListAsync().Result.Count);
         }
-    }
+    }  
 }

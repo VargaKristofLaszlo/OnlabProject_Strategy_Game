@@ -19,5 +19,6 @@ namespace Game.Shared.Services
         {
             return await _httpClient.PostAsJsonAsync(_httpClient.BaseAddress + _gameController + "/Attack", request);
         }
+
     }
 }

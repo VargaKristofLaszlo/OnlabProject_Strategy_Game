@@ -4,6 +4,7 @@ using Game.Shared.Models.Request;
 using MediatR;
 using Services.Exceptions;
 using Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +49,14 @@ namespace Services.Commands.Game
 
                 PayTheCost(city, productionCost);
 
+
+
+
                 var unitsOfThisTypeInCity = await _unitOfWork.Units.GetUnitsInCity(unitCheck.Type.Id, city.Barrack.Id);
+
+
+
+
 
                 //Create a new entry in the db
                 if (unitsOfThisTypeInCity == null)

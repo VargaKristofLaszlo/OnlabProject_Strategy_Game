@@ -159,19 +159,10 @@
             </tr>
         </tbody>
     </MudSimpleTable>
-    <MudButton OnClick="Test">Test</MudButton>
 }
 
-@inject HttpClient http
+
 @code {
-    private async Task Test()
-    {
-        var response = await http.PatchAsync("Game/test/Barrack/Upgrade?cityIndex=0&newStage=1", null);
-        Console.WriteLine("response.StatusCode\t" + response.StatusCode);
-    }
-
-
-
 
     [Parameter]
     public int CityIndex { get; set; }
@@ -195,28 +186,31 @@
     private async Task OpenUpgradeDialog(Resources upgradeCost, int currentStage, string buildingName, int cityIndex)
     {
         var upgradesInQueue = UpgradeQueueState.GetUpgradeStage(buildingName);
-        TimeSpan upgradeTime = new TimeSpan(0,0,0);
+        TimeSpan upgradeTime = new TimeSpan(0, 0, 0);
         var costResponse = await IViewService.GetBuildingUpgradeCostsByName(buildingName);
         costResponse = costResponse.OrderBy(o => o.UpgradeCost.Wood).ToList();
-        if (upgradesInQueue != 0)
+        try
         {
-
-            try
+            if (upgradesInQueue != 0)
             {
+
+
                 var tmp = costResponse.ElementAt(currentStage + upgradesInQueue);
                 upgradeCost = tmp.UpgradeCost;
                 upgradeTime = new System.TimeSpan(0, 0, tmp.UpgradeTimeInSeconds);
             }
-            catch (ArgumentOutOfRangeException)
+            else
             {
-                upgradeCost = null;
+
+                var tmp = costResponse.ElementAt(currentStage);
+                upgradeTime = new System.TimeSpan(0, 0, tmp.UpgradeTimeInSeconds);
             }
         }
-        else
+        catch (ArgumentOutOfRangeException)
         {
-            var tmp = costResponse.ElementAt(currentStage);
-            upgradeTime = new System.TimeSpan(0,0,tmp.UpgradeTimeInSeconds);
+            upgradeCost = null;
         }
+
 
 
         var parameters = new DialogParameters();

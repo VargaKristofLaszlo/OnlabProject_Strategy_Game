@@ -192,5 +192,12 @@ namespace Game.Server.Controllers
 
             return Ok(response);
         }
+        [HttpGet("UnitRecruitQueue/{userId}")]
+        public async Task<IActionResult> GetUnitRecruitQueue(string userId)
+        {
+            var response = await _mediator.Send(new GetUnitRecruitQueueByUserId.Query(userId));
+
+            return Ok(response);
+        }
     }
 }

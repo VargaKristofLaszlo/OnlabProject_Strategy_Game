@@ -1,4 +1,5 @@
 ﻿using Game.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -32,6 +33,9 @@ namespace BackEnd.Models.Models
 
         [Required]
         public Resources UnitCost { get; set; }
+
+        [Required]
+        public TimeSpan RecruitTime { get; set; }
 
         public List<UnitsInCity> UnitsInCity { get; set; } = new List<UnitsInCity>();
     }

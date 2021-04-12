@@ -1,6 +1,7 @@
 ﻿using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,6 +49,17 @@ namespace Repositories.Implementations
                 .ToListAsync();
 
             return cititesOfUser.ElementAt(cityIndex).Warehouse;
+        }
+
+        public async Task<List<City>> GetAllCities()
+        {
+            return await _db.Cities
+                .Include(city => city.StoneProduction)
+                .Include(city => city.WoodProduction)
+                .Include(city => city.SilverProduction)
+                .Include(city => city.Warehouse)
+                .Include(city => city.Resources)
+                .ToListAsync();
         }
     }
 }

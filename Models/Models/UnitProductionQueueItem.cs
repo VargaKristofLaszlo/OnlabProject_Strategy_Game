@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Models.Models
 {
-    public class HangFireJob : Record
+    public class UnitProductionQueueItem : Record
     {
         public string UserId { get; set; }
         public string JobId { get; set; }
         public DateTime CreationTime { get; set; }
         public DateTime FinishTime { get; set; }
-        public string BuildingName { get; set; }
-        public int NewStage { get; set; }
+        public string UnitName { get; set; }
         public int CityIndex { get; set; }
-      
+        public int Amount { get; set; }     
     }
 }

@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Services.Commands
+namespace Services.Commands.Game
 {
-    public static class RemoveHangFireJob
+    public static class RemoveBuildingUpgradeJob
     {
         public record Command(string JobId) : IRequest<Unit>;
 
@@ -24,11 +24,11 @@ namespace Services.Commands
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var job = await _unitOfWork.HangFire.GetJobByJobId(request.JobId);
+                var job = await _unitOfWork.HangFire.GetBuildingJobByJobId(request.JobId);
 
-                if (job != null) 
+                if (job != null)
                 {
-                    _unitOfWork.HangFire.RemoveJob(job);
+                    _unitOfWork.HangFire.RemoveBuildingJob(job);
                     await _unitOfWork.CommitChangesAsync();
                 }
 
