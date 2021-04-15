@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{6D348207-B37B-4E12-983B-4961ECF6E3BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{D4313832-2B93-48E3-B190-3061F50F39CD}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.MediatR", "Hangfire.MediatR\Hangfire.MediatR.csproj", "{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}"
 EndProject
 Global
@@ -57,10 +55,6 @@ Global
 		{6D348207-B37B-4E12-983B-4961ECF6E3BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D348207-B37B-4E12-983B-4961ECF6E3BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D348207-B37B-4E12-983B-4961ECF6E3BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4313832-2B93-48E3-B190-3061F50F39CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4313832-2B93-48E3-B190-3061F50F39CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4313832-2B93-48E3-B190-3061F50F39CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4313832-2B93-48E3-B190-3061F50F39CD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
