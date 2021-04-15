@@ -28,7 +28,8 @@ namespace Services.Implementations
 
         public async Task CreateReport(string attacker, string attackerCityName, string defender, string defenderCityName,
             Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops,
-            Dictionary<string, int> attackingUnits,IEnumerable<UnitsInCity> defendingUnits)
+            Dictionary<string, int> attackingUnits,IEnumerable<UnitsInCity> defendingUnits,
+            int stolenWoodAmount, int stolenStoneAmount, int stolenSilverAmount)
         {
             Report report = new Report()
             {
@@ -37,6 +38,10 @@ namespace Services.Implementations
                 AttackerCityName = attackerCityName,
                 Defender = defender,
                 DefendingCityName = defenderCityName,
+
+                StolenWoodAmount = stolenWoodAmount,
+                StolenStoneAmount = stolenStoneAmount,
+                StolenSilverAmount = stolenSilverAmount,
 
                 SwordsmanAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Swordsman")).Value,
                 HeavyCavalryAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Heavy Cavalry")).Value,

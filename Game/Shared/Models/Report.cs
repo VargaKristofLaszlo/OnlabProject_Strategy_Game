@@ -8,6 +8,9 @@ namespace Game.Shared.Models
 {
     public record Report
     {
+        public int StolenWoodAmount { get; init; }
+        public int StolenSilverAmount { get; init; }
+        public int StolenStoneAmount { get; init; }
         public DateTime CreationTime { get; init; }
         public string Attacker { get; init; }
         public string AttackerCityName { get; init; }

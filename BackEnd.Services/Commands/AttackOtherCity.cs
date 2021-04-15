@@ -55,28 +55,119 @@ namespace Services.Commands
 
                 var archeryPhaseResult = new ArcheryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
 
-                await _reportSender.CreateReport(initValues.attackerName, initValues.attackerCityName,
-                   initValues.defenderName, initValues.defenderCityName,
-                   archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
-                   request.Request.AttackingForces, initValues.defendingUnits);
 
                 //Update the attacking and defending side
                 foreach (var item in archeryPhaseResult.attackerTroops)
-                    unitsOfAttacker.First(u => u.Unit.Name.Equals(item.Key.Name)).Amount 
+                    unitsOfAttacker.First(u => u.Unit.Name.Equals(item.Key.Name)).Amount
                         -= request.Request.AttackingForces.First(x => x.Key.Equals(item.Key.Name)).Value - item.Value;
-                         
+
 
                 foreach (var item in archeryPhaseResult.defendingTroops)
                     defendingUnits.First(d => d.Unit.Name.Equals(item.Key.Name)).Amount = item.Value;
+
+
+                int initialWoodAmount = initValues.attackerCity.Resources.Wood;
+                int initialStoneAmount = initValues.attackerCity.Resources.Stone;
+                int initialSilverAmount = initValues.attackerCity.Resources.Silver;
+
+                //Steal resources
+                int totalCarryingCapacity = CalculateCarryingCapacity(archeryPhaseResult.attackerTroops);
+                if (totalCarryingCapacity > 0)
+                {
+                    ResourceStealingProcess(initValues.attackerCity, initValues.defenderCity, totalCarryingCapacity);
+                    CheckWarehouseCapacity(initValues.attackerCity);
+                }
+
+                int stolenWoodAmount = initValues.attackerCity.Resources.Wood - initialWoodAmount;
+                int stolenStoneAmount = initValues.attackerCity.Resources.Stone - initialStoneAmount;
+                int stolenSilverAmount = initValues.attackerCity.Resources.Silver - initialSilverAmount;
+
+                await _reportSender.CreateReport(initValues.attackerName, initValues.attackerCity.CityName,
+                    initValues.defenderName, initValues.defenderCity.CityName,
+                    archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
+                    request.Request.AttackingForces, initValues.defendingUnits, stolenWoodAmount, stolenStoneAmount, stolenSilverAmount);
 
                 await _unitOfWork.CommitChangesAsync();
 
                 return new MediatR.Unit();
             }
 
+            private int ResourceStealingProcess(City attackerCity, City defenderCity, int totalCarryingCapacity)
+            {
+                int distributedCarryingCapacity = (int)Math.Floor((double)totalCarryingCapacity / 3);
+                int leftover = 0;
+                if (totalCarryingCapacity < 1)
+                    return totalCarryingCapacity;
+
+                if (defenderCity.Resources.Wood >= distributedCarryingCapacity)
+                {
+                    defenderCity.Resources.Wood -= distributedCarryingCapacity;
+                    attackerCity.Resources.Wood += distributedCarryingCapacity;
+                }
+                else
+                {
+                    leftover += distributedCarryingCapacity - defenderCity.Resources.Wood;
+                    attackerCity.Resources.Wood += defenderCity.Resources.Wood;
+                    defenderCity.Resources.Wood = 0;
+                }
+
+                if (defenderCity.Resources.Stone >= distributedCarryingCapacity)
+                {
+                    defenderCity.Resources.Stone -= distributedCarryingCapacity;
+                    attackerCity.Resources.Stone += distributedCarryingCapacity;
+                }
+                else
+                {
+                    leftover += distributedCarryingCapacity - defenderCity.Resources.Stone;
+                    attackerCity.Resources.Stone += defenderCity.Resources.Stone;
+                    defenderCity.Resources.Stone = 0;
+                }
+
+                if (defenderCity.Resources.Silver >= distributedCarryingCapacity)
+                {
+                    defenderCity.Resources.Silver -= distributedCarryingCapacity;
+                    attackerCity.Resources.Silver += distributedCarryingCapacity;
+                }
+                else
+                {
+                    leftover += distributedCarryingCapacity - defenderCity.Resources.Silver;
+                    attackerCity.Resources.Silver += defenderCity.Resources.Silver;
+                    defenderCity.Resources.Silver = 0;
+                }
+
+                if (defenderCity.Resources.Wood == 0 && defenderCity.Resources.Silver == 0 && defenderCity.Resources.Stone == 0)
+                    return 0;
+
+                return ResourceStealingProcess(attackerCity, defenderCity, leftover);
+            }
+
+            private void CheckWarehouseCapacity(City city)
+            {
+                if (city.Resources.Wood > city.Warehouse.MaxWoodStorageCapacity)
+                    city.Resources.Wood = city.Warehouse.MaxWoodStorageCapacity;
+
+                if (city.Resources.Stone > city.Warehouse.MaxStoneStorageCapacity)
+                    city.Resources.Stone = city.Warehouse.MaxStoneStorageCapacity;
+
+                if (city.Resources.Silver > city.Warehouse.MaxSilverStorageCapacity)
+                    city.Resources.Silver = city.Warehouse.MaxSilverStorageCapacity;
+            }
+
+
+            private int CalculateCarryingCapacity(Dictionary<BackEnd.Models.Models.Unit, int> attackerTroops)
+            {
+                int totalCarryingCapacity = 0;
+                foreach (var item in attackerTroops)
+                {
+                    totalCarryingCapacity += item.Key.CarryingCapacity * item.Value;
+                }
+
+                return totalCarryingCapacity;
+            }
+
             private async Task<(AttackingTroops attackingTroops, DefendingTroops defendingTroops,
            IEnumerable<UnitsInCity> unitsOfAttacker, IEnumerable<UnitsInCity> defendingUnits, int wallStage,
-                string attackerName, string attackerCityName, string defenderName, string defenderCityName)> InitAttackProcess(AttackRequest request)
+                string attackerName, City attackerCity, string defenderName, City defenderCity)> InitAttackProcess(AttackRequest request)
             {
                 var attackingUser = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
                 var defendingUser = await _unitOfWork.Users.GetUserWithCities(request.AttackedUserId);
@@ -116,7 +207,7 @@ namespace Services.Commands
                 int wallStage = defendingUser.Cities.ElementAt(request.AttackedCityIndex).CityWall.Stage;
 
                 return (attackingTroops, defendingTroops, unitsOfAttacker, defendingUnits, wallStage,
-                     attackingUser.UserName, attackingCity.CityName, defendingUser.UserName, defendingCity.CityName);
+                     attackingUser.UserName, attackingCity, defendingUser.UserName, defendingCity);
             }
         }
     }

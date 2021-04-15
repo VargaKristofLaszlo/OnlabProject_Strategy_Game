@@ -41,42 +41,34 @@ namespace Game.Client.Helpers
             switch (buildingName)
             {
                 case _barrack:
-                   // _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.BarrackUpgradeCost);
                     CityDetails.BarrackUpgradeCost = newUpgradeCost;
                     CityDetails.BarrackStage = newStage;
                     break;
                 case _cityHall:
-                   // _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.CityHallUpgradeCost);
                     CityDetails.CityHallUpgradeCost = newUpgradeCost;
                     CityDetails.CityHallStage = newStage;
                     break;
                 case _cityWall:
-                  //  _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.CityWallUpgradeCost);
                     CityDetails.CityWallUpgradeCost = newUpgradeCost;
                     CityDetails.CityWallStage = newStage;
                     break;
                 case _farm:
-                   // _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.FarmUpgradeCost);
                     CityDetails.FarmUpgradeCost = newUpgradeCost;
                     CityDetails.FarmStage = newStage;
                     break;
                 case _lumber:
-                  //  _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.LumberUpgradeCost);
                     CityDetails.LumberUpgradeCost = newUpgradeCost;
                     CityDetails.LumberStage = newStage;
                     break;
                 case _silverMine:
-                //   _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.SilverMineUpgradeCost);
                     CityDetails.SilverMineUpgradeCost = newUpgradeCost;
                     CityDetails.SilverMineStage = newStage;
                     break;
                 case _stoneMine:
-                  //  _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.StoneMineUpgradeCost);
                     CityDetails.StoneMineUpgradeCost = newUpgradeCost;
                     CityDetails.StoneMineStage = newStage;
                     break;
-                case _wareHouse:
-              //      _cityResourceState.SetResourceValueAfterUpgrade(CityDetails.WarehouseUpgradeCost);
+                case _wareHouse:            
                     CityDetails.WarehouseUpgradeCost = newUpgradeCost;
                     CityDetails.WarehouseStage = newStage;
                     var capacity = await _viewService.GetWarehouseCapacity(cityIndex);                   

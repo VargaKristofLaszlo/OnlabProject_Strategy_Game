@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Commands;
 using Services.Commands.Buildings;
 using Services.Commands.Game;
-using Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Game.Server.Controllers
@@ -58,7 +55,6 @@ namespace Game.Server.Controllers
             var identityContext = new IdentityContext(HttpContext);
 
             var startTime = await _mediator.Send(new UpgradeStart.Command(cityIndex, buildingName, newStage, identityContext));
-            
 
             var jobId = _mediator.Schedule(
                 $"{identityContext.UserId} upgrades {buildingName} to stage {newStage}",

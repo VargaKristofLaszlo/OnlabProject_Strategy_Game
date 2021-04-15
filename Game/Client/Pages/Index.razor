@@ -6,15 +6,15 @@
 <AuthorizeView>
     <Authorized>
         <div class="d-flex bd-highlight">
-            <CitySelector CityIndex="@_cityIndex" />
-            <ResourceView CityIndex="@_cityIndex" />
+            <CitySelector CityIndex="@CityIndexState.Index" />
+            <ResourceView CityIndex="@CityIndexState.Index" />
         </div>
         <div class="d-flex bd-highlight">
-            <UnitsOfCityView CityIndex="@_cityIndex" />
+            <UnitsOfCityView CityIndex="@CityIndexState.Index" />
         </div>
 
         <div class="d-flex bd-highlight mt-2">
-            <CityView CityIndex="@_cityIndex" />
+            <CityView CityIndex="@CityIndexState.Index" />
         </div>
         <div class="d-dflex bd-highlight mt-2">
             <UpgradeQueue />
@@ -28,11 +28,8 @@
 
 @code
 {
-    private int _cityIndex = 0;
-
     protected override void OnInitialized()
     {
-        CityIndexState.SetIndex(0);
-        _cityIndex = CityIndexState.Index;
+        CityIndexState.SetIndex(CityIndexState.Index);      
     }
 }

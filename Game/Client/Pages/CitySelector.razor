@@ -3,7 +3,7 @@
 @inject Helpers.CityIndexState CityIndexState
 @implements IDisposable
 @inject HttpClient http
-
+@inject NavigationManager NavManager
 
 
 @if (_cityNames == null)
@@ -50,7 +50,6 @@ else
     private void HandlerCityNameOnClick(int i)
     {
         CityIndexState.SetIndex(i);
-
-        Console.WriteLine(CityIndexState.Index);
+        NavManager.NavigateTo("/City_redirect");
     }
 }

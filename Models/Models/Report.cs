@@ -9,7 +9,10 @@ namespace Models.Models
 {
     public class Report : Record
     {
-        public DateTime CreationTime { get; set; }        
+        public DateTime CreationTime { get; set; }
+        public int StolenWoodAmount { get; set; }
+        public int StolenSilverAmount { get; set; }
+        public int StolenStoneAmount { get; set; }
         public string Attacker { get; set; }
         public string AttackerCityName { get; set; }
         public string Defender { get; set; }
