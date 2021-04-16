@@ -52,3 +52,13 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure for Students (d1f9fceb-5bc4-4561-a8a7-e0886f0ccd1d)'
+    appType: 'webApp'
+    WebAppName: 'StrategyGame'
+    deployToSlotOrASE: true
+    ResourceGroupName: 'Onlab_StrategyGame'
+    SlotName: 'production'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
