@@ -25,6 +25,12 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
+- task: AzureKeyVault@1
+  inputs:
+    azureSubscription: 'Azure for Students (d1f9fceb-5bc4-4561-a8a7-e0886f0ccd1d)'
+    KeyVaultName: 'StrategyGame'
+    SecretsFilter: '*'
+    RunAsPreJob: false
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
@@ -34,20 +40,7 @@ steps:
     command: 'publish'
     publishWebProjects: true
     feedsToUse: 'config'
-
-- task: AzureKeyVault@1
-  inputs:
-    azureSubscription: 'Azure for Students (d1f9fceb-5bc4-4561-a8a7-e0886f0ccd1d)'
-    KeyVaultName: 'StrategyGame'
-    SecretsFilter: '*'
-    RunAsPreJob: false
 - task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
