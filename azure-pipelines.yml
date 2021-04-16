@@ -40,7 +40,6 @@ steps:
     command: 'publish'
     publishWebProjects: true
     feedsToUse: 'config'
-- task: ArchiveFiles@2
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
