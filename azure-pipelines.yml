@@ -61,4 +61,4 @@ steps:
     deployToSlotOrASE: true
     ResourceGroupName: 'Onlab_StrategyGame'
     SlotName: 'production'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
