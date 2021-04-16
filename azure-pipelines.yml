@@ -10,6 +10,8 @@ pool:
   vmImage: windows-latest
 
 variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
@@ -33,5 +35,9 @@ steps:
     publishWebProjects: true
     feedsToUse: 'config'
 
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: AzureKeyVault@1
+  inputs:
+    azureSubscription: 'Azure for Students (d1f9fceb-5bc4-4561-a8a7-e0886f0ccd1d)'
+    KeyVaultName: 'StrategyGame'
+    SecretsFilter: '*'
+    RunAsPreJob: false
