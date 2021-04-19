@@ -9,9 +9,9 @@ namespace Services.Implementations
 {
     public class EmailSender : IEmailSender
     {
-        public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor)
+        public EmailSender(AuthMessageSenderOptions optionsAccessor)
         {
-            Options = optionsAccessor.Value;
+            Options = optionsAccessor;
         }
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager

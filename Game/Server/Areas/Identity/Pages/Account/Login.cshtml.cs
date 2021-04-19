@@ -77,20 +77,21 @@ namespace Game.Server.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         
             if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByNameAsync(Input.Username);
-                var roles = await _userManager.GetRolesAsync(user);
-                if (user.IsBanned)
-                {
-                    _logger.LogWarning("A banned user tried to log in.");
-                    return RedirectToPage("./Lockout");
-                }
-
+            {    
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
-                {    
+                {
+                    var user = await _userManager.FindByNameAsync(Input.Username);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (user.IsBanned)
+                    {
+                        _logger.LogWarning("A banned user tried to log in.");
+                        return RedirectToPage("./Lockout");
+                    }
+
+
                     _logger.LogInformation("User logged in.");
 
                     if (roles.Contains("Admin"))

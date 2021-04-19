@@ -22,6 +22,8 @@ using Hangfire.SqlServer;
 using System;
 using Hangfire.MediatR;
 using Hangfire.Common;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace Game.Server
 {
@@ -38,6 +40,8 @@ namespace Game.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var client = new SecretClient(vaultUri: new Uri(Environment.GetEnvironmentVariable("VaultUri")), credential: new DefaultAzureCredential());
+
             // Add Hangfire services.
             services.AddHangfire(configuration =>
             {
@@ -45,7 +49,7 @@ namespace Game.Server
                             .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                             .UseSimpleAssemblyNameTypeSerializer()
                             .UseRecommendedSerializerSettings()
-                            .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"), new SqlServerStorageOptions
+                            .UseSqlServerStorage(client.GetSecret("Hangfire").Value.Value, new SqlServerStorageOptions
                             {
                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -57,17 +61,11 @@ namespace Game.Server
             }); 
 
             // Add the processing server as IHostedService
-            services.AddHangfireServer(options => 
-            {
-                
-            });
-
-
-
-
+            services.AddHangfireServer();
+            
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseSqlServer(
-                     Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
+                     client.GetSecret("DataConnectionString").Value.Value, sqlOptions =>
                      {
                          sqlOptions.MigrationsAssembly("Game.Server");
                      }));
@@ -97,7 +95,14 @@ namespace Game.Server
 
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);           
+            services.AddScoped(sp => 
+            {
+                return new AuthMessageSenderOptions()
+                {
+                    SendGridKey = client.GetSecret("SendGridKey").Value.Value,
+                    SendGridUser = client.GetSecret("SendGridUser").Value.Value
+                };
+            });           
 
             services.AddSwaggerGen(options =>
             {
