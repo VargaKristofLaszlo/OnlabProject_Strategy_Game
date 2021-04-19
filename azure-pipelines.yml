@@ -40,6 +40,9 @@ steps:
     command: 'publish'
     publishWebProjects: true
     feedsToUse: 'config'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'run'
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
