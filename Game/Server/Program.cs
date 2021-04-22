@@ -15,7 +15,7 @@ namespace Game.Server
     {
         public static async Task Main(string[] args)
         {
-            /*(await */CreateHostBuilder(args).Build()/*.SeedData())*/.Run();
+            (await CreateHostBuilder(args).Build().SeedData()).Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
