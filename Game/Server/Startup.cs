@@ -70,6 +70,14 @@ namespace Game.Server
                          sqlOptions.MigrationsAssembly("Game.Server");
                      }));
 
+            /*TODO
+             
+                Remove it
+            
+                This is only used to test what the database connection is
+            */
+            System.Diagnostics.Debug.WriteLine("client.GetSecret('DataConnectionString').Value.Value:  " + client.GetSecret("DataConnectionString").Value.Value);
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<IUnitOfWork, EfUnitOfWork>();
