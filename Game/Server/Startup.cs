@@ -31,7 +31,13 @@ namespace Game.Server
     {
         public Startup(IConfiguration configuration)
         {
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true });
+            builder.AddAzureKeyVault(new Uri(Environment.GetEnvironmentVariable("VaultUri")), credential);
+            configuration = builder.Build();
             Configuration = configuration;
+
+
         }
 
         public IConfiguration Configuration { get; }
@@ -49,7 +55,7 @@ namespace Game.Server
                             .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                             .UseSimpleAssemblyNameTypeSerializer()
                             .UseRecommendedSerializerSettings()
-                            .UseSqlServerStorage(client.GetSecret("Hangfire").Value.Value, new SqlServerStorageOptions
+                            .UseSqlServerStorage(Configuration["Hangfire"] /* client.GetSecret("Hangfire").Value.Value*/, new SqlServerStorageOptions
                             {
                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -65,19 +71,12 @@ namespace Game.Server
             
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseSqlServer(
-                     client.GetSecret("DataConnectionString").Value.Value, sqlOptions =>
+                     Configuration["DataConnectionString"]
+                    /* client.GetSecret("DataConnectionString").Value.Value*/, sqlOptions =>
                      {
                          sqlOptions.MigrationsAssembly("Game.Server");
                      }));
-
-            /*TODO
-             
-                Remove it
-            
-                This is only used to test what the database connection is
-            */
-            System.Diagnostics.Debug.WriteLine("client.GetSecret('DataConnectionString').Value.Value:  " + client.GetSecret("DataConnectionString").Value.Value);
-
+    
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddScoped<IUnitOfWork, EfUnitOfWork>();
@@ -107,8 +106,8 @@ namespace Game.Server
             {
                 return new AuthMessageSenderOptions()
                 {
-                    SendGridKey = client.GetSecret("SendGridKey").Value.Value,
-                    SendGridUser = client.GetSecret("SendGridUser").Value.Value
+                    SendGridKey =  Configuration["SendGridKey"] /*client.GetSecret("SendGridKey").Value.Value*/,
+                    SendGridUser = Configuration["SendGridUser"] /*client.GetSecret("SendGridUser").Value.Value*/
                 };
             });           
 
