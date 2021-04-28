@@ -22,11 +22,11 @@ namespace Game.Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
                 {
-                    /*  string uriString = Environment.GetEnvironmentVariable("VaultUri");
-                      var keyVaultEndpoint = new Uri(uriString ?? "https://strategygame.vault.azure.net/");
-                      config.AddAzureKeyVault(
-                      keyVaultEndpoint,
-                      new DefaultAzureCredential());*/
+                    string uriString = Environment.GetEnvironmentVariable("VaultUri");
+                    var keyVaultEndpoint = new Uri(uriString);
+                    config.AddAzureKeyVault(
+                    keyVaultEndpoint,
+                    new DefaultAzureCredential());
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
