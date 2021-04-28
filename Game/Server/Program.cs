@@ -21,8 +21,9 @@ namespace Game.Server
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) =>
-                {                     
-                    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+                {
+                    string uriString = Environment.GetEnvironmentVariable("VaultUri");
+                    var keyVaultEndpoint = new Uri(uriString ?? "");
                     config.AddAzureKeyVault(
                     keyVaultEndpoint,
                     new DefaultAzureCredential());

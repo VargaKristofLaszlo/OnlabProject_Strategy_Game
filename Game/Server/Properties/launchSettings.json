@@ -31,6 +31,5 @@
         "AZURE_USERNAME": "kristoflaszlovarga@edu.bme.hu"
       }
     }
-  },
-  "VaultUri": "https://strategygame.vault.azure.net/"
+  }
 }
