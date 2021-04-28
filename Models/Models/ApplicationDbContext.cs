@@ -30,7 +30,7 @@ namespace BackEnd.Models.Models
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<UpgradeQueueItem> UpgradeQueueItems { get; set; }
-        public DbSet<UnitProductionQueueItem> UnitProductionQueueItems{ get; set; }
+        public DbSet<UnitProductionQueueItem> UnitProductionQueueItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
