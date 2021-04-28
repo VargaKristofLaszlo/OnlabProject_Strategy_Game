@@ -33,7 +33,7 @@ namespace Game.Server
         {
             ConfigurationBuilder builder = new ConfigurationBuilder();
             var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true });
-            builder.AddAzureKeyVault(new Uri(Environment.GetEnvironmentVariable("VaultUri")), credential);
+            builder.AddAzureKeyVault(new Uri("https://strategygame.vault.azure.net/"), credential);
             configuration = builder.Build();
             Configuration = configuration;
 
