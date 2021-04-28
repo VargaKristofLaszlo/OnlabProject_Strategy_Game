@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using BackEnd.Models.Models;
 
 namespace Game.Server
 {
@@ -15,7 +18,7 @@ namespace Game.Server
     {
         public static async Task Main(string[] args)
         {
-            (await CreateHostBuilder(args).Build().SeedData()).Run();
+            (await CreateHostBuilder(args).Build().SeedData()).MigrateDatabase<ApplicationDbContext>().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -32,5 +35,7 @@ namespace Game.Server
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+
     }
 }
