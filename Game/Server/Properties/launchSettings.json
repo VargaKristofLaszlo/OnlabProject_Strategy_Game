@@ -1,5 +1,6 @@
 {
   "iisSettings": {
+    "VaultUri": "https://strategygame.vault.azure.net/",
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
@@ -30,5 +31,6 @@
         "AZURE_USERNAME": "kristoflaszlovarga@edu.bme.hu"
       }
     }
-  }
+  },
+  "VaultUri": "https://strategygame.vault.azure.net/"
 }
