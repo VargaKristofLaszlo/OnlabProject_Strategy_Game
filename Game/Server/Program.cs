@@ -23,7 +23,7 @@ namespace Game.Server
                 .ConfigureAppConfiguration((context, config) =>
                 {
                     string uriString = Environment.GetEnvironmentVariable("VaultUri");
-                    var keyVaultEndpoint = new Uri(uriString ?? "");
+                    var keyVaultEndpoint = new Uri(uriString ?? "https://strategygame.vault.azure.net/");
                     config.AddAzureKeyVault(
                     keyVaultEndpoint,
                     new DefaultAzureCredential());
