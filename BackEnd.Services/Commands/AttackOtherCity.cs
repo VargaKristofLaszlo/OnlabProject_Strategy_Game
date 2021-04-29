@@ -3,6 +3,7 @@ using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using Game.Shared.Models.Request;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using Services.Exceptions;
 using Services.Implementations.AttackService.AttackPhaseBehaviourImpl;
 using Services.Implementations.AttackService.Troops;
@@ -56,14 +57,23 @@ namespace Services.Commands
                 var archeryPhaseResult = new ArcheryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
 
 
-                //Update the attacking and defending side
+
+                //Update the attacking side
                 foreach (var item in archeryPhaseResult.attackerTroops)
-                    unitsOfAttacker.First(u => u.Unit.Name.Equals(item.Key.Name)).Amount
-                        -= request.Request.AttackingForces.First(x => x.Key.Equals(item.Key.Name)).Value - item.Value;
+                {
+                    foreach (var unitsInCity in unitsOfAttacker)
+                    {
+                        if (unitsInCity.Unit.Name.Equals(item.Key.Name))
+                        {
+                            var fallenSoldierAmount = (request.Request.AttackingForces.First(x => x.Key.Equals(item.Key.Name)).Value - item.Value);
+                            unitsInCity.Amount -= fallenSoldierAmount;
+                            initValues.attackerCity.Resources.Population += fallenSoldierAmount * item.Key.UnitCost.Population;
+                        }
+                    }
+                }
 
 
-                foreach (var item in archeryPhaseResult.defendingTroops)
-                    defendingUnits.First(d => d.Unit.Name.Equals(item.Key.Name)).Amount = item.Value;
+
 
 
                 int initialWoodAmount = initValues.attackerCity.Resources.Wood;
@@ -86,6 +96,15 @@ namespace Services.Commands
                     initValues.defenderName, initValues.defenderCity.CityName,
                     archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
                     request.Request.AttackingForces, initValues.defendingUnits, stolenWoodAmount, stolenStoneAmount, stolenSilverAmount);
+
+
+                //Update the defending side
+                foreach (var item in archeryPhaseResult.defendingTroops)
+                {
+                    var fallenSoldierAmount = defendingUnits.First(d => d.Unit.Name.Equals(item.Key.Name)).Amount - item.Value;
+                    initValues.defenderCity.Resources.Population += fallenSoldierAmount * item.Key.UnitCost.Population;
+                    defendingUnits.First(d => d.Unit.Name.Equals(item.Key.Name)).Amount = item.Value;
+                }
 
                 await _unitOfWork.CommitChangesAsync();
 
@@ -190,16 +209,60 @@ namespace Services.Commands
                 Dictionary<BackEnd.Models.Models.Unit, int> attackingForces = new Dictionary<BackEnd.Models.Models.Unit, int>();
                 try
                 {
-                    foreach (var item in request.AttackingForces)
-                        attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item.Key)), item.Value);
+                    foreach (var type in allUnitTypes)
+                    {
+                        bool found = false;
+                        foreach (var troop in request.AttackingForces)
+                        {
+                            if (troop.Key.Equals(type.Name))
+                            {
+                                attackingForces.Add(type, troop.Value);
+                                found = true;
+                            }
+                        }
+                        if (!found)
+                            attackingForces.Add(type, 0);
+                    }
+
+                    /*  foreach (var item in request.AttackingForces)
+                          attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item.Key)), item.Value);*/
                 }
                 catch (InvalidOperationException) { throw new BadRequestException("Invalid unit type name"); }
 
                 AttackingTroops attackingTroops = new AttackingTroops(attackingForces);
 
+
                 //Get the defending units
                 var defendingUnits =
                     await _unitOfWork.Units.GetUnitsInCityByBarrackId(defendingUser.Cities.ElementAt(request.AttackedCityIndex).BarrackId);
+
+                var tmp = defendingUnits.ToList();
+
+                foreach (var type in allUnitTypes)
+                {
+                    bool found = false;
+                    foreach (var troop in tmp)
+                    {
+                        if (troop.Unit.Name.Equals(type.Name))
+                        {
+                            found = true;
+                        }
+                    }
+                    if (!found)
+                    {
+                        tmp.Add(new UnitsInCity
+                        {
+                            Amount = 0,
+                            Barrack = defendingCity.Barrack,
+                            BarrackId = defendingCity.BarrackId,
+                            Unit = type,
+                            UnitId = type.Id
+                        });
+                    }
+                }
+
+                defendingUnits = tmp;
+
 
                 DefendingTroops defendingTroops = new DefendingTroops(defendingUnits, attackingTroops.InfantryProvisionPercentage,
                     attackingTroops.CavalryProvisionPercentage, attackingTroops.ArcheryProvisionPercentage);

@@ -36,8 +36,6 @@ namespace Game.Server
             builder.AddAzureKeyVault(new Uri(Environment.GetEnvironmentVariable("VaultUri")), credential);
             configuration = builder.Build();
             Configuration = configuration;
-
-
         }
 
         public IConfiguration Configuration { get; }
@@ -119,11 +117,6 @@ namespace Game.Server
                         Version = "v1.0"
                     });
                 options.EnableAnnotations();
-            });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-
             });
 
             services.AddControllersWithViews();

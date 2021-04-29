@@ -12,7 +12,7 @@ namespace Services.Queries
 {
     public class ProduceResources
     {
-        private  readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public ProduceResources(IUnitOfWork unitOfWork)
         {
@@ -38,7 +38,7 @@ namespace Services.Queries
             {
                 IncreaseCityResources(city);
             }
-
+            await _unitOfWork.CommitChangesAsync();
         }
     }
 }

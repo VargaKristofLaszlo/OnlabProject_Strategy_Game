@@ -12,8 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Implementations 
-{ 
+namespace Services.Implementations
+{
 
     public class ReportSender : IReportSender
     {
@@ -28,7 +28,7 @@ namespace Services.Implementations
 
         public async Task CreateReport(string attacker, string attackerCityName, string defender, string defenderCityName,
             Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops,
-            Dictionary<string, int> attackingUnits,IEnumerable<UnitsInCity> defendingUnits,
+            Dictionary<string, int> attackingUnits, IEnumerable<UnitsInCity> defendingUnits,
             int stolenWoodAmount, int stolenStoneAmount, int stolenSilverAmount)
         {
             Report report = new Report()
@@ -93,7 +93,7 @@ namespace Services.Implementations
             if (pageNumber < 1)
                 pageNumber = 1;
 
-            
+
             pageSize = pageSize.ValideatePageSize();
 
             var (Reports, Count) = await _unitOfWork.Reports.GetReports(pageNumber, pageSize, defenderName);
