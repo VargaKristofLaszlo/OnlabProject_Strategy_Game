@@ -23,14 +23,6 @@ namespace Game.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    string uriString = Environment.GetEnvironmentVariable("VaultUri");
-                    var keyVaultEndpoint = new Uri(uriString);
-                    config.AddAzureKeyVault(
-                    keyVaultEndpoint,
-                    new DefaultAzureCredential());
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

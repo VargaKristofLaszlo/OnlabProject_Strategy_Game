@@ -31,10 +31,6 @@ namespace Game.Server
     {
         public Startup(IConfiguration configuration)
         {
-            ConfigurationBuilder builder = new ConfigurationBuilder();
-            var credential = new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true });
-            builder.AddAzureKeyVault(new Uri(Environment.GetEnvironmentVariable("VaultUri")), credential);
-            configuration = builder.Build();
             Configuration = configuration;
         }
 
