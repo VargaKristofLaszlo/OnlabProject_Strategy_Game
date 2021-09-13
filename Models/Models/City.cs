@@ -11,7 +11,7 @@ namespace BackEnd.Models.Models
         [StringLength(255)]
         public string CityName { get; set; }
 
-        [Required]      
+        [Required]
         public Resources Resources { get; set; }
 
         public DateTime LastResourceQueryTime { get; set; } = DateTime.UtcNow;
@@ -63,5 +63,8 @@ namespace BackEnd.Models.Models
         public string WarehouseId { get; set; }
         [Required]
         public Warehouse Warehouse { get; set; }
+
+        [Required]
+        public Castle Castle { get; set; }
     }
 }

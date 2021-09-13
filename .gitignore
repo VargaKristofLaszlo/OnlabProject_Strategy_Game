@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/Game/Server/Migrations/20210913134302_Added new building (Castle).cs

@@ -9,13 +9,13 @@ namespace Models.DataSeeding
 {
     public class BuildingUpgradeCostSeeding
     {
-        private readonly ApplicationDbContext _db;       
+        private readonly ApplicationDbContext _db;
         public BuildingUpgradeCostSeeding(ApplicationDbContext db)
         {
             _db = db;
         }
 
-        public async Task SeedBuildingUpgradeCost() 
+        public async Task SeedBuildingUpgradeCost()
         {
             await CreateBuildingUpgradeCost("Barrack");
             await CreateBuildingUpgradeCost("CityHall");
@@ -25,10 +25,11 @@ namespace Models.DataSeeding
             await CreateBuildingUpgradeCost("SilverMine");
             await CreateBuildingUpgradeCost("StoneMine");
             await CreateBuildingUpgradeCost("Lumber");
+            await CreateBuildingUpgradeCost("Castle");
             await CreateExtraStage("Barrack", 2);
         }
 
-        private async Task CreateBuildingUpgradeCost(string buildingName) 
+        private async Task CreateBuildingUpgradeCost(string buildingName)
         {
             //Avoid adding duplicates
             var cost = await _db.MaxBuildingStages
@@ -61,7 +62,7 @@ namespace Models.DataSeeding
             await _db.SaveChangesAsync();
         }
 
-        private async Task CreateExtraStage(string buildingName, int stage) 
+        private async Task CreateExtraStage(string buildingName, int stage)
         {
             //Avoid adding duplicates
             var maxBuildingStage = await _db.MaxBuildingStages
@@ -92,7 +93,7 @@ namespace Models.DataSeeding
 
             await _db.SaveChangesAsync();
         }
-       
+
 
     }
 }

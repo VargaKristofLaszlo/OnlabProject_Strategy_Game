@@ -67,6 +67,7 @@ namespace Game.Server.Areas.Identity.Pages.Account
             BuildingUpgradeCost cityWallCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("CityWall", 1);
             BuildingUpgradeCost cityhallCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("CityHall", 1);
             BuildingUpgradeCost barrackCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Barrack", 1);
+            BuildingUpgradeCost castleCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Castle", 1);
 
             //Create the buildings
             Warehouse warehouse = Warehouse.Create(warehouseCost);
@@ -80,9 +81,10 @@ namespace Game.Server.Areas.Identity.Pages.Account
             CityWall cityWall = CityWall.Create(cityWallCost);
             CityHall cityHall = CityHall.Create(cityhallCost);
             Barrack barrack = Barrack.Create(barrackCost);
+            Castle castle = Castle.Create(castleCost);
 
             //Add the buildings to the city
-            City city =  new City
+            City city = new City
             {
                 CityName = $"{user.UserName}'s city",
                 Resources = new Resources
@@ -109,11 +111,12 @@ namespace Game.Server.Areas.Identity.Pages.Account
                 CityHallId = cityHall.Id,
                 CityHall = cityHall,
                 WarehouseId = warehouse.Id,
-                Warehouse = warehouse
+                Warehouse = warehouse,
+                Castle = castle
             };
             return city;
         }
-        private void SetIds(City city) 
+        private void SetIds(City city)
         {
             city.SilverProduction.City = city;
             city.SilverProduction.CityId = city.Id;
@@ -138,6 +141,9 @@ namespace Game.Server.Areas.Identity.Pages.Account
 
             city.Warehouse.City = city;
             city.Warehouse.CityId = city.Id;
+
+            city.Castle.City = city;
+            city.Castle.CityId = city.Id;
         }
     }
 }

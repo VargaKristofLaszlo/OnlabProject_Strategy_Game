@@ -48,12 +48,12 @@ namespace BackEnd.Repositories.Implementations
                 .ToListAsync(), _db.Users.ToListAsync().Result.Count);
         }
 
-        public async Task<ApplicationUser> GetUserWithCities(string userId) 
+        public async Task<ApplicationUser> GetUserWithCities(string userId)
         {
             return await _db.Users
                 .Include(user => user.Cities)
-                    .ThenInclude(city =>city.CityWall)
-                        .ThenInclude(building =>building.UpgradeCost)
+                    .ThenInclude(city => city.CityWall)
+                        .ThenInclude(building => building.UpgradeCost)
                 .Include(user => user.Cities)
                     .ThenInclude(city => city.Farm)
                         .ThenInclude(building => building.UpgradeCost)
@@ -101,15 +101,16 @@ namespace BackEnd.Repositories.Implementations
             var user = await GetUserWithCities(userId);
             if (user == null)
                 return UsermanagerResponse.TaskCompletedSuccessfully();
-                        
+
 
             List<Barrack> barracks = new List<Barrack>();
-            List<CityHall> cityHalls= new List<CityHall>();
+            List<CityHall> cityHalls = new List<CityHall>();
             List<CityWall> cityWalls = new List<CityWall>();
             List<Farm> farms = new List<Farm>();
             List<ResourceProduction> resourceProductions = new List<ResourceProduction>();
             List<Warehouse> warehouses = new List<Warehouse>();
             List<UnitsInCity> unitsInCities = new List<UnitsInCity>();
+            List<Castle> castles = new List<Castle>();
 
             foreach (var city in user.Cities)
             {
@@ -117,8 +118,9 @@ namespace BackEnd.Repositories.Implementations
                 cityHalls.Add(_db.CityHalls.FirstOrDefault(x => x.CityId.Equals(city.Id)));
                 cityWalls.Add(_db.CityWalls.FirstOrDefault(x => x.CityId.Equals(city.Id)));
                 farms.Add(_db.Farms.FirstOrDefault(x => x.CityId.Equals(city.Id)));
-                resourceProductions.AddRange( _db.ResourceProductions.Where(x => x.CityId.Equals(city.Id)).ToList());
+                resourceProductions.AddRange(_db.ResourceProductions.Where(x => x.CityId.Equals(city.Id)).ToList());
                 warehouses.Add(_db.Warehouses.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                castles.Add(_db.Castles.FirstOrDefault(x => x.CityId.Equals(city.Id)));
             }
             foreach (var barrack in barracks)
             {
@@ -147,13 +149,16 @@ namespace BackEnd.Repositories.Implementations
             foreach (var item in warehouses)
                 _db.Warehouses.Remove(item);
 
+            foreach (var item in castles)
+                _db.Castles.Remove(item);
+
             foreach (var item in unitsInCities)
             {
                 _db.UnitsInCities.Remove(item);
             }
 
             await _db.SaveChangesAsync();
-            
+
             if (result.Succeeded)
                 return UsermanagerResponse.TaskCompletedSuccessfully();
 
@@ -163,7 +168,7 @@ namespace BackEnd.Repositories.Implementations
         }
 
 
-        public async Task<(List<ApplicationUser> Users, int Count)> GetAllUsersWithCities(int pageNumber, int pageSize, string senderId) 
+        public async Task<(List<ApplicationUser> Users, int Count)> GetAllUsersWithCities(int pageNumber, int pageSize, string senderId)
         {
             return (await _db.Users
                 .Where(x => x.Id.Equals(senderId) == false)
@@ -172,5 +177,5 @@ namespace BackEnd.Repositories.Implementations
                 .Include(user => user.Cities)
                 .ToListAsync(), _db.Users.ToListAsync().Result.Count);
         }
-    }  
+    }
 }

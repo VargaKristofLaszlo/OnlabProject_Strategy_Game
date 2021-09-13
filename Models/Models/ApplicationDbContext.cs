@@ -31,6 +31,7 @@ namespace BackEnd.Models.Models
         public DbSet<Report> Reports { get; set; }
         public DbSet<UpgradeQueueItem> UpgradeQueueItems { get; set; }
         public DbSet<UnitProductionQueueItem> UnitProductionQueueItems { get; set; }
+        public DbSet<Castle> Castles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -67,6 +68,10 @@ namespace BackEnd.Models.Models
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<City>()
+                .HasOne(c => c.Castle)
+                .WithOne(c => c.City)
+                .HasForeignKey<Castle>(c => c.CityId);
 
             base.OnModelCreating(builder);
         }
