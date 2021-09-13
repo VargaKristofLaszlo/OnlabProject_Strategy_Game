@@ -8,7 +8,7 @@ namespace Game.Shared.Models
 {
     public class CityDetails
     {
-        public DateTime LastResourceQueryTime{ get; set; }
+        public DateTime LastResourceQueryTime { get; set; }
         public string CityName { get; set; }
         public int BarrackStage { get; set; }
         public Resources BarrackUpgradeCost { get; set; }
@@ -26,6 +26,8 @@ namespace Game.Shared.Models
         public Resources LumberUpgradeCost { get; set; }
         public int WarehouseStage { get; set; }
         public Resources WarehouseUpgradeCost { get; set; }
+        public int CastleStage { get; set; }
+        public Resources CastleUpgradeCost { get; set; }
 
 
         public float CityWallMultiplier { get; set; }
