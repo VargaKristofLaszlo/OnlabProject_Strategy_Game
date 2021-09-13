@@ -14,6 +14,9 @@ namespace BackEnd.Models.Models
         [Required]
         public Resources Resources { get; set; }
 
+        [Required]
+        public int Loyalty { get; set; }
+
         public DateTime LastResourceQueryTime { get; set; } = DateTime.UtcNow;
 
         //Foreign keys        

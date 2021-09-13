@@ -24,7 +24,7 @@ namespace Game.Server.Controllers
         {
             _mediator = mediator;
         }
-      
+
         [HttpPost("cancel/recruitment")]
         public async Task<IActionResult> CancelRecruitment([FromQuery] string jobId)
         {
@@ -38,7 +38,7 @@ namespace Game.Server.Controllers
         }
 
         [HttpPost("cancel/building/upgrade")]
-        public async Task<IActionResult> CancelUpgrade([FromQuery] string jobId) 
+        public async Task<IActionResult> CancelUpgrade([FromQuery] string jobId)
         {
             await _mediator.Send(new RemoveBuildingUpgradeJob.Command(jobId));
             var client = new BackgroundJobClient();
@@ -65,7 +65,7 @@ namespace Game.Server.Controllers
 
             return Ok(jobId);
         }
-             
+
 
         [HttpPatch("{buildingName}/Downgrade")]
         [SwaggerOperation(
@@ -101,7 +101,7 @@ namespace Game.Server.Controllers
 
             var jobId = _mediator.Schedule(
                $"{identityContext.UserId} creates {request.Amount} {request.NameOfUnitType}",
-               new UnitProductionProcess.Command(request.CityIndex, request.NameOfUnitType, request.Amount, identityContext,startTime),
+               new UnitProductionProcess.Command(request.CityIndex, request.NameOfUnitType, request.Amount, identityContext, startTime),
                startTime);
 
             await _mediator.Send(new AddJobIdToUnitQueue.Command(jobId, identityContext.UserId, request.NameOfUnitType,
@@ -130,6 +130,13 @@ namespace Game.Server.Controllers
         public async Task<IActionResult> AttackOtherCity([FromBody] AttackRequest request)
         {
             await _mediator.Send(new AttackOtherCity.Command(request));
+            return Ok();
+        }
+
+        [HttpPost("Create/Coins")]
+        public async Task<IActionResult> CreateCoins([FromBody] CoinCreationRequest request)
+        {
+            await _mediator.Send(new AddNewCoins.Command(request));
             return Ok();
         }
     }

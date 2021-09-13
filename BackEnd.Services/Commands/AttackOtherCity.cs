@@ -1,8 +1,10 @@
 ﻿using BackEnd.Infrastructure;
 using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
+using Game.Shared.Models;
 using Game.Shared.Models.Request;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Services.Exceptions;
 using Services.Implementations.AttackService.AttackPhaseBehaviourImpl;
@@ -25,12 +27,18 @@ namespace Services.Commands
             private readonly IIdentityContext _identityContext;
             private readonly IUnitOfWork _unitOfWork;
             private readonly IReportSender _reportSender;
+            private readonly UserManager<ApplicationUser> _userManager;
 
-            public Handler(IUnitOfWork unitOfWork, IIdentityContext identityContext, IReportSender reportSender)
+            public Handler(
+                IUnitOfWork unitOfWork,
+                IIdentityContext identityContext,
+                IReportSender reportSender,
+                UserManager<ApplicationUser> userManager)
             {
                 _unitOfWork = unitOfWork;
                 _identityContext = identityContext;
                 _reportSender = reportSender;
+                _userManager = userManager;
             }
 
             public async Task<MediatR.Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -56,8 +64,6 @@ namespace Services.Commands
 
                 var archeryPhaseResult = new ArcheryAttackPhaseBehaviour().Action(attackingTroops, defendingTroops, wallStage);
 
-
-
                 //Update the attacking side
                 foreach (var item in archeryPhaseResult.attackerTroops)
                 {
@@ -72,10 +78,6 @@ namespace Services.Commands
                     }
                 }
 
-
-
-
-
                 int initialWoodAmount = initValues.attackerCity.Resources.Wood;
                 int initialStoneAmount = initValues.attackerCity.Resources.Stone;
                 int initialSilverAmount = initValues.attackerCity.Resources.Silver;
@@ -86,6 +88,27 @@ namespace Services.Commands
                 {
                     ResourceStealingProcess(initValues.attackerCity, initValues.defenderCity, totalCarryingCapacity);
                     CheckWarehouseCapacity(initValues.attackerCity);
+
+                    if (request.Request.AttackType == AttackType.Conquer)
+                    {
+                        var noble = initValues.attackingTroops.InfantryPhaseTroops.Keys
+                            .FirstOrDefault(d => d.Name == "Noble");
+
+                        if (noble != null)
+                        {
+                            Random loyaltyReduction = new Random();
+                            initValues.defenderCity.Loyalty -= loyaltyReduction.Next(20, 30);
+
+                            if (initValues.defenderCity.Loyalty <= 0)
+                            {
+                                var attackingUser = await _userManager.FindByNameAsync(initValues.attackerName);
+                                initValues.defenderCity.User = attackingUser;
+                                initValues.defenderCity.UserId = _identityContext.UserId;
+                                attackingUser.Cities.Add(initValues.defenderCity);
+
+                            }
+                        }
+                    }
                 }
 
                 int stolenWoodAmount = initValues.attackerCity.Resources.Wood - initialWoodAmount;

@@ -20,7 +20,7 @@ namespace Services.Commands.Game
         {
             public Handler(IUnitOfWork unitOfWork) : base(unitOfWork)
             {
-                
+
             }
 
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -30,6 +30,14 @@ namespace Services.Commands.Game
                 var unit = await _unitOfWork.Units.FindUnitByName(request.UnitName);
 
                 var unitsOfThisTypeInCity = await _unitOfWork.Units.GetUnitsInCity(unit.Id, city.Barrack.Id);
+
+                if (request.UnitName == "Noble")
+                {
+                    if (city.Castle.AvailableCoinCount >= 1 == false)
+                        throw new BadRequestException("Not enough coins");
+
+                    city.Castle.AvailableCoinCount--;
+                }
 
                 //Create a new entry in the db
                 if (unitsOfThisTypeInCity == null)
@@ -55,7 +63,7 @@ namespace Services.Commands.Game
 
                 return new Unit();
             }
-         
+
         }
     }
 }

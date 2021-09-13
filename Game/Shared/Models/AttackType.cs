@@ -8,6 +8,7 @@ namespace Game.Shared.Models
 {
     public enum AttackType
     {
-        Looting = 1
+        Looting = 1,
+        Conquer = 2
     }
 }

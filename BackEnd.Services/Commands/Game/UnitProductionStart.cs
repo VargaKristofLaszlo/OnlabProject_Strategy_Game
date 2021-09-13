@@ -19,7 +19,7 @@ namespace Services.Commands.Game
         {
 
 
-            public Handler(IUnitOfWork unitOfWork) : base(unitOfWork) { }          
+            public Handler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
             public async Task<DateTime> Handle(Command request, CancellationToken cancellationToken)
             {
@@ -27,10 +27,10 @@ namespace Services.Commands.Game
 
                 var producibleUnits = await _unitOfWork.Units.GetProducibleUnitTypes(city.Barrack.Stage);
 
-                BackEnd.Models.Models.Unit  unit
+                BackEnd.Models.Models.Unit unit
                     = CheckIfUnitIsProducible(producibleUnits, request.Request.NameOfUnitType);
 
-                if(unit == null)
+                if (unit == null)
                     throw new NotFoundException();
 
                 var productionCost = new BackEnd.Models.Models.Resources
@@ -41,6 +41,12 @@ namespace Services.Commands.Game
                     Wood = request.Request.Amount * unit.UnitCost.Wood
                 };
 
+                if (request.Request.NameOfUnitType.Equals("Noble"))
+                {
+                    if (city.Castle.AvailableCoinCount >= 1 == false)
+                        throw new BadRequestException("Not enough coins");
+                }
+
                 if (CheckIfCityHasEnoughResources(city, productionCost) == false)
                     throw new BadRequestException("The city does not have enough resources");
 
@@ -48,7 +54,7 @@ namespace Services.Commands.Game
 
                 var finishTime = await _unitOfWork.HangFire.GetUnitFinishTime(request.IdentityContext.UserId);
 
-                var recruitTime = new TimeSpan(0,0,(int)Math.Ceiling(unit.RecruitTime.TotalSeconds) * request.Request.Amount);
+                var recruitTime = new TimeSpan(0, 0, (int)Math.Ceiling(unit.RecruitTime.TotalSeconds) * request.Request.Amount);
 
                 var newFinishTime = finishTime.Add(recruitTime);
 

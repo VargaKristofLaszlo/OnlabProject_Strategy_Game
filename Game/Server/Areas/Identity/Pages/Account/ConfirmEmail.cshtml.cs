@@ -112,7 +112,8 @@ namespace Game.Server.Areas.Identity.Pages.Account
                 CityHall = cityHall,
                 WarehouseId = warehouse.Id,
                 Warehouse = warehouse,
-                Castle = castle
+                Castle = castle,
+                Loyalty = 100
             };
             return city;
         }

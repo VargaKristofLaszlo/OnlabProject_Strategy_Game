@@ -14,16 +14,19 @@ namespace Game.Shared.IServices
         Task RemoveRecruitmentFromQueue(string jobId);
 
         [Patch("/{buildingName}/Upgrade")]
-        Task<ApiResponse<string>> UpgradeBuilding(int cityIndex, string buildingName, int newStage);       
+        Task<ApiResponse<string>> UpgradeBuilding(int cityIndex, string buildingName, int newStage);
 
         [Patch("/{buildingName}/Downgrade")]
         Task<ApiResponse<SuccessfulBuildingStageModification>> DowngradeBuilding(int cityIndex, string buildingName, int newStage);
 
         [Post("/ProduceUnit")]
-        Task<HttpResponseMessage> ProduceUnits([Body]UnitProductionRequest request);
+        Task<HttpResponseMessage> ProduceUnits([Body] UnitProductionRequest request);
 
         [Post("/Resources/Send")]
-        Task<HttpResponseMessage> SendResourcesToOtherPlayer([Body]SendResourceToOtherPlayerRequest request);
-        
+        Task<HttpResponseMessage> SendResourcesToOtherPlayer([Body] SendResourceToOtherPlayerRequest request);
+
+        [Post("/Create/Coins")]
+        Task<ApiResponse<string>> CreateCoins([Body] CoinCreationRequest request);
+
     }
 }

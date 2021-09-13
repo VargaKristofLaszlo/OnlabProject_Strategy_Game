@@ -16,6 +16,8 @@ namespace Models.DataSeeding
         private BackEnd.Models.Models.Unit LightCavalry;
         private BackEnd.Models.Models.Unit MountedArcher;
         private BackEnd.Models.Models.Unit HeavyCavalry;
+        private BackEnd.Models.Models.Unit Noble;
+
         public UnitTypeSeeding(ApplicationDbContext db)
         {
             _db = db;
@@ -38,9 +40,9 @@ namespace Models.DataSeeding
                     Silver = 20,
                     Population = 1
                 }
-            }; 
-             Swordsman = new BackEnd.Models.Models.Unit
-             {
+            };
+            Swordsman = new BackEnd.Models.Models.Unit
+            {
                 Name = "Swordsman",
                 AttackPoint = 25,
                 InfantryDefensePoint = 55,
@@ -61,7 +63,7 @@ namespace Models.DataSeeding
             {
                 Name = "Axe Fighter",
                 AttackPoint = 45,
-                InfantryDefensePoint= 10,
+                InfantryDefensePoint = 10,
                 CavalryDefensePoint = 5,
                 ArcherDefensePoint = 10,
                 UnitType = UnitType.Infantry,
@@ -74,7 +76,7 @@ namespace Models.DataSeeding
                     Silver = 40,
                     Population = 1
                 }
-            }; 
+            };
             Archer = new BackEnd.Models.Models.Unit
             {
                 Name = "Archer",
@@ -93,8 +95,8 @@ namespace Models.DataSeeding
                     Population = 1
                 }
             };
-             LightCavalry = new BackEnd.Models.Models.Unit
-             {
+            LightCavalry = new BackEnd.Models.Models.Unit
+            {
                 Name = "Light Cavalry",
                 AttackPoint = 130,
                 InfantryDefensePoint = 30,
@@ -110,7 +112,7 @@ namespace Models.DataSeeding
                     Silver = 250,
                     Population = 4
                 }
-            }; 
+            };
             MountedArcher = new BackEnd.Models.Models.Unit
             {
                 Name = "Mounted Archer",
@@ -128,9 +130,9 @@ namespace Models.DataSeeding
                     Silver = 100,
                     Population = 5
                 }
-            }; 
-             HeavyCavalry = new BackEnd.Models.Models.Unit
-             {
+            };
+            HeavyCavalry = new BackEnd.Models.Models.Unit
+            {
                 Name = "Heavy Cavalry",
                 AttackPoint = 150,
                 InfantryDefensePoint = 200,
@@ -147,12 +149,29 @@ namespace Models.DataSeeding
                     Population = 6
                 }
             };
-
+            Noble = new BackEnd.Models.Models.Unit
+            {
+                Name = "Noble",
+                AttackPoint = 1,
+                InfantryDefensePoint = 1,
+                CavalryDefensePoint = 1,
+                ArcherDefensePoint = 1,
+                UnitType = UnitType.Archer,
+                MinBarrackStage = 0,
+                CarryingCapacity = 50,
+                UnitCost = new BackEnd.Models.Models.Resources
+                {
+                    Wood = 100,
+                    Stone = 100,
+                    Silver = 100,
+                    Population = 5
+                }
+            };
         }
 
         public async Task SeedUnitTypes()
         {
-           await CreateUnitType(Spearman);
+            await CreateUnitType(Spearman);
             await CreateUnitType(Swordsman);
             await CreateUnitType(AxeFighter);
             await CreateUnitType(Archer);

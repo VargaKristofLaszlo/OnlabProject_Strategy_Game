@@ -24,6 +24,7 @@ using Hangfire.MediatR;
 using Hangfire.Common;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Identity;
+using Services.Commands.Game;
 
 namespace Game.Server
 {
@@ -152,6 +153,7 @@ namespace Game.Server
 
             var manager = new RecurringJobManager();
             manager.AddOrUpdate("IncreaseResources", Job.FromExpression(() => new ProduceResources(unitOfWork).Produce()), Cron.Hourly());
+            manager.AddOrUpdate("IncreaseLoyalty", Job.FromExpression(() => new IncreaseLoyalty(unitOfWork).IncreaseCityLoyalty()), Cron.Hourly());
 
 
             app.UseBlazorFrameworkFiles();
