@@ -17,6 +17,7 @@ namespace Game.Client.Helpers
         private const string _silverMine = "SilverMine";
         private const string _stoneMine = "StoneMine";
         private const string _wareHouse = "Warehouse";
+        private const string _castle = "Castle";
 
         private readonly CityResourceState _cityResourceState;
         private readonly Game.Shared.IServices.IViewService _viewService;
@@ -36,7 +37,7 @@ namespace Game.Client.Helpers
             NotifyStateChanged();
         }
 
-        public async Task BuildingUpgrade(string buildingName, Resources newUpgradeCost, int newStage, int cityIndex) 
+        public async Task BuildingUpgrade(string buildingName, Resources newUpgradeCost, int newStage, int cityIndex)
         {
             switch (buildingName)
             {
@@ -68,11 +69,15 @@ namespace Game.Client.Helpers
                     CityDetails.StoneMineUpgradeCost = newUpgradeCost;
                     CityDetails.StoneMineStage = newStage;
                     break;
-                case _wareHouse:            
+                case _wareHouse:
                     CityDetails.WarehouseUpgradeCost = newUpgradeCost;
                     CityDetails.WarehouseStage = newStage;
-                    var capacity = await _viewService.GetWarehouseCapacity(cityIndex);                   
+                    var capacity = await _viewService.GetWarehouseCapacity(cityIndex);
                     _cityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
+                    break;
+                case _castle:
+                    CityDetails.CastleUpgradeCost = newUpgradeCost;
+                    CityDetails.CastleStage = newStage;
                     break;
                 default:
                     break;
@@ -84,39 +89,42 @@ namespace Game.Client.Helpers
         {
             switch (buildingName)
             {
-                case _barrack:                   
+                case _barrack:
                     CityDetails.BarrackUpgradeCost = newUpgradeCost;
                     CityDetails.BarrackStage = newStage;
                     break;
-                case _cityHall:                   
+                case _cityHall:
                     CityDetails.CityHallUpgradeCost = newUpgradeCost;
                     CityDetails.CityHallStage = newStage;
                     break;
-                case _cityWall:                    
+                case _cityWall:
                     CityDetails.CityWallUpgradeCost = newUpgradeCost;
                     CityDetails.CityWallStage = newStage;
                     break;
-                case _farm:                  
+                case _farm:
                     CityDetails.FarmUpgradeCost = newUpgradeCost;
                     CityDetails.FarmStage = newStage;
                     break;
-                case _lumber:                    
+                case _lumber:
                     CityDetails.LumberUpgradeCost = newUpgradeCost;
                     CityDetails.LumberStage = newStage;
                     break;
-                case _silverMine:                    
+                case _silverMine:
                     CityDetails.SilverMineUpgradeCost = newUpgradeCost;
                     CityDetails.SilverMineStage = newStage;
                     break;
-                case _stoneMine:                   
+                case _stoneMine:
                     CityDetails.StoneMineUpgradeCost = newUpgradeCost;
                     CityDetails.StoneMineStage = newStage;
                     break;
-                case _wareHouse:                   
+                case _wareHouse:
                     CityDetails.WarehouseUpgradeCost = newUpgradeCost;
                     CityDetails.WarehouseStage = newStage;
                     break;
-
+                case _castle:
+                    CityDetails.CastleUpgradeCost = newUpgradeCost;
+                    CityDetails.CastleStage = newStage;
+                    break;
                 default:
                     break;
             }

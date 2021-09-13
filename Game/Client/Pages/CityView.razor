@@ -157,6 +157,23 @@
                                                          CityIndex)"></i>
                 </td>
             </tr>
+            <tr>
+                <td>Castle</td>
+                <td>@CityDetailsState.CityDetails.CastleStage</td>
+                <td>
+                    <i class="fas fa-arrow-up" @onclick="() => OpenUpgradeDialog(
+                                                         CityDetailsState.CityDetails.CastleUpgradeCost,
+                                                         CityDetailsState.CityDetails.CastleStage,
+                                                         _castle,
+                                                         CityIndex)"></i>
+                </td>
+                <td>
+                    <i class="fas fa-arrow-down" @onclick="() => OpenDowngradeDialog(
+                                                         CityDetailsState.CityDetails.CastleStage,
+                                                         _castle,
+                                                         CityIndex)"></i>
+                </td>
+            </tr>
         </tbody>
     </MudSimpleTable>
 }
@@ -174,6 +191,7 @@
     private const string _silverMine = "SilverMine";
     private const string _stoneMine = "StoneMine";
     private const string _wareHouse = "Warehouse";
+    private const string _castle = "Castle";
 
     string[] headings = { "Name", "Stage", "Upgrade", "Downgrade" };
 
@@ -303,7 +321,10 @@
                         var capacity = await IViewService.GetWarehouseCapacity(CityIndex);
                         CityResourceState.SetWarehouseCapacityAfterUpgrade(capacity);
                         break;
-
+                    case _castle:
+                        CityResourceState.SetPopulation(CityResourceState.Population + dialogData.NewUpgradeCost.Population);
+                        CityDetailsState.BuildingDowngrade(buildingName, dialogData.NewUpgradeCost, dialogData.NewStage);
+                        break;
                     default:
                         break;
                 }

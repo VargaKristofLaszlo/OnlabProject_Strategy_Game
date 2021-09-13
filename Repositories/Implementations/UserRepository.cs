@@ -69,6 +69,9 @@ namespace BackEnd.Repositories.Implementations
                 .Include(user => user.Cities)
                     .ThenInclude(city => city.WoodProduction)
                         .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.Castle)
+                        .ThenInclude(building => building.UpgradeCost)
                 .FirstOrDefaultAsync(user => user.Id.Equals(userId));
         }
 
