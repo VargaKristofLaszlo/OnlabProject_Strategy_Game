@@ -18,15 +18,16 @@ namespace Services.Interfaces
                 "StoneMine" => new StoneMineBehaviour(),
                 "Lumber" => new LumberBehaviour(),
                 "Warehouse" => new WarehouseBehaviour(),
+                "Castle" => new CastleBehaviour(),
                 _ => throw new NotFoundException(),
             };
         }
 
-        protected static void ValidateBuildingName(string buildingName) 
+        protected static void ValidateBuildingName(string buildingName)
         {
             if (new List<string>()
             {
-                "Barrack","CityHall", "CityWall", "Farm", "SilverMine", "StoneMine", "Lumber", "Warehouse"
+                "Barrack","CityHall", "CityWall", "Farm", "SilverMine", "StoneMine", "Lumber", "Warehouse", "Castle"
             }.Contains(buildingName) == false)
                 throw new NotFoundException();
         }
