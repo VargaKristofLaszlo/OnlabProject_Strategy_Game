@@ -139,5 +139,12 @@ namespace Game.Server.Controllers
             await _mediator.Send(new AddNewCoins.Command(request));
             return Ok();
         }
+
+        [HttpPost("Recruit/Spy")]
+        public async Task<IActionResult> RecruitSpy([FromQuery] int amount, [FromQuery] int cityIndex)
+        {
+            await _mediator.Send(new RecruitNewSpy.Command(amount, cityIndex));
+            return Ok();
+        }
     }
 }

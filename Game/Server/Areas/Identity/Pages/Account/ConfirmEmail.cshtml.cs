@@ -68,6 +68,7 @@ namespace Game.Server.Areas.Identity.Pages.Account
             BuildingUpgradeCost cityhallCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("CityHall", 1);
             BuildingUpgradeCost barrackCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Barrack", 1);
             BuildingUpgradeCost castleCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Castle", 1);
+            BuildingUpgradeCost tavernCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost("Tavern", 1);
 
             //Create the buildings
             Warehouse warehouse = Warehouse.Create(warehouseCost);
@@ -82,6 +83,7 @@ namespace Game.Server.Areas.Identity.Pages.Account
             CityHall cityHall = CityHall.Create(cityhallCost);
             Barrack barrack = Barrack.Create(barrackCost);
             Castle castle = Castle.Create(castleCost);
+            Tavern tavern = Tavern.Create(tavernCost);
 
             //Add the buildings to the city
             City city = new City
@@ -113,6 +115,7 @@ namespace Game.Server.Areas.Identity.Pages.Account
                 WarehouseId = warehouse.Id,
                 Warehouse = warehouse,
                 Castle = castle,
+                Tavern = tavern,
                 Loyalty = 100
             };
             return city;
@@ -145,6 +148,9 @@ namespace Game.Server.Areas.Identity.Pages.Account
 
             city.Castle.City = city;
             city.Castle.CityId = city.Id;
+
+            city.Tavern.City = city;
+            city.Tavern.CityId = city.Id;
         }
     }
 }

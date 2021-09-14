@@ -41,7 +41,9 @@ namespace Models.Profiles
                 .ForMember(detail => detail.StoneProduction, map => map.MapFrom(city => (city.StoneProduction.ProductionAmount)))
                 .ForMember(detail => detail.SilverProduction, map => map.MapFrom(city => (city.SilverProduction.ProductionAmount)))
                 .ForMember(detail => detail.CastleStage, map => map.MapFrom(city => city.Castle.Stage))
-                .ForMember(detail => detail.CastleUpgradeCost, map => map.MapFrom(city => city.Castle.UpgradeCost.UpgradeCost));
+                .ForMember(detail => detail.CastleUpgradeCost, map => map.MapFrom(city => city.Castle.UpgradeCost.UpgradeCost))
+                .ForMember(detail => detail.TavernStage, map => map.MapFrom(city => city.Tavern.Stage))
+                .ForMember(detail => detail.TavernStage, map => map.MapFrom(city => city.Tavern.UpgradeCost.UpgradeCost));
         }
     }
 }

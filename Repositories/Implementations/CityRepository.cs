@@ -36,8 +36,10 @@ namespace Repositories.Implementations
                      .ThenInclude(woodProduction => woodProduction.UpgradeCost)
                  .Include(city => city.Warehouse)
                      .ThenInclude(warehouse => warehouse.UpgradeCost)
-                  .Include(city => city.Castle)
+                 .Include(city => city.Castle)
                      .ThenInclude(castle => castle.UpgradeCost)
+                 .Include(city => city.Tavern)
+                    .ThenInclude(tavern => tavern.UpgradeCost)
                 .FirstOrDefaultAsync(city => city.Id.Equals(id));
         }
 

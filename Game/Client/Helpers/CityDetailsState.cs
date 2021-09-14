@@ -18,6 +18,7 @@ namespace Game.Client.Helpers
         private const string _stoneMine = "StoneMine";
         private const string _wareHouse = "Warehouse";
         private const string _castle = "Castle";
+        private const string _tavern = "Tavern";
 
         private readonly CityResourceState _cityResourceState;
         private readonly Game.Shared.IServices.IViewService _viewService;
@@ -79,6 +80,10 @@ namespace Game.Client.Helpers
                     CityDetails.CastleUpgradeCost = newUpgradeCost;
                     CityDetails.CastleStage = newStage;
                     break;
+                case _tavern:
+                    CityDetails.TavernUpgradeCost = newUpgradeCost;
+                    CityDetails.TavernStage = newStage;
+                    break;
                 default:
                     break;
             }
@@ -124,6 +129,10 @@ namespace Game.Client.Helpers
                 case _castle:
                     CityDetails.CastleUpgradeCost = newUpgradeCost;
                     CityDetails.CastleStage = newStage;
+                    break;
+                case _tavern:
+                    CityDetails.TavernUpgradeCost = newUpgradeCost;
+                    CityDetails.TavernStage = newStage;
                     break;
                 default:
                     break;

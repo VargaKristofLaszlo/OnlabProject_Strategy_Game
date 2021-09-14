@@ -72,6 +72,9 @@ namespace BackEnd.Repositories.Implementations
                 .Include(user => user.Cities)
                     .ThenInclude(city => city.Castle)
                         .ThenInclude(building => building.UpgradeCost)
+                .Include(user => user.Cities)
+                    .ThenInclude(city => city.Tavern)
+                        .ThenInclude(building => building.UpgradeCost)
                 .FirstOrDefaultAsync(user => user.Id.Equals(userId));
         }
 
@@ -114,6 +117,7 @@ namespace BackEnd.Repositories.Implementations
             List<Warehouse> warehouses = new List<Warehouse>();
             List<UnitsInCity> unitsInCities = new List<UnitsInCity>();
             List<Castle> castles = new List<Castle>();
+            List<Tavern> taverns = new List<Tavern>();
 
             foreach (var city in user.Cities)
             {
@@ -124,6 +128,7 @@ namespace BackEnd.Repositories.Implementations
                 resourceProductions.AddRange(_db.ResourceProductions.Where(x => x.CityId.Equals(city.Id)).ToList());
                 warehouses.Add(_db.Warehouses.FirstOrDefault(x => x.CityId.Equals(city.Id)));
                 castles.Add(_db.Castles.FirstOrDefault(x => x.CityId.Equals(city.Id)));
+                taverns.Add(_db.Taverns.FirstOrDefault(x => x.CityId.Equals(city.Id)));
             }
             foreach (var barrack in barracks)
             {
@@ -154,6 +159,9 @@ namespace BackEnd.Repositories.Implementations
 
             foreach (var item in castles)
                 _db.Castles.Remove(item);
+
+            foreach (var item in taverns)
+                _db.Taverns.Remove(item);
 
             foreach (var item in unitsInCities)
             {

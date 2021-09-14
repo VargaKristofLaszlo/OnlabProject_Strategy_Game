@@ -26,8 +26,37 @@ namespace Models.DataSeeding
             await CreateBuildingUpgradeCost("StoneMine");
             await CreateBuildingUpgradeCost("Lumber");
             await CreateBuildingUpgradeCost("Castle");
+            await CreateBuildingUpgradeCost("Tavern");
             await CreateExtraStage("Barrack", 2);
             await CreateCoinCost();
+            await CreateSpyCost();
+        }
+
+        private async Task CreateSpyCost()
+        {
+            //Avoid adding duplicates
+            var cost = await _db.MaxBuildingStages
+              .Where(max => max.BuildingName.Equals("Spy"))
+              .FirstOrDefaultAsync();
+
+            if (cost != null)
+                return;
+
+            await _db.BuildingUpgradeCosts.AddAsync(new BuildingUpgradeCost
+            {
+                UpgradeCost = new Resources
+                {
+                    Wood = 200,
+                    Silver = 200,
+                    Stone = 200,
+                    Population = 1
+                },
+                UpgradeTime = new TimeSpan(0, 0, 0),
+                BuildingName = "Spy",
+                BuildingStage = 1
+            });
+
+            await _db.SaveChangesAsync();
         }
 
         private async Task CreateCoinCost()

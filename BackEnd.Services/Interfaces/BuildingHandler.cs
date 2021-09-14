@@ -19,6 +19,7 @@ namespace Services.Interfaces
                 "Lumber" => new LumberBehaviour(),
                 "Warehouse" => new WarehouseBehaviour(),
                 "Castle" => new CastleBehaviour(),
+                "Tavern" => new TavernBehaviour(),
                 _ => throw new NotFoundException(),
             };
         }
@@ -27,7 +28,7 @@ namespace Services.Interfaces
         {
             if (new List<string>()
             {
-                "Barrack","CityHall", "CityWall", "Farm", "SilverMine", "StoneMine", "Lumber", "Warehouse", "Castle"
+                "Barrack","CityHall", "CityWall", "Farm", "SilverMine", "StoneMine", "Lumber", "Warehouse", "Castle", "Tavern"
             }.Contains(buildingName) == false)
                 throw new NotFoundException();
         }

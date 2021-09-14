@@ -32,6 +32,7 @@ namespace BackEnd.Models.Models
         public DbSet<UpgradeQueueItem> UpgradeQueueItems { get; set; }
         public DbSet<UnitProductionQueueItem> UnitProductionQueueItems { get; set; }
         public DbSet<Castle> Castles { get; set; }
+        public DbSet<Tavern> Taverns { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -72,6 +73,11 @@ namespace BackEnd.Models.Models
                 .HasOne(c => c.Castle)
                 .WithOne(c => c.City)
                 .HasForeignKey<Castle>(c => c.CityId);
+
+            builder.Entity<City>()
+                .HasOne(c => c.Tavern)
+                .WithOne(c => c.City)
+                .HasForeignKey<Tavern>(c => c.CityId);
 
             base.OnModelCreating(builder);
         }

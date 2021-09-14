@@ -28,6 +28,8 @@ namespace Game.Shared.Models
         public Resources WarehouseUpgradeCost { get; set; }
         public int CastleStage { get; set; }
         public Resources CastleUpgradeCost { get; set; }
+        public int TavernStage { get; set; }
+        public Resources TavernUpgradeCost { get; set; }
 
 
         public float CityWallMultiplier { get; set; }

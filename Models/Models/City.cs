@@ -69,5 +69,8 @@ namespace BackEnd.Models.Models
 
         [Required]
         public Castle Castle { get; set; }
+
+        [Required]
+        public Tavern Tavern { get; set; }
     }
 }
