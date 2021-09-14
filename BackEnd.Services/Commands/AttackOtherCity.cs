@@ -88,27 +88,9 @@ namespace Services.Commands
                 {
                     ResourceStealingProcess(initValues.attackerCity, initValues.defenderCity, totalCarryingCapacity);
                     CheckWarehouseCapacity(initValues.attackerCity);
-
                     if (request.Request.AttackType == AttackType.Conquer)
-                    {
-                        var noble = initValues.attackingTroops.InfantryPhaseTroops.Keys
-                            .FirstOrDefault(d => d.Name == "Noble");
+                        await TryToConquerTheCity(initValues.defenderCity, initValues.attackerName, initValues.attackingTroops);
 
-                        if (noble != null)
-                        {
-                            Random loyaltyReduction = new Random();
-                            initValues.defenderCity.Loyalty -= loyaltyReduction.Next(20, 30);
-
-                            if (initValues.defenderCity.Loyalty <= 0)
-                            {
-                                var attackingUser = await _userManager.FindByNameAsync(initValues.attackerName);
-                                initValues.defenderCity.User = attackingUser;
-                                initValues.defenderCity.UserId = _identityContext.UserId;
-                                attackingUser.Cities.Add(initValues.defenderCity);
-
-                            }
-                        }
-                    }
                 }
 
                 int stolenWoodAmount = initValues.attackerCity.Resources.Wood - initialWoodAmount;
@@ -132,6 +114,29 @@ namespace Services.Commands
                 await _unitOfWork.CommitChangesAsync();
 
                 return new MediatR.Unit();
+            }
+
+            private async Task TryToConquerTheCity(City defenderCity, string attackerName, AttackingTroops attackingTroops)
+            {
+                var noble = attackingTroops.InfantryPhaseTroops.Keys
+                    .FirstOrDefault(d => d.Name == "Noble");
+
+                if (noble != null)
+                {
+                    Random loyaltyReduction = new Random();
+                    defenderCity.Loyalty -= loyaltyReduction.Next(20, 30);
+
+                    if (defenderCity.Loyalty <= 0)
+                    {
+                        var attackingUser = await _userManager.FindByNameAsync(attackerName);
+                        defenderCity.User = attackingUser;
+                        defenderCity.UserId = _identityContext.UserId;
+                        attackingUser.Cities.Add(defenderCity);
+
+                        attackingTroops.ArcheryPhaseTroops[noble] = 0;
+                    }
+                }
+
             }
 
             private int ResourceStealingProcess(City attackerCity, City defenderCity, int totalCarryingCapacity)
