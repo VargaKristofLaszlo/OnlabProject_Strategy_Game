@@ -56,9 +56,12 @@ namespace Services.Commands.Game
                 else
                     unitsOfThisTypeInCity.Amount += request.Amount;
 
-                var job = await _unitOfWork.HangFire
-                    .GetUnitJobByFinishTime(request.FinishTime, request.CityIndex, request.IdentityContext.UserId);
-                _unitOfWork.HangFire.RemoveBuildingJob(job);
+                if (!request.UnitName.Equals("Noble"))
+                {
+                    var job = await _unitOfWork.HangFire
+                   .GetUnitJobByFinishTime(request.FinishTime, request.CityIndex, request.IdentityContext.UserId);
+                    _unitOfWork.HangFire.RemoveBuildingJob(job);
+                }
 
                 await _unitOfWork.CommitChangesAsync();
 

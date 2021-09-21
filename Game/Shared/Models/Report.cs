@@ -23,6 +23,7 @@ namespace Game.Shared.Models
         public int SpearmanAttackerCountBefore { get; init; }
         public int ArcherAttackerCountBefore { get; init; }
         public int AxeFighterAttackerCountBefore { get; init; }
+        public int NobleAttackerCountBefore { get; set; }
 
         public int SwordsmanAttackerCountAfter { get; init; }
         public int HeavyCavalryAttackerCountAfter { get; init; }
@@ -31,6 +32,7 @@ namespace Game.Shared.Models
         public int SpearmanAttackerCountAfter { get; init; }
         public int ArcherAttackerCountAfter { get; init; }
         public int AxeFighterAttackerCountAfter { get; init; }
+        public int NobleAttackerCountAfter { get; set; }
 
 
         public int SwordsmanDefenderCountBefore { get; init; }
@@ -40,6 +42,7 @@ namespace Game.Shared.Models
         public int SpearmanDefenderCountBefore { get; init; }
         public int ArcherDefenderCountBefore { get; init; }
         public int AxeFighterDefenderCountBefore { get; init; }
+        public int NobleDefenderCountBefore { get; set; }
 
         public int SwordsmanDefenderCountAfter { get; init; }
         public int HeavyCavalryDefenderCountAfter { get; init; }
@@ -48,5 +51,7 @@ namespace Game.Shared.Models
         public int SpearmanDefenderCountAfter { get; init; }
         public int ArcherDefenderCountAfter { get; init; }
         public int AxeFighterDefenderCountAfter { get; init; }
+        public int NobleDefenderCountAfter { get; set; }
+        public int Loyalty { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210921143329_Added loyalty column")]
+    partial class Addedloyaltycolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -837,18 +839,6 @@ namespace Game.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("MountedArcherDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleDefenderCountBefore")
                         .HasColumnType("int");
 
                     b.Property<int>("SpearmanAttackerCountAfter")

@@ -58,8 +58,11 @@ namespace Services.Commands.Game
 
                 var newFinishTime = finishTime.Add(recruitTime);
 
-                await _unitOfWork.HangFire.AddNewUnitProductionJob(request.IdentityContext.UserId, finishTime, newFinishTime,
-                    request.Request.NameOfUnitType, request.Request.Amount, request.Request.CityIndex);
+                if (!request.Request.NameOfUnitType.Equals("Noble"))
+                {
+                    await _unitOfWork.HangFire.AddNewUnitProductionJob(request.IdentityContext.UserId, finishTime, newFinishTime,
+                  request.Request.NameOfUnitType, request.Request.Amount, request.Request.CityIndex);
+                }
 
                 await _unitOfWork.CommitChangesAsync();
 

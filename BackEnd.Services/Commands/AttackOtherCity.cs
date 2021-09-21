@@ -109,7 +109,8 @@ namespace Services.Commands
                 await _reportSender.CreateReport(initValues.attackerName, initValues.attackerCity.CityName,
                     initValues.defenderName, initValues.defenderCity.CityName,
                     archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
-                    request.Request.AttackingForces, initValues.defendingUnits, stolenWoodAmount, stolenStoneAmount, stolenSilverAmount);
+                    request.Request.AttackingForces, initValues.defendingUnits, stolenWoodAmount, stolenStoneAmount, stolenSilverAmount,
+                    request.Request.AttackType == AttackType.Conquer ? initValues.defenderCity.Loyalty : -1);
 
 
                 //Update the defending side

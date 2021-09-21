@@ -29,7 +29,7 @@ namespace Services.Implementations
         public async Task CreateReport(string attacker, string attackerCityName, string defender, string defenderCityName,
             Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops,
             Dictionary<string, int> attackingUnits, IEnumerable<UnitsInCity> defendingUnits,
-            int stolenWoodAmount, int stolenStoneAmount, int stolenSilverAmount)
+            int stolenWoodAmount, int stolenStoneAmount, int stolenSilverAmount, int loyalty)
         {
             Report report = new Report()
             {
@@ -38,6 +38,7 @@ namespace Services.Implementations
                 AttackerCityName = attackerCityName,
                 Defender = defender,
                 DefendingCityName = defenderCityName,
+                Loyalty = loyalty,
 
                 StolenWoodAmount = stolenWoodAmount,
                 StolenStoneAmount = stolenStoneAmount,
@@ -50,6 +51,7 @@ namespace Services.Implementations
                 SpearmanAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Spearman")).Value,
                 ArcherAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Archer")).Value,
                 AxeFighterAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Axe Fighter")).Value,
+                NobleAttackerCountBefore = attackingUnits.First(x => x.Key.Equals("Noble")).Value,
 
 
                 SwordsmanAttackerCountAfter = attackerTroops.First(x => x.Key.Name.Equals("Swordsman")).Value,
@@ -59,7 +61,7 @@ namespace Services.Implementations
                 SpearmanAttackerCountAfter = attackerTroops.First(x => x.Key.Name.Equals("Spearman")).Value,
                 ArcherAttackerCountAfter = attackerTroops.First(x => x.Key.Name.Equals("Archer")).Value,
                 AxeFighterAttackerCountAfter = attackerTroops.First(x => x.Key.Name.Equals("Axe Fighter")).Value,
-
+                NobleAttackerCountAfter = attackerTroops.First(x => x.Key.Name.Equals("Noble")).Value,
 
 
                 SwordsmanDefenderCountBefore = defendingUnits.First(x => x.Unit.Name.Equals("Swordsman")).Amount,
@@ -69,6 +71,7 @@ namespace Services.Implementations
                 SpearmanDefenderCountBefore = defendingUnits.First(x => x.Unit.Name.Equals("Spearman")).Amount,
                 ArcherDefenderCountBefore = defendingUnits.First(x => x.Unit.Name.Equals("Archer")).Amount,
                 AxeFighterDefenderCountBefore = defendingUnits.First(x => x.Unit.Name.Equals("Axe Fighter")).Amount,
+                NobleDefenderCountBefore = defendingUnits.First(x => x.Unit.Name.Equals("Noble")).Amount,
 
 
                 SwordsmanDefenderCountAfter = defendingTroops.First(x => x.Key.Name.Equals("Swordsman")).Value,
@@ -78,6 +81,7 @@ namespace Services.Implementations
                 SpearmanDefenderCountAfter = defendingTroops.First(x => x.Key.Name.Equals("Spearman")).Value,
                 ArcherDefenderCountAfter = defendingTroops.First(x => x.Key.Name.Equals("Archer")).Value,
                 AxeFighterDefenderCountAfter = defendingTroops.First(x => x.Key.Name.Equals("Axe Fighter")).Value,
+                NobleDefenderCountAfter = defendingTroops.First(x => x.Key.Name.Equals("Noble")).Value
             };
 
             await _unitOfWork.Reports.CreateReport(report);
