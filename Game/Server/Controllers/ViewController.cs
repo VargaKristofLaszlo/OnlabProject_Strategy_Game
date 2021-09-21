@@ -15,11 +15,11 @@ namespace Game.Server.Controllers
     [ApiController]
     public class ViewController : ControllerBase
     {
-       
+
         private readonly IMediator _mediator;
 
         public ViewController(IMediator mediator)
-        {           
+        {
             _mediator = mediator;
         }
 
@@ -30,7 +30,7 @@ namespace Game.Server.Controllers
             Description = "Returns the informations about the registered users via paging." +
             "<b>Using this end-point requires the user to log in as an admin<b>"
         )]
-        [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Credentials>))]
+        [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<Credentials>))]
         [SwaggerResponse(403, "Only a logged in admin user can use this endpoint")]
         [SwaggerResponse(401, "Only a logged in admin user can use this endpoint")]
         public async Task<IActionResult> GetAllCredentials([FromQuery] int pageNumber, [FromQuery] int pageSize)
@@ -39,16 +39,16 @@ namespace Game.Server.Controllers
             return Ok(response);
         }
 
-        
+
         [HttpGet("Building/UpgradeCost")]
         [SwaggerOperation(
             Summary = "Returns the upgrade cost of a building",
             Description = "Returns the upgrade cost of a building." +
             "Can be used to get an upgrade cost selecting the name/stage from a list." +
-            "<b>Using this end-point requires the user to log in<b>"            
+            "<b>Using this end-point requires the user to log in<b>"
         )]
         [SwaggerResponse(404, "The upgrade cost could not be found")]
-        [SwaggerResponse(200, "The request was successful",typeof(BuildingUpgradeCost))]
+        [SwaggerResponse(200, "The request was successful", typeof(BuildingUpgradeCost))]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage)
         {
@@ -56,7 +56,7 @@ namespace Game.Server.Controllers
             return Ok(response);
         }
 
-      
+
         [HttpGet("CityNames")]
         [SwaggerOperation(
             Summary = "Returns a list containing the name of the cities",
@@ -96,15 +96,15 @@ namespace Game.Server.Controllers
             Description = "Returns a list containing informations about the unit types via paging" +
             "<b>Using this end-point requires the user to log in<b>"
         )]
-        [SwaggerResponse(200, "The request was successful",typeof(CollectionResponse<Shared.Models.Unit>))]
+        [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<Shared.Models.Unit>))]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
-        public async Task<IActionResult> GetUnitTypes ([FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        public async Task<IActionResult> GetUnitTypes([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             var response = await _mediator.Send(new GetUnitTypes.Query(pageNumber, pageSize));
             return Ok(response);
         }
 
-        
+
         [HttpGet("City")]
         [SwaggerOperation(
             Summary = "Returns information about a city",
@@ -116,16 +116,16 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The city could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CityDetails))]
-        public async Task<IActionResult> GetCity([FromQuery] int cityIndex) 
+        public async Task<IActionResult> GetCity([FromQuery] int cityIndex)
         {
-            var response =  await _mediator.Send(new GetCityDetails.Query(cityIndex));
+            var response = await _mediator.Send(new GetCityDetails.Query(cityIndex));
             return Ok(response);
         }
 
 
         [HttpGet("Units/{unitName}")]
-       
-        public async Task<IActionResult> GetUnitByName(string unitName) 
+
+        public async Task<IActionResult> GetUnitByName(string unitName)
         {
             var response = await _mediator.Send(new GetUnitByName.Query(unitName));
             return Ok(response);
@@ -150,28 +150,28 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The city could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(CityResources))]
-        public async Task<IActionResult> ResourceUpdate([FromQuery] int cityIndex) 
+        public async Task<IActionResult> ResourceUpdate([FromQuery] int cityIndex)
         {
             var response = await _mediator.Send(new GetResourcesOfCity.Query(cityIndex));
             return Ok(response);
         }
 
         [HttpGet("Warehouse/Capacity")]
-        public async Task<IActionResult> GetWarehouseCapacity([FromQuery]int cityIndex) 
+        public async Task<IActionResult> GetWarehouseCapacity([FromQuery] int cityIndex)
         {
             var response = await _mediator.Send(new GetWarehouseCapacity.Query(cityIndex));
             return Ok(response);
         }
 
         [HttpGet("UnitsOfCity")]
-        public async Task<IActionResult> GetUnitsOfCity([FromQuery] int cityIndex) 
+        public async Task<IActionResult> GetUnitsOfCity([FromQuery] int cityIndex)
         {
             var response = await _mediator.Send(new GetUnitsOfCity.Query(cityIndex));
             return Ok(response);
         }
 
         [HttpGet("Users/Others/Cities")]
-        public async Task<IActionResult> GetCitiesOfOtherUsers([FromQuery] int pageNumber, [FromQuery] int pageSize) 
+        public async Task<IActionResult> GetCitiesOfOtherUsers([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             var response = await _mediator.Send(new GetOtherUsersCities.Query(pageNumber, pageSize));
             return Ok(response);
@@ -186,7 +186,7 @@ namespace Game.Server.Controllers
         }
 
         [HttpGet("BuildingQueue/{userId}")]
-        public async Task<IActionResult> GetBuildingQueue(string userId) 
+        public async Task<IActionResult> GetBuildingQueue(string userId)
         {
             var response = await _mediator.Send(new GetBuildingQueueByUserID.Query(userId));
 
@@ -196,6 +196,14 @@ namespace Game.Server.Controllers
         public async Task<IActionResult> GetUnitRecruitQueue(string userId)
         {
             var response = await _mediator.Send(new GetUnitRecruitQueueByUserId.Query(userId));
+
+            return Ok(response);
+        }
+
+        [HttpGet("Castle")]
+        public async Task<IActionResult> GetCastleDetails([FromQuery] int cityIndex)
+        {
+            var response = await _mediator.Send(new GetCastleDetails.Query(cityIndex));
 
             return Ok(response);
         }

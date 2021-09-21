@@ -22,9 +22,18 @@ namespace Services.Commands.Game
 
             foreach (var city in cities)
             {
-                city.Loyalty += 5;
+                if (city.Loyalty < 100)
+                    city.Loyalty = ForceLimit(city.Loyalty + 5);
             }
             await _unitOfWork.CommitChangesAsync();
+        }
+
+        private int ForceLimit(int loyalty)
+        {
+            if (loyalty > 100)
+                return 100;
+            else
+                return loyalty;
         }
     }
 }

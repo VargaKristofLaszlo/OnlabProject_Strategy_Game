@@ -3,75 +3,84 @@
 @inject Helpers.CityIndexState CityIndexState
 @inject ISnackbar Snackbar
 
-<MudDialog>
+<MudDialog Style="overflow-y: scroll">
     <DialogContent>
-        <MudSimpleTable Style="overflow-x: auto;">
-            <thead>
-                <tr>
-                    <td>Unit type</td>
-                    <td>Available amount</td>
-                    <td>Used amount</td>
-                </tr>
-            </thead>          
-            <tbody>
-                <MudTr>
-                    <MudTd><img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Spearmans</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedSpearman" Immediate="true" T="int"  Variant="Variant.Filled"  />
-                    </MudTd>
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Swordsmans</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedSwordsman" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Archers</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
+        <MudContainer>
+            <MudSimpleTable Style="overflow-x: auto;">
+                <thead>
+                    <tr>
+                        <td>Unit type</td>
+                        <td>Available amount</td>
+                        <td>Used amount</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <MudTr>
+                        <MudTd><img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Spearmans</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedSpearman" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Swordsmans</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedSwordsman" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Archers</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
 
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedHeavyCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedHeavyCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
 
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.AxeFighers</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedAxeFighter" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.LightCavalry</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedLightCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
-                </MudTr>
-                <MudTr>
-                    <MudTd><img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" class="mt-2 mb-2" /></MudTd>
-                    <MudTd>@UnitsOfTheCity.UnitsOfTheCity.MountedArcher</MudTd>
-                    <MudTd>
-                        <MudTextField @bind-Value="SelectedMountedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
-                    </MudTd>
-                </MudTr>
-            </tbody>
-        </MudSimpleTable>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.AxeFighers</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedAxeFighter" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.LightCavalry</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedLightCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.MountedArcher</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedMountedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                    <MudTr>
+                        <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Noble</MudTd>
+                        <MudTd>
+                            <MudTextField @bind-Value="SelectedNoble" Immediate="true" T="int" Variant="Variant.Filled" />
+                        </MudTd>
+                    </MudTr>
+                </tbody>
+            </MudSimpleTable>
+        </MudContainer>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Attack</MudButton>
-
+        <MudButton Color="Color.Primary" OnClick="() => Submit(AttackType.Looting)">Looting</MudButton>
+        <MudButton Color="Color.Error" OnClick="() =>  Submit(AttackType.Conquer)">Conquer</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -182,19 +191,50 @@
         }
     }
 
+    private int _selectedNoble = 0;
+    private int SelectedNoble
+    {
+        get { return _selectedNoble; }
+        set
+        {
+            if (value > UnitsOfTheCity.UnitsOfTheCity.Noble)
+                _invalidAmount = true;
+            else
+                _invalidAmount = false;
+            _selectedNoble = value;
+        }
+    }
+
+    private bool EmptyAttackCheck()
+    {
+        return
+            SelectedSwordsman == 0 &&
+            SelectedHeavyCavalry == 0 &&
+            SelectedMountedArcher == 0 &&
+            SelectedLightCavalry == 0 &&
+            SelectedSpearman == 0 &&
+            SelectedArcher == 0 &&
+            SelectedAxeFighter == 0 &&
+            SelectedNoble == 0;
+
+    }
 
 
-    private void Submit()
+    private void Submit(AttackType attackType)
     {
         if (_invalidAmount)
         {
             Snackbar.Add("You dont have the requited amount of units", Severity.Error);
         }
+        else if (attackType == AttackType.Conquer && _selectedNoble == 0)
+            Snackbar.Add("You have to send a noble if you want to conquer another city", Severity.Error);
+        else if (EmptyAttackCheck())
+            Snackbar.Add("Select soldiers for this action", Severity.Error);
         else
         {
             Game.Shared.Models.Request.AttackRequest content = new Game.Shared.Models.Request.AttackRequest()
             {
-                AttackType = AttackType.Looting,
+                AttackType = attackType,
                 AttackingForces = new Dictionary<string, int>()
 {
                 { "Swordsman" , SelectedSwordsman},
@@ -203,7 +243,8 @@
                 { "Light Cavalry" , SelectedLightCavalry},
                 { "Spearman" , SelectedSpearman},
                 { "Archer" , SelectedArcher},
-                { "Axe Fighter" , SelectedAxeFighter}
+                { "Axe Fighter" , SelectedAxeFighter},
+                { "Noble", SelectedNoble }
             },
                 AttackedUserId = CityPagingData.OwnerId,
                 AttackedCityIndex = CityPagingData.Index,

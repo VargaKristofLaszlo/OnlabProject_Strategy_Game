@@ -3,6 +3,7 @@
     public class Castle : BuildingRecord
     {
         public int MaximumCoinCount { get; set; }
+        public int UsedCoinCount { get; set; }
         public int AvailableCoinCount { get; set; }
 
         public static Castle Create(BuildingUpgradeCost upgradeCost)
@@ -14,7 +15,8 @@
                 BuildingCostId = upgradeCost.Id,
                 UpgradeCost = upgradeCost,
                 MaximumCoinCount = 0,
-                AvailableCoinCount = 0
+                UsedCoinCount = 0,
+                AvailableCoinCount = 0,
             };
         }
     }

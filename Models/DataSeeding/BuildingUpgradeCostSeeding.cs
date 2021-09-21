@@ -35,7 +35,7 @@ namespace Models.DataSeeding
         private async Task CreateSpyCost()
         {
             //Avoid adding duplicates
-            var cost = await _db.MaxBuildingStages
+            var cost = await _db.BuildingUpgradeCosts
               .Where(max => max.BuildingName.Equals("Spy"))
               .FirstOrDefaultAsync();
 
@@ -62,7 +62,7 @@ namespace Models.DataSeeding
         private async Task CreateCoinCost()
         {
             //Avoid adding duplicates
-            var cost = await _db.MaxBuildingStages
+            var cost = await _db.BuildingUpgradeCosts
               .Where(max => max.BuildingName.Equals("Coin"))
               .FirstOrDefaultAsync();
 

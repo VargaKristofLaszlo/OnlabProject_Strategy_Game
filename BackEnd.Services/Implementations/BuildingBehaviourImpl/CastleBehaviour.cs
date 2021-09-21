@@ -16,7 +16,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
             if (upgradeCost.BuildingStage != city.Castle.Stage)
                 throw new InvalidBuildingStageModificationException();
 
-            city.Castle.MaximumCoinCount = (city.Castle.Stage - 2) * 2 + 1;
+            city.Castle.MaximumCoinCount = (city.Castle.Stage - 1) * 2;
 
             city.Castle.UpgradeCost = upgradeCost;
             city.Castle.Stage -= 1;
@@ -28,28 +28,21 @@ namespace Services.Implementations.BuildingBehaviourImpl
         {
             if (upgradeCost == null)
             {
-                city.Castle.MaximumCoinCount = 1;
+                city.Castle.MaximumCoinCount = 2;
                 city.Castle.UpgradeCost = upgradeCost;
                 city.Castle.Stage += 1;
                 city.Castle.BuildingCostId = null;
-                city.Castle.AvailableCoinCount = CalculateAvailableCoinCount();
             }
             else if (upgradeCost.BuildingStage != city.Castle.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {
-                city.Castle.MaximumCoinCount = (city.Castle.Stage) * 2 + 1;
+                city.Castle.MaximumCoinCount = (city.Castle.Stage + 1) * 2;
                 city.Castle.UpgradeCost = upgradeCost;
                 city.Castle.Stage += 1;
                 city.Castle.BuildingCostId = upgradeCost.Id;
-                city.Castle.AvailableCoinCount = CalculateAvailableCoinCount(city.Castle.Stage);
             }
             return city;
-        }
-
-        private int CalculateAvailableCoinCount(int stage = 1)
-        {
-            return (stage - 1) * 2 + 1;
         }
     }
 }

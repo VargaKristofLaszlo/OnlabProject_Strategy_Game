@@ -24,9 +24,9 @@ namespace BackEnd.Repositories.Implementations
             _db = db;
         }
 
-        public IHangFireRepository HangFire 
+        public IHangFireRepository HangFire
         {
-            get 
+            get
             {
                 if (_hangFire == null)
                     _hangFire = new HangFireRepository(_db);
@@ -78,9 +78,9 @@ namespace BackEnd.Repositories.Implementations
             }
         }
 
-        public ICityRepository Cities 
+        public ICityRepository Cities
         {
-            get 
+            get
             {
                 if (_cities == null)
                     _cities = new CityRepository(_db);

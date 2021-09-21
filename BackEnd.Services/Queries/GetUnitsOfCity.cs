@@ -61,6 +61,9 @@ namespace Services.Queries
                         case "Axe Fighter":
                             result.AxeFighers += item.Amount;
                             break;
+                        case "Noble":
+                            result.Noble += item.Amount;
+                            break;
                         default:
                             break;
                     }

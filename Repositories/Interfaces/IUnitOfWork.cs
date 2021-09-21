@@ -12,6 +12,6 @@ namespace BackEnd.Repositories.Interfaces
         IReportRepository Reports { get; }
         IHangFireRepository HangFire { get; }
         Task<int> CommitChangesAsync();
-        
+
     }
 }

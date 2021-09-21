@@ -43,7 +43,7 @@ namespace Models.Profiles
                 .ForMember(detail => detail.CastleStage, map => map.MapFrom(city => city.Castle.Stage))
                 .ForMember(detail => detail.CastleUpgradeCost, map => map.MapFrom(city => city.Castle.UpgradeCost.UpgradeCost))
                 .ForMember(detail => detail.TavernStage, map => map.MapFrom(city => city.Tavern.Stage))
-                .ForMember(detail => detail.TavernStage, map => map.MapFrom(city => city.Tavern.UpgradeCost.UpgradeCost));
+                .ForMember(detail => detail.TavernUpgradeCost, map => map.MapFrom(city => city.Tavern.UpgradeCost.UpgradeCost));
         }
     }
 }

@@ -112,18 +112,18 @@ namespace Game.Server.Extensions
               .AddDefaultTokenProviders()
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddClaimsPrincipalFactory<MyUserClaimsPrincipalFactory>();
-            
+
 
             services.AddScoped<IClaimsTransformation, MyUserClaimsTransformer>();
 
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options => 
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>(options =>
                 {
                     options.IdentityResources["openid"].UserClaims.Add("role"); // Roles  
-                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.NameIdentifier);                 
-                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Name);                 
-                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Email);  
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.NameIdentifier);
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Name);
+                    options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Email);
                 });
 
             services.AddAuthentication()
@@ -132,6 +132,6 @@ namespace Game.Server.Extensions
             return services;
         }
 
-     
+
     }
 }

@@ -1,0 +1,152 @@
+﻿@page "/castle"
+
+@inject Helpers.UnitsOfCityState UnitsOfCityState
+@inject Helpers.CityIndexState CityIndexState
+@inject Helpers.CityDetailsState CityDetailsState
+@inject Helpers.CityResourceState CityResourceState
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
+@inject ISnackbar Snackbar
+@using Microsoft.AspNetCore.Mvc
+
+<div class="d-flex bd-highlight">
+    <ResourceView CityIndex="@CityIndexState.Index" />
+</div>
+<div class="d-flex bd-highlight">
+    <UnitsOfCityView CityIndex="@CityIndexState.Index" />
+</div>
+
+<section class="container">
+    <header class="text-center">
+        <h2>
+            Castle (Level @CastleDetails.Stage)
+        </h2>
+    </header>
+    <MudSimpleTable Style="overflow-x: auto;" Class="mt-5 mb-3">
+        <MudTr>
+            <MudTd>Currently available coins</MudTd>
+            <MudTd>@CastleDetails.AvailableCoinCount</MudTd>
+        </MudTr>
+        <MudTr>
+            <MudTd>Number of coins you can create with the current castle stage</MudTd>
+            <MudTd>@CastleDetails.MaximumCoinCount</MudTd>
+        </MudTr>
+    </MudSimpleTable>
+
+    <header class="text-center mt-5">
+        <h2>
+            Price of the coin
+        </h2>
+    </header>
+
+    <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+            <tr>
+                <td><MudIcon Icon="fas fa-tree" /></td>
+                <td><MudIcon Icon="fas fa-gem" /></td>
+                <td><MudIcon Icon="fas fa-coins" /></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@CoinCost.Wood</td>
+                <td>@CoinCost.Stone</td>
+                <td>@CoinCost.Silver</td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+    <div class="ml-auto mr-auto mt-5">
+        <MudButton Variant="Variant.Filled" @onclick="CreateCoinAsync">Create a coin</MudButton>
+    </div>
+
+
+    <header class="text-center mt-5">
+        <h2>
+            Price of a noble
+        </h2>
+    </header>
+    <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+            <tr>
+                <td><MudIcon Icon="fas fa-tree" /></td>
+                <td><MudIcon Icon="fas fa-gem" /></td>
+                <td><MudIcon Icon="fas fa-coins" /></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@NobleCost.Wood</td>
+                <td>@NobleCost.Stone</td>
+                <td>@NobleCost.Silver</td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+    <div class="ml-auto mr-auto mt-5">
+        <MudButton Variant="Variant.Filled" @onclick="RecruitNobleAsync" Disabled=@(CastleDetails.AvailableCoinCount == 0)>Recruit a noble</MudButton>
+    </div>
+</section>
+
+@code {
+    public CastleDetails CastleDetails { get; set; } = new CastleDetails();
+    public Resources CoinCost { get; set; } = new Resources();
+    public Resources NobleCost { get; set; } = new Resources();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        CastleDetails = await IViewService.GetCastleDetails(CityIndexState.Index);
+        if (CastleDetails.MaximumCoinCount < 0)
+            CastleDetails.MaximumCoinCount = 0;
+
+        if (CastleDetails.CoinCost != null)
+            CoinCost = CastleDetails.CoinCost;
+
+        if (CastleDetails.NobleCost != null)
+            NobleCost = CastleDetails.NobleCost;
+    }
+
+    private async Task CreateCoinAsync()
+    {
+        var response = await IGameService.CreateCoins(new Game.Shared.Models.Request.CoinCreationRequest()
+        {
+            Amount = 1,
+            CityIndex = CityIndexState.Index
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            CastleDetails.AvailableCoinCount += 1;
+            CastleDetails.MaximumCoinCount -= 1;
+
+            Snackbar.Add("Coin was created", Severity.Success);
+        }
+        else
+        {
+            var responseMessage = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Snackbar.Add(responseMessage.Detail, Severity.Error);
+        }
+    }
+
+    private async Task RecruitNobleAsync()
+    {
+        UnitsOfTheCity unitsOfTheCity = UnitsOfCityState.UnitsOfTheCity;
+
+
+        var response = await IGameService.ProduceUnits(new Game.Shared.Models.Request.UnitProductionRequest()
+        {
+            NameOfUnitType = "Noble",
+            Amount = 1,
+            CityIndex = CityIndexState.Index
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            unitsOfTheCity.Noble += 1;
+            CastleDetails.AvailableCoinCount--;
+
+            CityResourceState.SetResourceValueAfterUpgrade(CastleDetails.NobleCost);
+            UnitsOfCityState.SetUnitsOfTheCity(unitsOfTheCity);
+        }
+    }
+}

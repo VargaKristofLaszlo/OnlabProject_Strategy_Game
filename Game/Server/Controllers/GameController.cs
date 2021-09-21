@@ -125,7 +125,11 @@ namespace Game.Server.Controllers
         }
 
 
-
+        [SwaggerOperation(
+            Summary = "Attack another player's city using your own.")]
+        [SwaggerResponse(200, "The attack request was successful")]
+        [SwaggerResponse(404, "Item was not found")]
+        [SwaggerResponse(400, "Invalid unit type")]
         [HttpPost("Attack")]
         public async Task<IActionResult> AttackOtherCity([FromBody] AttackRequest request)
         {
@@ -133,6 +137,11 @@ namespace Game.Server.Controllers
             return Ok();
         }
 
+        [SwaggerOperation(
+            Summary = "Create a new coin")]
+        [SwaggerResponse(200, "Coin was created successfully")]
+        [SwaggerResponse(404, "City was not found")]
+        [SwaggerResponse(400, "Something went wrong during the request")]
         [HttpPost("Create/Coins")]
         public async Task<IActionResult> CreateCoins([FromBody] CoinCreationRequest request)
         {
@@ -140,10 +149,26 @@ namespace Game.Server.Controllers
             return Ok();
         }
 
+        [SwaggerOperation(
+           Summary = "Recruit a new spy")]
+        [SwaggerResponse(200, "Spy was recruited successfully")]
+        [SwaggerResponse(404, "City was not found")]
+        [SwaggerResponse(400, "Something went wrong during the request")]
         [HttpPost("Recruit/Spy")]
         public async Task<IActionResult> RecruitSpy([FromQuery] int amount, [FromQuery] int cityIndex)
         {
             await _mediator.Send(new RecruitNewSpy.Command(amount, cityIndex));
+            return Ok();
+        }
+
+        [SwaggerOperation(
+          Summary = "Recruit a new spy")]
+        [SwaggerResponse(200, "Spying request was successfully")]
+        [SwaggerResponse(404, "City was not found")]
+        [HttpPost("Spy")]
+        public async Task<IActionResult> SpyOtherCity([FromBody] SpyRequest request)
+        {
+            await _mediator.Send(new SpyOtherCity.Command(request));
             return Ok();
         }
     }

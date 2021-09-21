@@ -36,7 +36,7 @@ namespace Game.Shared.IServices
         Task<CityResources> GetResourcesOfTheCity(int cityIndex);
 
         [Get("/Warehouse/Capacity")]
-        Task <WarehouseCapacity> GetWarehouseCapacity(int cityIndex);
+        Task<WarehouseCapacity> GetWarehouseCapacity(int cityIndex);
 
         [Get("/UnitsOfCity")]
         Task<UnitsOfTheCity> GetUnitsOfCity(int cityIndex);
@@ -51,5 +51,8 @@ namespace Game.Shared.IServices
         Task<BuildingQueue> GetBuildingQueueById(string userId);
         [Get("/UnitRecruitQueue/{userId}")]
         Task<UnitQueue> GetUnitQueueById(string userId);
+
+        [Get("/Castle")]
+        Task<CastleDetails> GetCastleDetails([Query] int cityIndex);
     }
 }

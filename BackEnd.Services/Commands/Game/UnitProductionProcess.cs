@@ -37,6 +37,7 @@ namespace Services.Commands.Game
                         throw new BadRequestException("Not enough coins");
 
                     city.Castle.AvailableCoinCount--;
+                    city.Castle.UsedCoinCount++;
                 }
 
                 //Create a new entry in the db

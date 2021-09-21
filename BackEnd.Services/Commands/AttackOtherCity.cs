@@ -89,8 +89,17 @@ namespace Services.Commands
                     ResourceStealingProcess(initValues.attackerCity, initValues.defenderCity, totalCarryingCapacity);
                     CheckWarehouseCapacity(initValues.attackerCity);
                     if (request.Request.AttackType == AttackType.Conquer)
-                        await TryToConquerTheCity(initValues.defenderCity, initValues.attackerName, initValues.attackingTroops);
+                    {
+                        var conquerResult = await TryToConquerTheCity(
+                            initValues.defenderCity,
+                            initValues.attackerCity,
+                            initValues.attackerName,
+                            archeryPhaseResult.attackerTroops,
+                            unitsOfAttacker);
 
+                        unitsOfAttacker = conquerResult.unitsOfAttacker;
+                        initValues.attackerCity = conquerResult.attackingCity;
+                    }
                 }
 
                 int stolenWoodAmount = initValues.attackerCity.Resources.Wood - initialWoodAmount;
@@ -116,12 +125,18 @@ namespace Services.Commands
                 return new MediatR.Unit();
             }
 
-            private async Task TryToConquerTheCity(City defenderCity, string attackerName, AttackingTroops attackingTroops)
+            private async Task<(IEnumerable<UnitsInCity> unitsOfAttacker, City attackingCity)> TryToConquerTheCity(
+                City defenderCity,
+                City attackingCity,
+                string attackerName,
+                Dictionary<BackEnd.Models.Models.Unit, int> archeryPhaseResult,
+                IEnumerable<UnitsInCity> unitsOfAttacker)
             {
-                var noble = attackingTroops.InfantryPhaseTroops.Keys
-                    .FirstOrDefault(d => d.Name == "Noble");
+                var noble = await _unitOfWork.Units.FindUnitByName("Noble");
 
-                if (noble != null)
+                int nobleCount;
+
+                if (archeryPhaseResult.TryGetValue(noble, out nobleCount))
                 {
                     Random loyaltyReduction = new Random();
                     defenderCity.Loyalty -= loyaltyReduction.Next(20, 30);
@@ -131,11 +146,21 @@ namespace Services.Commands
                         var attackingUser = await _userManager.FindByNameAsync(attackerName);
                         defenderCity.User = attackingUser;
                         defenderCity.UserId = _identityContext.UserId;
+                        defenderCity.Loyalty = 50;
                         attackingUser.Cities.Add(defenderCity);
 
-                        attackingTroops.ArcheryPhaseTroops[noble] = 0;
+                        foreach (var unitsInCity in unitsOfAttacker)
+                        {
+                            if (unitsInCity.Unit.Name.Equals("Noble"))
+                            {
+                                unitsInCity.Amount -= 1;
+                            }
+                        }
+
+                        attackingCity.Resources.Population += noble.UnitCost.Population;
                     }
                 }
+                return (unitsOfAttacker, attackingCity);
 
             }
 
@@ -252,8 +277,6 @@ namespace Services.Commands
                             attackingForces.Add(type, 0);
                     }
 
-                    /*  foreach (var item in request.AttackingForces)
-                          attackingForces.Add(allUnitTypes.First(unit => unit.Name.Equals(item.Key)), item.Value);*/
                 }
                 catch (InvalidOperationException) { throw new BadRequestException("Invalid unit type name"); }
 

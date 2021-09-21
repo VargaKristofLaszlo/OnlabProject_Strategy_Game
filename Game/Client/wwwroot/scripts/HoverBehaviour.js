@@ -1,5 +1,4 @@
-﻿function HoverBehaviour()
-{
+﻿function HoverBehaviour() {
     var woodCapacity = document.getElementById("wood-capacity");
     var woodProduction = document.getElementById("wood-production");
     var stoneCapacity = document.getElementById("stone-capacity");
@@ -14,12 +13,13 @@
     var lightCavalryNameTooltip = document.getElementById("tooltip-light-cavalry-name");
     var heavyCavalryNameTooltip = document.getElementById("tooltip-heavy-cavalry-name");
     var mountedArcherNameTooltip = document.getElementById("tooltip-mounted-archer-name");
-   
+    var nobleNameTooltip = document.getElementById("tooltip-noble-name");
+
 
 
     window.onmousemove = function (e) {
         var x = e.clientX,
-            y = e.clientY;       
+            y = e.clientY;
 
         spearmanNameTooltip.style.top = y + 20 + "px";
         spearmanNameTooltip.style.left = x + 20 + "px";
@@ -41,6 +41,9 @@
 
         mountedArcherNameTooltip.style.top = y + 20 + "px";
         mountedArcherNameTooltip.style.left = x + 20 + "px";
+
+        nobleNameTooltip.style.top = y + 20 + "px";
+        nobleNameTooltip.style.left = x + 20 + "px";
 
         woodCapacity.style.top = y + 20 + "px";
         woodCapacity.style.left = x + 20 + "px";
@@ -73,6 +76,7 @@ function unitsOfCityViewHoverBehaviour() {
     var lightCavalryNameTooltip = document.getElementById("tooltip-light-cavalry-name");
     var heavyCavalryNameTooltip = document.getElementById("tooltip-heavy-cavalry-name");
     var mountedArcherNameTooltip = document.getElementById("tooltip-mounted-archer-name");
+    var nobleNameTooltip = document.getElementById("tooltip-noble-name");
 
     window.onmousemove = function (e) {
         var x = e.clientX,
@@ -99,5 +103,8 @@ function unitsOfCityViewHoverBehaviour() {
 
         mountedArcherNameTooltip.style.top = y + 20 + "px";
         mountedArcherNameTooltip.style.left = x + 20 + "px";
+
+        nobleNameTooltip.style.top = y + 20 + "px";
+        nobleNameTooltip.style.left = x + 20 + "px";
     };
 }

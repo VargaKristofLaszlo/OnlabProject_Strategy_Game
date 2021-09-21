@@ -178,6 +178,7 @@ namespace Models.DataSeeding
             await CreateUnitType(LightCavalry);
             await CreateUnitType(MountedArcher);
             await CreateUnitType(HeavyCavalry);
+            await CreateUnitType(Noble);
         }
 
         private async Task CreateUnitType(BackEnd.Models.Models.Unit unitType)

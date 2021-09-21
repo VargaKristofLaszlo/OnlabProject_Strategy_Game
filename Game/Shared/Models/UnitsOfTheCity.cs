@@ -15,5 +15,6 @@ namespace Game.Shared.Models
         public int LightCavalry { get; set; } = 0;
         public int MountedArcher { get; set; } = 0;
         public int HeavyCavalry { get; set; } = 0;
+        public int Noble { get; set; } = 0;
     }
 }

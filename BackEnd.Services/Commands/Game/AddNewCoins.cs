@@ -45,7 +45,7 @@ namespace Services.Commands.Game
                 if (CheckIfCityHasEnoughResources(city, paidResources) == false)
                     throw new BadRequestException("The city does not have enough resources");
 
-                if (city.Castle.AvailableCoinCount < request.Request.Amount)
+                if (city.Castle.MaximumCoinCount - city.Castle.UsedCoinCount - city.Castle.AvailableCoinCount < request.Request.Amount)
                     throw new BadRequestException("You cant create the requested amount of coins, please upgrade your castle");
 
                 PayTheCost(city, paidResources);

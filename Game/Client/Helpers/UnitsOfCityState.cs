@@ -31,7 +31,7 @@ namespace Game.Client.Helpers
                     break;
                 case "Spearman":
                     UnitsOfTheCity.Spearmans += amount;
-                    break;             
+                    break;
                 case "Archer":
                     UnitsOfTheCity.Archers += amount;
                     break;
@@ -40,7 +40,10 @@ namespace Game.Client.Helpers
                     break;
                 case "LightCavalry":
                     UnitsOfTheCity.LightCavalry += amount;
-                    break;                      
+                    break;
+                case "Noble":
+                    UnitsOfTheCity.Noble += amount;
+                    break;
                 default:
                     break;
             }

@@ -26,10 +26,13 @@ namespace Game.Shared.IServices
         Task<HttpResponseMessage> SendResourcesToOtherPlayer([Body] SendResourceToOtherPlayerRequest request);
 
         [Post("/Create/Coins")]
-        Task<ApiResponse<string>> CreateCoins([Body] CoinCreationRequest request);
+        Task<HttpResponseMessage> CreateCoins([Body] CoinCreationRequest request);
 
-        [Post("Recruit/Spy")]
+        [Post("/Recruit/Spy")]
         Task<ApiResponse<string>> RecruitSpy([Query] int amount, [Query] int cityIndex);
+
+        [Post("/Spy")]
+        Task<ApiResponse<string>> SpyOtherCity([Body] SpyRequest request);
 
     }
 }
