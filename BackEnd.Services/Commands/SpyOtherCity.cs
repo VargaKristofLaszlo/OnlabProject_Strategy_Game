@@ -46,8 +46,19 @@ namespace Services.Commands
                 var successChance = 60 + (request.Request.UsedSpyCount - city.Tavern.SpyCount) * 5;
 
                 if (successChance < new Random().Next(0, 100))
-                    return new SpyReport() { Successful = false };
+                {
+                    city.Tavern.SpyCount -= request.Request.UsedSpyCount;
 
+                    await _unitOfWork.CommitChangesAsync();
+
+                    var failedeEpionage = new SpyReport() { Successful = false };
+
+                    await _unitOfWork.Reports.CreateSpyReport(_mapper.Map<BackEnd.Models.Models.SypReport>(failedeEpionage));
+
+                    await _unitOfWork.CommitChangesAsync();
+
+                    return failedeEpionage;
+                }
 
                 var cityDetails = _mapper.Map<CityDetails>(city);
 
@@ -88,12 +99,45 @@ namespace Services.Commands
                     }
 
                 }
-                return new SpyReport()
+
+                var report = new SpyReport()
                 {
-                    BuildingInformations = cityDetails,
-                    UnitsInTheCity = unitDetails,
+                    Attacker = _identityContext.Username,
+                    CityName = cityDetails.CityName,
+                    BarrackStage = cityDetails.BarrackStage,
+                    CityHallStage = cityDetails.CityHallStage,
+                    CityWallStage = cityDetails.CityWallStage,
+                    FarmStage = cityDetails.FarmStage,
+                    SilverMineStage = cityDetails.SilverMineStage,
+                    StoneMineStage = cityDetails.StoneMineStage,
+                    LumberStage = cityDetails.LumberStage,
+                    WarehouseStage = cityDetails.WarehouseStage,
+                    CastleStage = cityDetails.CastleStage,
+                    TavernStage = cityDetails.TavernStage,
+
+                    Spearmans = unitDetails.Spearmans,
+                    Swordsmans = unitDetails.Swordsmans,
+                    AxeFighers = unitDetails.AxeFighers,
+                    Archers = unitDetails.Archers,
+                    LightCavalry = unitDetails.LightCavalry,
+                    MountedArcher = unitDetails.MountedArcher,
+                    HeavyCavalry = unitDetails.HeavyCavalry,
+                    Noble = unitDetails.Noble,
+
+                    Wood = city.Resources.Wood,
+                    Stone = city.Resources.Stone,
+                    Silver = city.Resources.Silver,
+
+                    CreationTime = DateTime.UtcNow,
+
                     Successful = true
                 };
+
+                await _unitOfWork.Reports.CreateSpyReport(_mapper.Map<BackEnd.Models.Models.SypReport>(report));
+
+                await _unitOfWork.CommitChangesAsync();
+
+                return report;
             }
         }
     }

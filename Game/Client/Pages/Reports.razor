@@ -17,9 +17,7 @@
         <MudExpansionPanels>
             @foreach (var item in pageData)
             {
-                <MudExpansionPanel Text="@string.Format("Date: " + item.CreationTime.ToString() + "    Attacker: " + item.Attacker +
-               "    Attacking city:  " + item.AttackerCityName + "    Defender: " + item.Defender + "    Defending city:  "
-               + item.DefendingCityName)" MaxHeight="450">
+                <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="450">
                     <MudSimpleTable Class="mt-4">
 
                         <thead>
@@ -159,6 +157,28 @@
 
         pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
     }
+
+    private string GetReportHeader(Report item)
+    {
+        var sb = new System.Text.StringBuilder();
+
+        if (item.ReportType == ReportType.Attack)
+        {
+            sb.Append("Date: ")
+                .Append(item.CreationTime.ToString())
+                .Append("    Attacker: ")
+                .Append(item.Attacker)
+                .Append("    Attacking city:  ")
+                .Append(item.AttackerCityName)
+                .Append("    Defender: ")
+                .Append(item.Defender)
+                .Append("    Defending city:  ")
+                .Append(item.DefendingCityName);
+
+        }
+        return sb.ToString();
+    }
+
     private async Task TableResize(int size)
     {
         _pageNumber = 1;

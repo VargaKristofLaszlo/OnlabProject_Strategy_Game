@@ -28,7 +28,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
                 city.WoodProduction.Stage += 1;
                 city.WoodProduction.BuildingCostId = null;
             }
-            else if (upgradeCost.BuildingStage != city.WoodProduction.Stage)
+            else if (upgradeCost.BuildingStage - 2 != city.WoodProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {

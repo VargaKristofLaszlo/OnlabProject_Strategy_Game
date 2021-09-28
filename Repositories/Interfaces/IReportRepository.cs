@@ -1,4 +1,5 @@
-﻿using Models.Models;
+﻿using BackEnd.Models.Models;
+using Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Repositories.Interfaces
     public interface IReportRepository
     {
         Task CreateReport(Report report);
-        Task<(List<Report> Reports, int Count)> GetReports(int pageNumber, int pageSize, string defenderName);
+        Task CreateSpyReport(SypReport report);
+        Task<(List<Report> Reports, int Count)> GetAttackReports(int pageNumber, int pageSize, string defenderName);
+        Task<(List<SypReport> Reports, int Count)> GetSpyReports(int pageNumber, int pageSize, string attackerName);
     }
 }

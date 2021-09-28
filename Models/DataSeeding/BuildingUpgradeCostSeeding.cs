@@ -28,6 +28,8 @@ namespace Models.DataSeeding
             await CreateBuildingUpgradeCost("Castle");
             await CreateBuildingUpgradeCost("Tavern");
             await CreateExtraStage("Barrack", 2);
+            await CreateExtraStage("Castle", 2);
+            await CreateExtraStage("Castle", 3);
             await CreateCoinCost();
             await CreateSpyCost();
         }

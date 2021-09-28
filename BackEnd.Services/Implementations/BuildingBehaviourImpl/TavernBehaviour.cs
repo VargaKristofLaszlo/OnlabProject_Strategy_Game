@@ -33,7 +33,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
                 city.Tavern.Stage += 1;
                 city.Tavern.BuildingCostId = null;
             }
-            else if (upgradeCost.BuildingStage != city.Castle.Stage)
+            else if (upgradeCost.BuildingStage - 2 != city.Castle.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {

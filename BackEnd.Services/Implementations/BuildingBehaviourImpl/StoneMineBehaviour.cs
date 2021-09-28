@@ -28,7 +28,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
                 city.StoneProduction.Stage += 1;
                 city.StoneProduction.BuildingCostId = null;
             }
-            else if (upgradeCost.BuildingStage != city.StoneProduction.Stage)
+            else if (upgradeCost.BuildingStage - 2 != city.StoneProduction.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {

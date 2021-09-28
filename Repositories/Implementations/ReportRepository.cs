@@ -25,13 +25,27 @@ namespace Repositories.Implementations
             await _db.Reports.AddAsync(report);
         }
 
-        public async Task<(List<Report> Reports, int Count)> GetReports(int pageNumber, int pageSize, string usename)
+        public async Task CreateSpyReport(SypReport report)
         {
-            return (await _db.Reports  
+            await _db.SpyReports.AddAsync(report);
+        }
+
+        public async Task<(List<Report> Reports, int Count)> GetAttackReports(int pageNumber, int pageSize, string usename)
+        {
+            return (await _db.Reports
                 .Where(x => x.Defender.Equals(usename) || x.Attacker.Equals(usename))
-                .Skip((pageNumber -1 ) * pageSize)
-                .Take(pageSize)              
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(), _db.Reports.ToListAsync().Result.Count);
+        }
+
+        public async Task<(List<SypReport> Reports, int Count)> GetSpyReports(int pageNumber, int pageSize, string attackerName)
+        {
+            return (await _db.SpyReports
+                .Where(x => x.Attacker.Equals(attackerName))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(), _db.SpyReports.ToListAsync().Result.Count);
         }
     }
 }

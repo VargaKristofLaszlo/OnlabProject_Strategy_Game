@@ -185,6 +185,14 @@ namespace Game.Server.Controllers
             return Ok(response);
         }
 
+        [HttpGet("SpyReports")]
+        public async Task<IActionResult> GetSpyReports([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            var response = await _mediator.Send(new GetSpyReports.Query(pageNumber, pageSize));
+            return Ok(response);
+        }
+
+
         [HttpGet("BuildingQueue/{userId}")]
         public async Task<IActionResult> GetBuildingQueue(string userId)
         {
@@ -204,6 +212,14 @@ namespace Game.Server.Controllers
         public async Task<IActionResult> GetCastleDetails([FromQuery] int cityIndex)
         {
             var response = await _mediator.Send(new GetCastleDetails.Query(cityIndex));
+
+            return Ok(response);
+        }
+
+        [HttpGet("Tavern")]
+        public async Task<IActionResult> GetTavernDetails([FromQuery] int cityIndex)
+        {
+            var response = await _mediator.Send(new GetTavernDetails.Query(cityIndex));
 
             return Ok(response);
         }

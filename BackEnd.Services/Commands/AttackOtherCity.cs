@@ -106,7 +106,7 @@ namespace Services.Commands
                 int stolenStoneAmount = initValues.attackerCity.Resources.Stone - initialStoneAmount;
                 int stolenSilverAmount = initValues.attackerCity.Resources.Silver - initialSilverAmount;
 
-                await _reportSender.CreateReport(initValues.attackerName, initValues.attackerCity.CityName,
+                await _reportSender.CreateAttackReport(initValues.attackerName, initValues.attackerCity.CityName,
                     initValues.defenderName, initValues.defenderCity.CityName,
                     archeryPhaseResult.attackerTroops, archeryPhaseResult.defendingTroops,
                     request.Request.AttackingForces, initValues.defendingUnits, stolenWoodAmount, stolenStoneAmount, stolenSilverAmount,

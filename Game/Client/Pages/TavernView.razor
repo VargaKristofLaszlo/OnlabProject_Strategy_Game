@@ -1,0 +1,269 @@
+﻿@page "/tavern"
+
+@inject Helpers.UnitsOfCityState UnitsOfCityState
+@inject Helpers.CityIndexState CityIndexState
+@inject Helpers.CityDetailsState CityDetailsState
+@inject Helpers.CityResourceState CityResourceState
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
+@inject ISnackbar Snackbar
+@using Microsoft.AspNetCore.Mvc
+
+<div class="d-flex bd-highlight">
+    <ResourceView CityIndex="@CityIndexState.Index" />
+</div>
+<div class="d-flex bd-highlight">
+    <UnitsOfCityView CityIndex="@CityIndexState.Index" />
+</div>
+
+<section class="container">
+    <header class="text-center">
+        <h2>
+            Tavern (Level @TavernDetails.Stage)
+        </h2>
+    </header>
+    <MudSimpleTable Style="overflow-x: auto;" Class="mt-5 mb-3">
+        <MudTr>
+            <MudTd>Currently available spies</MudTd>
+            <MudTd><b>@TavernDetails.AvailableSpyCount</b></MudTd>
+            <MudTd>/</MudTd>
+            <MudTd><b>@TavernDetails.MaximumSpyCount</b></MudTd>
+        </MudTr>
+    </MudSimpleTable>
+
+    <MudSimpleTable Style="overflow-x: auto;" Class="mb-4">
+        <thead>
+            <tr>
+                <td><b>Recruit a spy</b></td>
+                <td><MudIcon Icon="fas fa-tree" /></td>
+                <td><MudIcon Icon="fas fa-gem" /></td>
+                <td><MudIcon Icon="fas fa-coins" /></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><MudButton Variant="Variant.Filled" @onclick="CreateSpyAsync" Disabled=@(TavernDetails.AvailableSpyCount == TavernDetails.MaximumSpyCount)>Recruit</MudButton></td>
+                <td>@SpyCost.Wood</td>
+                <td>@SpyCost.Stone</td>
+                <td>@SpyCost.Silver</td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+
+    @if (pageData != null)
+    {
+        @if (pageData.Count() != 0)
+        {
+            <MudExpansionPanels Class="mt-4">
+                @foreach (var item in pageData)
+                {
+                    <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="450">
+                        <MudSimpleTable Class="mt-4">
+
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@item.Spearmans</td>
+                                    <td>@item.Swordsmans</td>
+                                    <td>@item.AxeFighers</td>
+                                    <td>@item.Archers</td>
+                                    <td>@item.LightCavalry</td>
+                                    <td>@item.MountedArcher</td>
+                                    <td>@item.HeavyCavalry</td>
+                                    <td>@item.Noble</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>Resources</tr>
+                                <tr>
+                                    <td><i class="fas fa-tree"></i></td>
+                                    <td class="mr-2">@item.Wood</td>
+                                    <td><i class="fas fa-gem"></i></td>
+                                    <td class="mr-2">@item.Stone</td>
+                                    <td><i class="fas fa-coins"></i></td>
+                                    <td>@item.Silver</td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>Buildings</tr>
+                                <tr>
+                                    <td>Barrack</td>
+                                    <td>Castle</td>
+                                    <td>City hall</td>
+                                    <td>City wall</td>
+                                    <td>Farm</td>
+                                    <td>Lumber</td>
+                                    <td>Silver mine</td>
+                                    <td>Stone mine</td>
+                                    <td>Tavern</td>
+                                    <td>Warehouse</td>
+                                </tr>
+                                <tr>
+                                    <td>@item.BarrackStage</td>
+                                    <td>@item.CastleStage</td>
+                                    <td>@item.CityHallStage</td>
+                                    <td>@item.CityWallStage</td>
+                                    <td>@item.FarmStage</td>
+                                    <td>@item.LumberStage</td>
+                                    <td>@item.SilverMineStage</td>
+                                    <td>@item.StoneMineStage</td>
+                                    <td>@item.TavernStage</td>
+                                    <td>@item.WarehouseStage</td>
+                                </tr>
+                            </tbody>
+
+                        </MudSimpleTable>
+                    </MudExpansionPanel>
+                }
+
+            </MudExpansionPanels>
+            <row>
+                <MudButton Variant="Variant.Filled" @onclick="() => NewPage(true)" Disabled="@_disableNextButton">Next</MudButton>
+                <MudButton Variant="Variant.Filled" @onclick="() => NewPage(false)" Disabled="_disablePreviousButton">Previous</MudButton>
+            </row>
+        }
+        else
+        {
+            <MudText>You dont have any spy reports</MudText>
+        }
+    }
+</section>
+
+
+
+
+
+
+
+
+@code {
+    public TavernDetails TavernDetails { get; set; } = new TavernDetails();
+    public Resources SpyCost { get; set; } = new Resources();
+    private List<SpyReport> pageData;
+    private int _pageNumber = 1;
+    private int _pageSize = 5;
+    private bool _disableNextButton = false;
+    private bool _disablePreviousButton = true;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        TavernDetails = await IViewService.GetTavernDetails(CityIndexState.Index);
+
+        if (TavernDetails.SpyCost != null)
+            SpyCost = TavernDetails.SpyCost;
+
+        var response = await IViewService.GetSpyReports(_pageNumber, _pageSize);
+
+        pageData = response.Records.ToList();
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+    }
+
+    private string GetReportHeader(SpyReport item)
+    {
+        var sb = new System.Text.StringBuilder();
+
+        sb.Append("Date: ")
+            .Append(item.CreationTime.ToString())
+            .Append("    Spying: ")
+            .Append(item.CityName);
+
+
+        return sb.ToString();
+    }
+
+    private async Task TableResize(int size)
+    {
+        _pageNumber = 1;
+        _pageSize = size;
+        var response = await IViewService.GetSpyReports(_pageNumber, size);
+
+        pageData = response.Records.ToList();
+
+        if (response.PagingInformations.PagesCount == _pageNumber)
+            _disableNextButton = true;
+        else
+            _disableNextButton = false;
+
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+    }
+
+
+    private async Task NewPage(bool forward)
+    {
+        if (forward)
+            _pageNumber += 1;
+
+        if (forward == false && _pageNumber > 1)
+            _pageNumber -= 1;
+
+
+        var response = await IViewService.GetSpyReports(_pageNumber, _pageSize);
+
+        if (response.PagingInformations.PagesCount == _pageNumber)
+            _disableNextButton = true;
+        else
+            _disableNextButton = false;
+
+        if (_pageNumber == 1)
+            _disablePreviousButton = true;
+        else
+            _disablePreviousButton = false;
+
+        pageData = response.Records.ToList();
+
+        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+
+        StateHasChanged();
+    }
+
+
+    private async Task CreateSpyAsync()
+    {
+        var response = await IGameService.RecruitSpy(1, CityIndexState.Index);
+
+        if (response.IsSuccessStatusCode)
+        {
+            TavernDetails.AvailableSpyCount += 1;
+            CityResourceState.SetResourceValueAfterUpgrade(SpyCost);
+
+            Snackbar.Add("A spy was recruited", Severity.Success);
+        }
+        else
+        {
+            var responseMessage = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+
+            Snackbar.Add(responseMessage.Detail, Severity.Error);
+        }
+    }
+}

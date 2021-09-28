@@ -23,67 +23,49 @@
         </h2>
     </header>
     <MudSimpleTable Style="overflow-x: auto;" Class="mt-5 mb-3">
-        <MudTr>
-            <MudTd>Currently available coins</MudTd>
-            <MudTd>@CastleDetails.AvailableCoinCount</MudTd>
-        </MudTr>
-        <MudTr>
-            <MudTd>Number of coins you can create with the current castle stage</MudTd>
-            <MudTd>@CastleDetails.MaximumCoinCount</MudTd>
-        </MudTr>
-    </MudSimpleTable>
-
-    <header class="text-center mt-5">
-        <h2>
-            Price of the coin
-        </h2>
-    </header>
-
-    <MudSimpleTable Style="overflow-x: auto;">
-        <thead>
-            <tr>
-                <td><MudIcon Icon="fas fa-tree" /></td>
-                <td><MudIcon Icon="fas fa-gem" /></td>
-                <td><MudIcon Icon="fas fa-coins" /></td>
-            </tr>
-        </thead>
         <tbody>
-            <tr>
-                <td>@CoinCost.Wood</td>
-                <td>@CoinCost.Stone</td>
-                <td>@CoinCost.Silver</td>
-            </tr>
+            <MudTr>
+                <MudTd>Currently available coins</MudTd>
+                <MudTd><b>@CastleDetails.AvailableCoinCount</b></MudTd>
+                <MudTd>/</MudTd> 
+                <MudTd><b>@CastleDetails.MaximumCoinCount</b></MudTd>
+            </MudTr>
+        </tbody>
+        <tbody>
+            <MudTr>
+                <MudTd>Coin price</MudTd>
+                <MudTd><MudIcon Icon="fas fa-tree" /></MudTd>
+                <MudTd><MudIcon Icon="fas fa-gem" /></MudTd>
+                <MudTd><MudIcon Icon="fas fa-coins" /></MudTd>
+            </MudTr>
+            <MudTr>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" @onclick="CreateCoinAsync">Create a coin</MudButton>
+                </MudTd>
+                <MudTd>@CoinCost.Wood</MudTd>
+                <MudTd>@CoinCost.Stone</MudTd>
+                <MudTd>@CoinCost.Silver</MudTd>
+            </MudTr>
+        </tbody>
+        <tbody>
+            <MudTr>
+                <MudTd>Noble price</MudTd>
+                <MudTd><MudIcon Icon="fas fa-tree" /></MudTd>
+                <MudTd><MudIcon Icon="fas fa-gem" /></MudTd>
+                <MudTd><MudIcon Icon="fas fa-coins" /></MudTd>
+            </MudTr>
+            <MudTr>
+                <MudTd>
+                    <MudButton Variant="Variant.Filled" @onclick="RecruitNobleAsync" Disabled=@(CastleDetails.AvailableCoinCount == 0)>Recruit a noble</MudButton>
+                </MudTd>
+                <MudTd>@NobleCost.Wood</MudTd>
+                <MudTd>@NobleCost.Stone</MudTd>
+                <MudTd>@NobleCost.Silver</MudTd>
+            </MudTr>
         </tbody>
     </MudSimpleTable>
-    <div class="ml-auto mr-auto mt-5">
-        <MudButton Variant="Variant.Filled" @onclick="CreateCoinAsync">Create a coin</MudButton>
-    </div>
 
 
-    <header class="text-center mt-5">
-        <h2>
-            Price of a noble
-        </h2>
-    </header>
-    <MudSimpleTable Style="overflow-x: auto;">
-        <thead>
-            <tr>
-                <td><MudIcon Icon="fas fa-tree" /></td>
-                <td><MudIcon Icon="fas fa-gem" /></td>
-                <td><MudIcon Icon="fas fa-coins" /></td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@NobleCost.Wood</td>
-                <td>@NobleCost.Stone</td>
-                <td>@NobleCost.Silver</td>
-            </tr>
-        </tbody>
-    </MudSimpleTable>
-    <div class="ml-auto mr-auto mt-5">
-        <MudButton Variant="Variant.Filled" @onclick="RecruitNobleAsync" Disabled=@(CastleDetails.AvailableCoinCount == 0)>Recruit a noble</MudButton>
-    </div>
 </section>
 
 @code {
@@ -116,9 +98,9 @@
         if (response.IsSuccessStatusCode)
         {
             CastleDetails.AvailableCoinCount += 1;
-            CastleDetails.MaximumCoinCount -= 1;
-
+            CityResourceState.SetResourceValueAfterUpgrade(CastleDetails.CoinCost);
             Snackbar.Add("Coin was created", Severity.Success);
+
         }
         else
         {
@@ -144,6 +126,7 @@
         {
             unitsOfTheCity.Noble += 1;
             CastleDetails.AvailableCoinCount--;
+            CastleDetails.MaximumCoinCount--;
 
             CityResourceState.SetResourceValueAfterUpgrade(CastleDetails.NobleCost);
             UnitsOfCityState.SetUnitsOfTheCity(unitsOfTheCity);

@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922103514_Added SpyReport table")]
+    partial class AddedSpyReporttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,9 +533,6 @@ namespace Game.Server.Migrations
                     b.Property<int>("Archers")
                         .HasColumnType("int");
 
-                    b.Property<string>("Attacker")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("AxeFighers")
                         .HasColumnType("int");
 
@@ -551,9 +550,6 @@ namespace Game.Server.Migrations
 
                     b.Property<int>("CityWallStage")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("FarmStage")
                         .HasColumnType("int");
@@ -573,19 +569,10 @@ namespace Game.Server.Migrations
                     b.Property<int>("Noble")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReportType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Silver")
-                        .HasColumnType("int");
-
                     b.Property<int>("SilverMineStage")
                         .HasColumnType("int");
 
                     b.Property<int>("Spearmans")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Stone")
                         .HasColumnType("int");
 
                     b.Property<int>("StoneMineStage")
@@ -601,9 +588,6 @@ namespace Game.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("WarehouseStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wood")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

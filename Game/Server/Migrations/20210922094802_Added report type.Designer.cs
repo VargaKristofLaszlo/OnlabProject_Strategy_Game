@@ -4,14 +4,16 @@ using BackEnd.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Game.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210922094802_Added report type")]
+    partial class Addedreporttype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,142 +356,6 @@ namespace Game.Server.Migrations
                     b.ToTable("MaxBuildingStages");
                 });
 
-            modelBuilder.Entity("BackEnd.Models.Models.Report", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ArcherAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArcherAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArcherDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArcherDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Attacker")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AttackerCityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AxeFighterAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AxeFighterDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Defender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DefendingCityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("HeavyCavalryAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalryAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalryDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalryDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalryDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Loyalty")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcherDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NobleDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReportType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SpearmanDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StolenSilverAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StolenStoneAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StolenWoodAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanAttackerCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanAttackerCountBefore")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanDefenderCountAfter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SwordsmanDefenderCountBefore")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reports");
-                });
-
             modelBuilder.Entity("BackEnd.Models.Models.ResourceProduction", b =>
                 {
                     b.Property<string>("Id")
@@ -521,94 +387,6 @@ namespace Game.Server.Migrations
                     b.HasIndex("CityId");
 
                     b.ToTable("ResourceProductions");
-                });
-
-            modelBuilder.Entity("BackEnd.Models.Models.SypReport", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Archers")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Attacker")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AxeFighers")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BarrackStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CastleStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CityHallStage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CityName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CityWallStage")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FarmStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HeavyCavalry")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LightCavalry")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LumberStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MountedArcher")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Noble")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReportType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Silver")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SilverMineStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Spearmans")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Stone")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StoneMineStage")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Successful")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Swordsmans")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TavernStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseStage")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wood")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SpyReports");
                 });
 
             modelBuilder.Entity("BackEnd.Models.Models.Tavern", b =>
@@ -978,6 +756,142 @@ namespace Game.Server.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Models.Models.Report", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ArcherAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArcherAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArcherDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArcherDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Attacker")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttackerCityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AxeFighterAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AxeFighterAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AxeFighterDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AxeFighterDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Defender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DefendingCityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HeavyCavalryAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeavyCavalryAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeavyCavalryDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeavyCavalryDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LightCavalryAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LightCavalryAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LightCavalryDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LightCavalryDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Loyalty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MountedArcherAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MountedArcherAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MountedArcherDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MountedArcherDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NobleAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NobleAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NobleDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NobleDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpearmanAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpearmanAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpearmanDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpearmanDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StolenSilverAmount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StolenStoneAmount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StolenWoodAmount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SwordsmanAttackerCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SwordsmanAttackerCountBefore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SwordsmanDefenderCountAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SwordsmanDefenderCountBefore")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Models.Models.UnitProductionQueueItem", b =>

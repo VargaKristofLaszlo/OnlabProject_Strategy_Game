@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BackEnd.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace Models.Profiles
     {
         public ReportProfile()
         {
-            CreateMap<Models.Report, Game.Shared.Models.Report>().ReverseMap();
-              
+            CreateMap<Report, Game.Shared.Models.Report>().ReverseMap();
+            CreateMap<SypReport, Game.Shared.Models.SpyReport>().ReverseMap();
 
 
-          
+
         }
     }
 }

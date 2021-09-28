@@ -1,14 +1,16 @@
 ﻿using BackEnd.Models.Models;
+using Game.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models.Models
+namespace BackEnd.Models.Models
 {
     public class Report : Record
     {
+        public ReportType ReportType { get; set; }
         public DateTime CreationTime { get; set; }
         public int StolenWoodAmount { get; set; }
         public int StolenSilverAmount { get; set; }

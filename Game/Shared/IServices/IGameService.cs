@@ -29,7 +29,7 @@ namespace Game.Shared.IServices
         Task<HttpResponseMessage> CreateCoins([Body] CoinCreationRequest request);
 
         [Post("/Recruit/Spy")]
-        Task<ApiResponse<string>> RecruitSpy([Query] int amount, [Query] int cityIndex);
+        Task<HttpResponseMessage> RecruitSpy([Query] int amount, [Query] int cityIndex);
 
         [Post("/Spy")]
         Task<ApiResponse<string>> SpyOtherCity([Body] SpyRequest request);

@@ -6,6 +6,7 @@
 @inject IDialogService DialogService
 @inject Helpers.UnitsOfCityState UnitsOfCityState
 @inject Helpers.CityIndexState CityIndexState
+@inject NavigationManager NavManager
 
 
 <div class="d-flex bd-highlight">
@@ -19,7 +20,7 @@
     <ToolBarContent>
         <MudText Typo="Typo.h6">Cities</MudText>
         <MudToolBarSpacer />
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+        <MudTextField T="string" ValueChanged="@(s => OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
@@ -28,13 +29,15 @@
         <MudTh><MudTableSortLabel SortLabel="owner_field" T="CityPagingData">Owner name</MudTableSortLabel></MudTh>
         <MudTh>Send resources</MudTh>
         <MudTh>Attack</MudTh>
+        <MudTh>Spy</MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.Index.</MudTd>
         <MudTd DataLabel="City name">@context.Name</MudTd>
         <MudTd DataLabel="Owner name">@context.OwnerName</MudTd>
-        <MudTd DataLabel="Send resources"><span class="oi oi-transfer" @onclick="() =>OpenSendResourceDialog(context)"></span></MudTd>
+        <MudTd DataLabel="Send resources"><span class="oi oi-transfer" @onclick="() => OpenSendResourceDialog(context)"></span></MudTd>
         <MudTd DataLabel="Attack"><i class="fas fa-khanda" @onclick="() => OpenAttackDialog(context)"></i></MudTd>
+        <MudTd DataLabel="Spy"><i class="fas fa-user-secret" @onclick="() => OpenSpyDialog(context)"></i></MudTd>
     </RowTemplate>
     <PagerContent>
         <MudTablePager />
@@ -127,6 +130,22 @@
             var units = await IViewService.GetUnitsOfCity(CityIndexState.Index);
 
             UnitsOfCityState.SetUnitsOfTheCity(units);
+        }
+    }
+
+    private async Task OpenSpyDialog(CityPagingData cityPagingData)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("CityPagingData", cityPagingData);
+
+        var res = DialogService.Show<SpyDialog>($"Invastigate {cityPagingData.OwnerName}'s city", parameters: parameters);
+
+        var dialogResult = await res.Result;
+
+        if (dialogResult.Cancelled == false)
+        {
+            var gameService = new GameServices(httpClient);
+            await IGameService.SpyOtherCity(dialogResult.Data as Game.Shared.Models.Request.SpyRequest);
         }
     }
 }

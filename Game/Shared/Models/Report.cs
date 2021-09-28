@@ -8,6 +8,7 @@ namespace Game.Shared.Models
 {
     public record Report
     {
+        public ReportType ReportType { get; set; }
         public int StolenWoodAmount { get; init; }
         public int StolenSilverAmount { get; init; }
         public int StolenStoneAmount { get; init; }

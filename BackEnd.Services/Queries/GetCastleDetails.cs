@@ -43,7 +43,7 @@ namespace Services.Queries
                 return new CastleDetails()
                 {
                     AvailableCoinCount = castle.AvailableCoinCount,
-                    MaximumCoinCount = castle.MaximumCoinCount - castle.UsedCoinCount - castle.AvailableCoinCount,
+                    MaximumCoinCount = castle.MaximumCoinCount - castle.UsedCoinCount,
                     Stage = castle.Stage,
                     CoinCost = _mapper.Map<Resources>(coinCost.UpgradeCost),
                     NobleCost = _mapper.Map<Resources>(unitTypeNoble.UnitCost)

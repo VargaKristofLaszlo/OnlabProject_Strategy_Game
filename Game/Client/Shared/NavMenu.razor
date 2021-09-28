@@ -95,8 +95,13 @@
                         </NavLink>
                     </li>
                     <li class="nav-item px-3">
-                        <NavLink class="nav-link" @onclick="NavigateToCastle" Match="NavLinkMatch.All">
+                        <NavLink class="nav-link" @onclick=@( () => NavigateTo("castle") ) Match="NavLinkMatch.All">
                             <span class="oi oi-list-rich" aria-hidden="true"></span> Castle
+                        </NavLink>
+                    </li>
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" @onclick=@( () => NavigateTo("tavern") ) Match="NavLinkMatch.All">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Tavern
                         </NavLink>
                     </li>
                 </Authorized>
@@ -120,9 +125,9 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    private void NavigateToCastle()
+    private void NavigateTo(string destination)
     {
-        NavigationManager.NavigateTo($"castle");
+        NavigationManager.NavigateTo($"{destination}");
     }
 
     private void NavigateToBarrack()

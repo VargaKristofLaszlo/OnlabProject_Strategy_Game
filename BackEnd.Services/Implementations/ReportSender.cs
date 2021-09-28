@@ -26,7 +26,7 @@ namespace Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task CreateReport(string attacker, string attackerCityName, string defender, string defenderCityName,
+        public async Task CreateAttackReport(string attacker, string attackerCityName, string defender, string defenderCityName,
             Dictionary<Unit, int> attackerTroops, Dictionary<Unit, int> defendingTroops,
             Dictionary<string, int> attackingUnits, IEnumerable<UnitsInCity> defendingUnits,
             int stolenWoodAmount, int stolenStoneAmount, int stolenSilverAmount, int loyalty)
@@ -39,6 +39,7 @@ namespace Services.Implementations
                 Defender = defender,
                 DefendingCityName = defenderCityName,
                 Loyalty = loyalty,
+                ReportType = Game.Shared.Models.ReportType.Attack,
 
                 StolenWoodAmount = stolenWoodAmount,
                 StolenStoneAmount = stolenStoneAmount,
@@ -100,12 +101,42 @@ namespace Services.Implementations
 
             pageSize = pageSize.ValideatePageSize();
 
-            var (Reports, Count) = await _unitOfWork.Reports.GetReports(pageNumber, pageSize, defenderName);
+            var (Reports, Count) = await _unitOfWork.Reports.GetAttackReports(pageNumber, pageSize, defenderName);
 
             var reportListForPage = Reports
                        .Select(model => _mapper.Map<Game.Shared.Models.Report>(model));
 
             return new CollectionResponse<Game.Shared.Models.Report>
+            {
+                Records = reportListForPage,
+                PagingInformations = new PagingInformations
+                {
+                    PageNumber = pageNumber,
+                    PageSize = pageSize,
+                    PagesCount = Paging.CalculatePageCount(Count, pageSize)
+                }
+            };
+        }
+
+        public async Task<CollectionResponse<Game.Shared.Models.SpyReport>> GetSpyReports(int pageNumber, int pageSize, string attackerName)
+        {
+            //Validation
+            if (pageSize < 1)
+                pageSize = 1;
+            else if (pageSize > 20)
+                pageSize = 20;
+            if (pageNumber < 1)
+                pageNumber = 1;
+
+
+            pageSize = pageSize.ValideatePageSize();
+
+            var (Reports, Count) = await _unitOfWork.Reports.GetSpyReports(pageNumber, pageSize, attackerName);
+
+            var reportListForPage = Reports
+                       .Select(model => _mapper.Map<Game.Shared.Models.SpyReport>(model));
+
+            return new CollectionResponse<Game.Shared.Models.SpyReport>
             {
                 Records = reportListForPage,
                 PagingInformations = new PagingInformations

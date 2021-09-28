@@ -27,7 +27,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
                 city.Farm.Stage += 1;
                 city.Farm.BuildingCostId = null;
             }
-            else if (upgradeCost.BuildingStage != city.Farm.Stage)
+            else if (upgradeCost.BuildingStage - 2 != city.Farm.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {

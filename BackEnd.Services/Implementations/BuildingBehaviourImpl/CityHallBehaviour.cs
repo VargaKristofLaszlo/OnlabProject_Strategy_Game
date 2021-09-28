@@ -27,7 +27,7 @@ namespace Services.Implementations.BuildingBehaviourImpl
                 city.CityHall.Stage += 1;
                 city.CityHall.BuildingCostId = null;
             }
-            else if (upgradeCost.BuildingStage != city.CityHall.Stage)
+            else if (upgradeCost.BuildingStage - 2 != city.CityHall.Stage)
                 throw new InvalidBuildingStageModificationException();
             else
             {

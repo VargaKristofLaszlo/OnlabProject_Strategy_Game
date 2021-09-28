@@ -1,12 +1,14 @@
-﻿using System;
+﻿using BackEnd.Models.Models;
+using Game.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Shared.Models
+namespace BackEnd.Models.Models
 {
-    public class SpyReport
+    public class SypReport : Record
     {
         public DateTime CreationTime { get; set; }
         public string Attacker { get; set; }
@@ -26,6 +28,7 @@ namespace Game.Shared.Models
         public int Wood { get; set; }
         public int Stone { get; set; }
         public int Silver { get; set; }
+
 
         public int Spearmans { get; set; } = 0;
         public int Swordsmans { get; set; } = 0;

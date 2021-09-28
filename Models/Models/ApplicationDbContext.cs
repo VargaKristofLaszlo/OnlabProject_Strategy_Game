@@ -1,4 +1,5 @@
-﻿using IdentityServer4.EntityFramework.Options;
+﻿using Game.Shared.Models;
+using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -29,6 +30,7 @@ namespace BackEnd.Models.Models
         public DbSet<UnitsInCity> UnitsInCities { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<SypReport> SpyReports { get; set; }
         public DbSet<UpgradeQueueItem> UpgradeQueueItems { get; set; }
         public DbSet<UnitProductionQueueItem> UnitProductionQueueItems { get; set; }
         public DbSet<Castle> Castles { get; set; }

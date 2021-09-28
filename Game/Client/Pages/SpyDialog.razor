@@ -1,0 +1,67 @@
+﻿@inject IDialogService DialogService
+@inject Helpers.UnitsOfCityState UnitsOfTheCity
+@inject Helpers.CityIndexState CityIndexState
+@inject ISnackbar Snackbar
+@inject Game.Shared.IServices.IViewService IViewService
+@inject Game.Shared.IServices.IGameService IGameService
+<MudSlider T="int" @bind-Value="_selectedSpyAmount" Min="0" Max="_maximumAvailableSpyAmount" Color="Color.Dark">Selected amount: @_selectedSpyAmount</MudSlider>
+
+<MudDialog>
+    <DialogContent>
+        <MudSlider @bind-Value="_selectedSpyAmount" Min="0" Max="_maximumAvailableSpyAmount">
+            <MudIcon Icon="fas fa-user-secret"/>  @_selectedSpyAmount
+        </MudSlider>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Send</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [Parameter]
+    public CityPagingData CityPagingData { get; set; }
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private int _selectedSpyAmount = 0;
+
+    private int _maximumAvailableSpyAmount = 0;
+
+    private bool EmptyAttackCheck() => _selectedSpyAmount == 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tavernDetails = await IViewService.GetTavernDetails(CityIndexState.Index);
+
+        _maximumAvailableSpyAmount = tavernDetails.AvailableSpyCount;
+    }
+
+    private void Submit()
+    {
+        if (_selectedSpyAmount > _maximumAvailableSpyAmount)
+        {
+            Snackbar.Add("You dont have the required amount of spies", Severity.Error);
+        }
+        else if (_selectedSpyAmount == 0)
+            Snackbar.Add("You have to select some spies in order to use this action", Severity.Error);
+
+        else
+        {
+            Game.Shared.Models.Request.SpyRequest content = new Game.Shared.Models.Request.SpyRequest()
+            {
+                UsedSpyCount = _selectedSpyAmount,
+                CityIndex = CityPagingData.Index,
+                UserId = CityPagingData.OwnerId
+            };
+
+            MudDialog.Close(DialogResult.Ok(content));
+        }
+    }
+
+    void Cancel() => MudDialog.Cancel();
+
+}

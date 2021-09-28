@@ -52,6 +52,8 @@ namespace BackEnd.Repositories.Implementations
         {
             return await _db.Users
                 .Include(user => user.Cities)
+                    .ThenInclude(city => city.Resources)
+                .Include(user => user.Cities)
                     .ThenInclude(city => city.CityWall)
                         .ThenInclude(building => building.UpgradeCost)
                 .Include(user => user.Cities)

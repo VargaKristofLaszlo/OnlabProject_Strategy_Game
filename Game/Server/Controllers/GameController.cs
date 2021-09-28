@@ -162,7 +162,7 @@ namespace Game.Server.Controllers
         }
 
         [SwaggerOperation(
-          Summary = "Recruit a new spy")]
+          Summary = "Spy on someone's city")]
         [SwaggerResponse(200, "Spying request was successfully")]
         [SwaggerResponse(404, "City was not found")]
         [HttpPost("Spy")]

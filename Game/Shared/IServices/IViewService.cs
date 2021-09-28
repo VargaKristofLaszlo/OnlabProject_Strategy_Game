@@ -47,6 +47,9 @@ namespace Game.Shared.IServices
         [Get("/Reports")]
         Task<CollectionResponse<Report>> GetReports(int pageNumber, int pageSize);
 
+        [Get("/SpyReports")]
+        Task<CollectionResponse<SpyReport>> GetSpyReports(int pageNumber, int pageSize);
+
         [Get("/BuildingQueue/{userId}")]
         Task<BuildingQueue> GetBuildingQueueById(string userId);
         [Get("/UnitRecruitQueue/{userId}")]
@@ -54,5 +57,8 @@ namespace Game.Shared.IServices
 
         [Get("/Castle")]
         Task<CastleDetails> GetCastleDetails([Query] int cityIndex);
+
+        [Get("/Tavern")]
+        Task<TavernDetails> GetTavernDetails([Query] int cityIndex);
     }
 }
