@@ -56,7 +56,6 @@ namespace Game.Server.Controllers
             return Ok(response);
         }
 
-
         [HttpGet("CityNames")]
         [SwaggerOperation(
             Summary = "Returns a list containing the name of the cities",

@@ -9,6 +9,7 @@ using Services.Commands;
 using Services.Commands.Buildings;
 using Services.Commands.Game;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 using System.Threading.Tasks;
 
 namespace Game.Server.Controllers
@@ -19,10 +20,12 @@ namespace Game.Server.Controllers
     public class GameController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IIdentityContext _identityContext;
 
-        public GameController(IMediator mediator)
+        public GameController(IMediator mediator, IIdentityContext identityContext)
         {
             _mediator = mediator;
+            _identityContext = identityContext;
         }
 
         [HttpPost("cancel/recruitment")]
@@ -52,16 +55,14 @@ namespace Game.Server.Controllers
         [HttpPatch("{buildingName}/Upgrade")]
         public async Task<IActionResult> UpgradeBuilding([FromQuery] int cityIndex, string buildingName, [FromQuery] int newStage)
         {
-            var identityContext = new IdentityContext(HttpContext);
-
-            var startTime = await _mediator.Send(new UpgradeStart.Command(cityIndex, buildingName, newStage, identityContext));
+            var startTime = await _mediator.Send(new UpgradeStart.Command(cityIndex, buildingName, newStage, _identityContext));
 
             var jobId = _mediator.Schedule(
-                $"{identityContext.UserId} upgrades {buildingName} to stage {newStage}",
-                new UpgradeProcess.Command(cityIndex, buildingName, newStage, identityContext, startTime),
+                $"{_identityContext.UserId} upgrades {buildingName} to stage {newStage}",
+                new UpgradeProcess.Command(cityIndex, buildingName, newStage, _identityContext, startTime),
                 startTime);
 
-            await _mediator.Send(new AddJobIdToBuildingQueue.Command(jobId, identityContext.UserId, buildingName, cityIndex, newStage));
+            await _mediator.Send(new AddJobIdToBuildingQueue.Command(jobId, _identityContext.UserId, buildingName, cityIndex, newStage));
 
             return Ok(jobId);
         }

@@ -24,8 +24,8 @@ namespace Game.Server.Extensions
 
                 var identityContext = new IdentityContext();
 
-
-                var claims = httpContext.User.Claims;
+                if (httpContext == null)
+                    return identityContext;
 
                 if (httpContext.User.Identity.IsAuthenticated)
                 {
