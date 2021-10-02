@@ -25,6 +25,11 @@ using Hangfire.Common;
 using Azure.Security.KeyVault.Secrets;
 using Azure.Identity;
 using Services.Commands.Game;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
+using Infrastructure.Hubs;
 
 namespace Game.Server
 {
@@ -91,6 +96,19 @@ namespace Game.Server
             services.AddTokenConfig();
             services.AddMediatR(typeof(GetUserCredentials).Assembly);
             services.AddScoped<IReportSender, ReportSender>();
+            services.AddSignalR();
+
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
+
+
+
+
+
 
 
 
@@ -129,6 +147,8 @@ namespace Game.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IUnitOfWork unitOfWork, IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IMediator mediatr, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -169,6 +189,7 @@ namespace Game.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chathub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

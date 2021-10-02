@@ -1,5 +1,7 @@
 ﻿@page "/map"
 
+@using Microsoft.AspNetCore.SignalR.Client
+
 @inject HttpClient httpClient
 @inject Game.Shared.IServices.IViewService IViewService
 @inject Game.Shared.IServices.IGameService IGameService
@@ -7,6 +9,7 @@
 @inject Helpers.UnitsOfCityState UnitsOfCityState
 @inject Helpers.CityIndexState CityIndexState
 @inject NavigationManager NavManager
+@inject Helpers.HubListener HubListener
 
 
 <div class="d-flex bd-highlight">
@@ -124,8 +127,17 @@
         if (dialogResult.Cancelled == false)
         {
             var gameService = new GameServices(httpClient);
-            await gameService.AttackOtherCity(dialogResult.Data as Game.Shared.Models.Request.AttackRequest);
+            var result = await gameService.AttackOtherCity(dialogResult.Data as Game.Shared.Models.Request.AttackRequest);
 
+            if (result.IsSuccessStatusCode)
+            {
+                Console.WriteLine("??");
+
+                if (HubListener.Connection.State == HubConnectionState.Disconnected)
+                    await HubListener.StartAsync();
+
+                await HubListener.SendSystemMessage(cityPagingData.OwnerName, "Your city was attacked see reports for more details!");
+            }
 
             var units = await IViewService.GetUnitsOfCity(CityIndexState.Index);
 

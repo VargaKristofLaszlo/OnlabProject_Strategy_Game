@@ -1,0 +1,65 @@
+﻿@page "/chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Helpers.HubListener HubListener
+@inject Helpers.MessageStorage MessageStorage
+
+
+<div class="form-group">
+    @if (string.IsNullOrEmpty(errorMessage) == false)
+    {
+        <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+    }
+    <label>
+        Target:
+        <input @bind="targetUserName" size="50" disabled=@(string.IsNullOrEmpty(errorMessage) == false) />
+    </label>
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" disabled=@(string.IsNullOrEmpty(errorMessage) == false) />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!HubListener.IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in MessageStorage.Messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+@code {
+
+    private string messageInput;
+    private string senderUserName;
+    private string targetUserName = string.Empty;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticatedUser = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        senderUserName = authenticatedUser.User.Claims.First(t => t.Type == System.Security.Claims.ClaimTypes.Name).Value;
+
+        if (HubListener.Connection.State == HubConnectionState.Disconnected)
+            await HubListener.StartAsync();
+    }
+
+    async Task Send() => await HubListener.Send(messageInput, targetUserName);
+
+    protected override void OnInitialized()
+    {
+        HubListener.OnChange += StateHasChanged;
+
+        HubListener.Connection.Closed += error =>
+        {
+            System.Diagnostics.Debug.Assert(HubListener.Connection.State == HubConnectionState.Disconnected);
+
+            errorMessage = "Connection to the chat server could not be created.";
+
+            return Task.CompletedTask;
+        };
+    }
+}

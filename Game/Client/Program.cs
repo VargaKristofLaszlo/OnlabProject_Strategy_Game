@@ -23,7 +23,7 @@ namespace Game.Client
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
-            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Game.ServerAPI"));           
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Game.ServerAPI"));
             builder.Services.AddApiAuthorization();
             builder.Services.AddMudServices();
             builder.Services.AddBlazoredLocalStorage(config =>
@@ -38,6 +38,9 @@ namespace Game.Client
             builder.Services.AddScoped<CityDetailsState>();
             builder.Services.AddScoped<UpgradeQueueState>();
             builder.Services.AddScoped<UnitProductionQueueState>();
+
+            builder.Services.AddSingleton<HubListener>();
+            builder.Services.AddSingleton<MessageStorage>();
 
             builder.Services.AddRefitClient<Game.Shared.IServices.IViewService>()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress + "api/View"))

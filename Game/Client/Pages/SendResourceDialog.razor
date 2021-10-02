@@ -1,7 +1,9 @@
 ﻿@inject IDialogService DialogService
 @inject Helpers.CityResourceState CityResourceState
+@using Microsoft.AspNetCore.SignalR.Client
 @inject Game.Shared.IServices.IGameService IGameService
 @inject ISnackbar Snackbar
+@inject Helpers.HubListener HubListener
 @using Game.Shared.Models.Request
 
 <MudDialog>
@@ -59,7 +61,7 @@
         var response = await IGameService.SendResourcesToOtherPlayer(request);
         if (response.IsSuccessStatusCode)
         {
-            MudDialog.Close();         
+            MudDialog.Close();
             CityResourceState.SetResourceValueAfterUpgrade(new Resources()
             {
                 Population = 0,
@@ -67,6 +69,11 @@
                 Stone = _stoneSlider,
                 Silver = _silverSlider
             });
+
+            if (HubListener.Connection.State == HubConnectionState.Disconnected)
+                await HubListener.StartAsync();
+
+            await HubListener.SendSystemMessage(request.ToUserName, $"You received resources from {CityPagingData.OwnerName}'s {CityPagingData.Name}");
         }
         else
         {
