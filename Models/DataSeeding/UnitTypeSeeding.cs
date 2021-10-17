@@ -184,11 +184,14 @@ namespace Models.DataSeeding
         private async Task CreateUnitType(BackEnd.Models.Models.Unit unitType)
         {
             var _unitType = await _db.Units
+                .Include(unit => unit.UnitCost)
               .Where(unit => unit.Name.Equals(unitType.Name))
               .FirstOrDefaultAsync();
 
             if (_unitType != null)
                 return;
+
+            unitType.RecruitTime = new System.TimeSpan(0, 0, 0);
 
             await _db.Units.AddAsync(unitType);
 

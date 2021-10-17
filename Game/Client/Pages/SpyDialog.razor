@@ -9,7 +9,7 @@
 <MudDialog>
     <DialogContent>
         <MudSlider @bind-Value="_selectedSpyAmount" Min="0" Max="_maximumAvailableSpyAmount">
-            <MudIcon Icon="fas fa-user-secret"/>  @_selectedSpyAmount
+            <MudIcon Icon="fas fa-user-secret" />  @_selectedSpyAmount
         </MudSlider>
 
     </DialogContent>
@@ -54,7 +54,8 @@
             Game.Shared.Models.Request.SpyRequest content = new Game.Shared.Models.Request.SpyRequest()
             {
                 UsedSpyCount = _selectedSpyAmount,
-                CityIndex = CityPagingData.Index,
+                TargetCityIndex = CityPagingData.Index,
+                OwnerCityIndex = CityIndexState.Index,
                 UserId = CityPagingData.OwnerId
             };
 

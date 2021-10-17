@@ -4,7 +4,7 @@ using BackEnd.Repositories.Interfaces;
 using Game.Shared.Models;
 using Game.Shared.Models.Request;
 using MediatR;
-using SendGrid.Helpers.Errors.Model;
+using Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,10 +38,16 @@ namespace Services.Commands
                 if (user == null)
                     throw new NotFoundException();
 
-                var city = await _unitOfWork.Cities.FindCityById(user.Cities[request.Request.CityIndex].Id);
+                var city = await _unitOfWork.Cities.FindCityById(user.Cities[request.Request.TargetCityIndex].Id);
 
                 if (city == null)
                     throw new NotFoundException("City could not be found");
+
+                var spyUser = await _unitOfWork.Users.GetUserWithCities(_identityContext.UserId);
+                var spyCity = await _unitOfWork.Cities.FindCityById(spyUser.Cities[request.Request.OwnerCityIndex].Id);
+
+                if (spyCity.Tavern.SpyCount < request.Request.UsedSpyCount)
+                    throw new BadRequestException("Not enough spies");
 
                 var successChance = 60 + (request.Request.UsedSpyCount - city.Tavern.SpyCount) * 5;
 

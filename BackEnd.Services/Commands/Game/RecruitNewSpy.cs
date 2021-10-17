@@ -2,7 +2,7 @@
 using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using MediatR;
-using SendGrid.Helpers.Errors.Model;
+using Services.Exceptions;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;

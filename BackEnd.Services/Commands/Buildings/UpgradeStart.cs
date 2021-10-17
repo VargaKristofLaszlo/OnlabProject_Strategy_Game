@@ -16,11 +16,11 @@ namespace Services.Commands.Buildings
 
         public class Handler : BuildingHandler, IRequestHandler<Command, DateTime>
         {
-            private readonly IUnitOfWork _unitOfWork;           
+            private readonly IUnitOfWork _unitOfWork;
 
             public Handler(IUnitOfWork unitOfWork)
             {
-                _unitOfWork = unitOfWork;         
+                _unitOfWork = unitOfWork;
             }
 
             public async Task<DateTime> Handle(Command request, CancellationToken cancellationToken)
@@ -31,9 +31,9 @@ namespace Services.Commands.Buildings
                     throw new BadRequestException("The building is not upgradeable");
 
                 //Get the city which contains the upgradeable building
-                var user = await _unitOfWork.Users.GetUserWithCities(request.IdentityContext.UserId);             
+                var user = await _unitOfWork.Users.GetUserWithCities(request.IdentityContext.UserId);
                 var city = await _unitOfWork.Cities.FindCityById(user.Cities.ElementAt(request.CityIndex).Id);
-               
+
                 var upgradeCost = await _unitOfWork.UpgradeCosts.FindUpgradeCost(request.BuildingName, request.NewStage);
 
                 ResourceCostRemoval.PayTheCost(city, upgradeCost.UpgradeCost);
@@ -53,7 +53,7 @@ namespace Services.Commands.Buildings
             {
                 var maxStage = await _unitOfWork.UpgradeCosts.FindMaxStage(buildingName);
                 return newStage <= maxStage;
-            } 
+            }
         }
     }
 }

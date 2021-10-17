@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.MediatR", "Hangfire.MediatR\Hangfire.MediatR.csproj", "{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Test", "Game.Test\Game.Test.csproj", "{996CA376-CE8F-4AB3-9D04-D2D8E6E52CF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B78BC2E8-ADE7-4DAC-AA17-C5CDF301E2C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{996CA376-CE8F-4AB3-9D04-D2D8E6E52CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996CA376-CE8F-4AB3-9D04-D2D8E6E52CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996CA376-CE8F-4AB3-9D04-D2D8E6E52CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996CA376-CE8F-4AB3-9D04-D2D8E6E52CF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
