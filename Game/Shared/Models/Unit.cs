@@ -35,5 +35,7 @@ namespace Game.Shared.Models
 
         [Required]
         public string Name { get; init; }
+
+        public double RecruitmentTimeInSeconds { get; init; }
     }
 }

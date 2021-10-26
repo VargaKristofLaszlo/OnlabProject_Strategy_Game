@@ -1,9 +1,11 @@
-﻿<MudDialog>
+﻿@using Game.Client.Helpers
+
+<MudDialog>
     <DialogContent>
         <MudCard>
-            <MudCardMedia Image="@ImageSource" Style="height: 100px; width: 100px; margin-left: auto; margin-right: auto;" />
+            <MudCardMedia Image="@Information.ImgSource" Style="height: 100px; width: 100px; margin-left: auto; margin-right: auto;" />
         </MudCard>
-        <MudText>@Description</MudText>
+        <MudText>@Information.Description</MudText>
 
         @if (_isResourceProductionDialog)
         {
@@ -11,7 +13,7 @@
                 <tbody>
                     <tr>Resource production</tr>
                     <tr>
-                        <td>@Content.GetType().GetProperty("Production").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("Production").GetValue(Information.Content, null)</td>
                         <td>Per hour</td>
                     </tr>
                 </tbody>
@@ -23,15 +25,15 @@
                 <tbody>
                     <tr>Storage capacity</tr>
                     <tr>
-                        <td>@Content.GetType().GetProperty("Storage").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("Storage").GetValue(Information.Content, null)</td>
                         <td><i class="fas fa-tree"></i></td>
                     </tr>
                     <tr>
-                        <td>@Content.GetType().GetProperty("Storage").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("Storage").GetValue(Information.Content, null)</td>
                         <td><i class="fas fa-gem"></i></td>
                     </tr>
                     <tr>
-                        <td>@Content.GetType().GetProperty("Storage").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("Storage").GetValue(Information.Content, null)</td>
                         <td><i class="fas fa-coins"></i></td>
                     </tr>
                 </tbody>
@@ -43,7 +45,7 @@
                 <tbody>
                     <tr>
                         <td>Maximum population</td>
-                        <td>@Content.GetType().GetProperty("Population").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("Population").GetValue(Information.Content, null)</td>
                     </tr>
                 </tbody>
             </MudSimpleTable>
@@ -51,20 +53,20 @@
         @if (_isWallDialog)
         {
             <MudSimpleTable Style="overflow-x: auto;" Class="mt-2">
-                <tbody>                    
+                <tbody>
                     <tr>
                         <td>City wall defense value</td>
-                        <td>@Content.GetType().GetProperty("DefenseValue").GetValue(Content, null)</td>
+                        <td>@Information.Content.GetType().GetProperty("DefenseValue").GetValue(Information.Content, null)</td>
                     </tr>
                     <tr>
                         <td>Defense value multiplier</td>
-                        <td>@Content.GetType().GetProperty("Multiplier").GetValue(Content, null)</td>                        
+                        <td>@Information.Content.GetType().GetProperty("Multiplier").GetValue(Information.Content, null)</td>
                     </tr>
                 </tbody>
             </MudSimpleTable>
         }
         <MudSimpleTable Style="overflow-x: auto;" Class="mt-2">
-            @if (UpgradeCost != null)
+            @if (Information.UpgradeCost != null)
             {
                 <thead>
                     <tr>Next level's costs</tr>
@@ -78,10 +80,10 @@
                 <tbody>
                     <tr>
 
-                        <td>@UpgradeCost.Wood </td>
-                        <td>@UpgradeCost.Stone </td>
-                        <td>@UpgradeCost.Silver </td>
-                        <td>@UpgradeCost.Population </td>
+                        <td>@Information.UpgradeCost.Wood </td>
+                        <td>@Information.UpgradeCost.Stone </td>
+                        <td>@Information.UpgradeCost.Silver </td>
+                        <td>@Information.UpgradeCost.Population </td>
 
                     </tr>
                 </tbody>
@@ -99,14 +101,8 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public string Description { get; set; }
+    [Parameter] public BuildingInformation Information { get; set; }
 
-    [Parameter]
-    public  object Content { get; set; }
-
-    [Parameter] public Resources UpgradeCost { get; set; }
-
-    [Parameter] public string ImageSource { get; set; }
 
     void Close() => MudDialog.Close(DialogResult.Ok(true));
 
@@ -119,11 +115,11 @@
     protected override void OnInitialized()
     {
 
-        _isResourceProductionDialog = (Content?.GetType().GetProperty("Production") != null);
-        _isWarehouseDialog = (Content?.GetType().GetProperty("Storage") != null);
-        _isFarmDialog = (Content?.GetType().GetProperty("Population") != null);
-        _isWallDialog = (Content?.GetType().GetProperty("DefenseValue") != null &&
-            Content?.GetType().GetProperty("Multiplier") != null);
+        _isResourceProductionDialog = (Information.Content?.GetType().GetProperty("Production") != null);
+        _isWarehouseDialog = (Information.Content?.GetType().GetProperty("Storage") != null);
+        _isFarmDialog = (Information.Content?.GetType().GetProperty("Population") != null);
+        _isWallDialog = (Information.Content?.GetType().GetProperty("DefenseValue") != null &&
+            Information.Content?.GetType().GetProperty("Multiplier") != null);
     }
 
 

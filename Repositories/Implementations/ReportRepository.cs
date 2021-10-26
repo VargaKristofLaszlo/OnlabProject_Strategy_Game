@@ -34,6 +34,7 @@ namespace Repositories.Implementations
         {
             return (await _db.Reports
                 .Where(x => x.Defender.Equals(usename) || x.Attacker.Equals(usename))
+                .OrderByDescending(x => x.CreationTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(), _db.Reports.ToListAsync().Result.Count);
@@ -43,6 +44,7 @@ namespace Repositories.Implementations
         {
             return (await _db.SpyReports
                 .Where(x => x.Attacker.Equals(attackerName))
+                .OrderByDescending(x => x.CreationTime)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(), _db.SpyReports.ToListAsync().Result.Count);

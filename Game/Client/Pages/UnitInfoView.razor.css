@@ -1,0 +1,20 @@
+﻿
+
+.icon-34-pixel {
+    height: 34px;
+    width: 34px;
+}
+
+.icon-120-pixel {
+    width: 120px;
+    height: 120px;
+}
+
+.mild-background-color {
+    background-color: #f5ebd0;
+}
+
+.dark-background-color {
+    background-color: #3f4541;
+    color: white;
+}

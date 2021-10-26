@@ -1,0 +1,132 @@
+﻿@inject ISnackbar Snackbar
+@inject Helpers.CityDetailsState CityDetailsState
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6" Class="text-center" Style="background-color: #3f4541;color:white">@SelectedUnit.Name</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudSimpleTable>
+            <tbody>
+                <tr>
+                    <td>
+                        <div>
+                            <img class="icon-120-pixel" src="@(string.Format($"/images/Units/{SelectedUnit.Name}.svg"))" />
+                        </div>
+                    </td>
+                    <td>
+                        <table>
+                            <tbody>
+                                <tr><th> <MudText Typo="Typo.button">Requirements to recruit</MudText></th></tr>
+                                <tr>
+                                    <td>
+                                        <MudText Typo="Typo.button" Color=@(CityDetailsState.CityDetails.BarrackStage < SelectedUnit.MinBarrackStage ? Color.Error : Color.Default)>
+                                            Level @SelectedUnit.MinBarrackStage Barrack
+                                        </MudText>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr><th colspan="3">Recruitment cost</th></tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span><MudIcon Icon="fas fa-tree" Class="icon-34-pixel" /> @SelectedUnit.UnitCost.Wood</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <span><MudIcon Icon="fas fa-gem" Class="icon-34-pixel" /> @SelectedUnit.UnitCost.Stone</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <span><MudIcon Icon="fas fa-coins" Class="icon-34-pixel" /> @SelectedUnit.UnitCost.Silver</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span><MudIcon Icon="fas fa-user" Class="icon-34-pixel" /> @SelectedUnit.UnitCost.Population</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <span><MudIcon Icon="fas fa-user" Class="icon-34-pixel" /> @(new TimeSpan(0,0,(int)SelectedUnit.RecruitmentTimeInSeconds))</span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <tbody>
+                                <tr><th> Attributes </th></tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span>Attack points</span>
+                                            <span class="float-right">@SelectedUnit.AttackPoint</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span>Defense points against cavalry</span>
+                                            <span class="float-right">@SelectedUnit.CavalryDefensePoint</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span>Defense points against archers</span>
+                                            <span class="float-right">@SelectedUnit.ArcherDefensePoint</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span>Defense points against infantry</span>
+                                            <span class="float-right">@SelectedUnit.InfantryDefensePoint</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <span>Carrying capacity</span>
+                                            <span class="float-right">@SelectedUnit.CarryingCapacity</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </MudSimpleTable>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public Unit SelectedUnit { get; set; }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

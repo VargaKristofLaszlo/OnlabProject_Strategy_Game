@@ -24,9 +24,11 @@
     </header>
     <MudSimpleTable Style="overflow-x: auto;" Class="mt-5 mb-3">
         <MudTr>
-            <MudTd>Currently available spies</MudTd>
+            <MudTd><MudText Typo="Typo.h6">Currently available spies</MudText></MudTd>
             <MudTd><b>@TavernDetails.AvailableSpyCount</b></MudTd>
-            <MudTd>/</MudTd>
+        </MudTr>
+        <MudTr>
+            <MudTd><MudText Typo="Typo.h6">Maximum number of spies with the current stage</MudText></MudTd>
             <MudTd><b>@TavernDetails.MaximumSpyCount</b></MudTd>
         </MudTr>
     </MudSimpleTable>
@@ -57,38 +59,40 @@
             <MudExpansionPanels Class="mt-4">
                 @foreach (var item in pageData)
                 {
-                    <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="450">
+                    <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="600">
                         <MudSimpleTable Class="mt-4">
-
-                            <thead>
+                            <tbody>
                                 <tr>
                                     <td>
-                                        <img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
-                                    </td>
-                                    <td>
-                                        <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                        <MudText Typo="Typo.h5">Units</MudText>
                                     </td>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="/images/Units/Spearman.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Swordsman.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Axe Fighter.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Archer.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Light Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Mounted Archer.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                    <td>
+                                        <img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" />
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>@item.Spearmans</td>
                                     <td>@item.Swordsmans</td>
@@ -101,18 +105,28 @@
                                 </tr>
                             </tbody>
                             <tbody>
-                                <tr>Resources</tr>
+                                <tr>
+                                    <td>
+                                        <MudText Typo="Typo.h5">Resources</MudText>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td><i class="fas fa-tree"></i></td>
-                                    <td class="mr-2">@item.Wood</td>
                                     <td><i class="fas fa-gem"></i></td>
-                                    <td class="mr-2">@item.Stone</td>
                                     <td><i class="fas fa-coins"></i></td>
+                                </tr>
+                                <tr>
+                                    <td>@item.Wood</td>
+                                    <td>@item.Stone</td>
                                     <td>@item.Silver</td>
                                 </tr>
                             </tbody>
                             <tbody>
-                                <tr>Buildings</tr>
+                                <tr>
+                                    <td>
+                                        <MudText Typo="Typo.h5">Buildings</MudText>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>Barrack</td>
                                     <td>Castle</td>
@@ -185,7 +199,7 @@
 
         pageData = response.Records.ToList();
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
     }
 
     private string GetReportHeader(SpyReport item)
@@ -215,7 +229,7 @@
             _disableNextButton = false;
 
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
     }
 
 
@@ -227,22 +241,15 @@
         if (forward == false && _pageNumber > 1)
             _pageNumber -= 1;
 
-
         var response = await IViewService.GetSpyReports(_pageNumber, _pageSize);
 
-        if (response.PagingInformations.PagesCount == _pageNumber)
-            _disableNextButton = true;
-        else
-            _disableNextButton = false;
+        _disableNextButton = response.PagingInformations.PagesCount == (_pageNumber + 1);
 
-        if (_pageNumber == 1)
-            _disablePreviousButton = true;
-        else
-            _disablePreviousButton = false;
+        _disablePreviousButton = _pageNumber == 1;
 
         pageData = response.Records.ToList();
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
 
         StateHasChanged();
     }

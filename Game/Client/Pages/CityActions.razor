@@ -118,9 +118,10 @@
         var parameters = new DialogParameters();
         parameters.Add("CityPagingData", cityPagingData);
 
+        DialogOptions maxWidth = new DialogOptions() { MaxWidth = MaxWidth.Large };
 
 
-        var res = DialogService.Show<AttackDialog>($"Attack {cityPagingData.OwnerName}'s city", parameters: parameters);
+        var res = DialogService.Show<AttackDialog>($"Attack {cityPagingData.OwnerName}'s city", parameters: parameters, options: maxWidth);
 
         var dialogResult = await res.Result;
 

@@ -17,42 +17,45 @@
         <MudExpansionPanels>
             @foreach (var item in pageData)
             {
-                <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="450">
+                <MudExpansionPanel Text="@GetReportHeader(item)" MaxHeight="700">
                     <MudSimpleTable Class="mt-4">
 
-                        <thead>
+                        <tbody>
                             <tr>
-                                <td>Units</td>
+                                <td><MudText Typo="Typo.h6">Units</MudText></td>
+                            </tr>
+                            <tr>
+                                <td><MudText Typo="Typo.button" Class="pl-3">Attacker</MudText></td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <td>
-                                    <img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" />
+                                    <img src="/images/Units/Spearman.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" />
+                                    <img src="/images/Units/Swordsman.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" />
+                                    <img src="/images/Units/Axe Fighter.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" />
+                                    <img src="/images/Units/Archer.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" />
+                                    <img src="/images/Units/Light Cavalry.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" />
+                                    <img src="/images/Units/Mounted Archer.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                    <img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" />
                                 </td>
                                 <td>
-                                    <img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" />
+                                    <img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" />
                                 </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>Attacker</tr>
                             <tr>
-                                <td>Amount</td>
+                                <td><MudText Typo="Typo.button" Class="pl-5">Amount</MudText></td>
                                 <td>@item.SpearmanAttackerCountBefore</td>
                                 <td>@item.SwordsmanAttackerCountBefore</td>
                                 <td>@item.AxeFighterAttackerCountBefore</td>
@@ -63,7 +66,7 @@
                                 <td>@item.NobleAttackerCountBefore</td>
                             </tr>
                             <tr>
-                                <td>Survived</td>
+                                <td><MudText Typo="Typo.button" Class="pl-5">Survived</MudText></td>
                                 <td style="color:red">@item.SpearmanAttackerCountAfter</td>
                                 <td style="color:red">@item.SwordsmanAttackerCountAfter</td>
                                 <td style="color:red">@item.AxeFighterAttackerCountAfter</td>
@@ -73,9 +76,11 @@
                                 <td style="color:red">@item.HeavyCavalryAttackerCountAfter</td>
                                 <td style="color:red">@item.NobleAttackerCountAfter</td>
                             </tr>
-                            <tr>Defender</tr>
                             <tr>
-                                <td>Amount</td>
+                                <td><MudText Typo="Typo.h6">Defender</MudText></td>
+                            </tr>
+                            <tr>
+                                <td><MudText Typo="Typo.button" Class="pl-5">Amount</MudText></td>
                                 <td>@item.SpearmanDefenderCountBefore</td>
                                 <td>@item.SwordsmanDefenderCountBefore</td>
                                 <td>@item.AxeFighterDefenderCountBefore</td>
@@ -86,7 +91,7 @@
                                 <td>@item.NobleDefenderCountBefore</td>
                             </tr>
                             <tr>
-                                <td>Survived</td>
+                                <td><MudText Typo="Typo.button" Class="pl-5">Survived</MudText></td>
                                 <td style="color:red">@item.SpearmanDefenderCountAfter</td>
                                 <td style="color:red">@item.SwordsmanDefenderCountAfter</td>
                                 <td style="color:red">@item.AxeFighterDefenderCountAfter</td>
@@ -98,13 +103,19 @@
                             </tr>
                         </tbody>
                         <tbody>
-                            <tr>Stolen resources</tr>
                             <tr>
+                                <td><MudText Typo="Typo.h6">Stolen resources</MudText></td>
+                            </tr>
+                            <tr>
+                                <td></td>
                                 <td><i class="fas fa-tree"></i></td>
-                                <td class="mr-2">@item.StolenWoodAmount</td>
                                 <td><i class="fas fa-gem"></i></td>
-                                <td class="mr-2">@item.StolenStoneAmount</td>
                                 <td><i class="fas fa-coins"></i></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="mr-2">@item.StolenWoodAmount</td>
+                                <td class="mr-2">@item.StolenStoneAmount</td>
                                 <td>@item.StolenSilverAmount</td>
                             </tr>
                         </tbody>
@@ -155,7 +166,7 @@
 
         pageData = response.Records.ToList();
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
     }
 
     private string GetReportHeader(Report item)
@@ -193,7 +204,7 @@
             _disableNextButton = false;
 
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
     }
 
     private async Task NewPage(bool forward)
@@ -219,7 +230,7 @@
 
         pageData = response.Records.ToList();
 
-        pageData.Sort((x, y) => DateTime.Compare(x.CreationTime, y.CreationTime));
+        pageData.Sort((x, y) => (DateTime.Compare(x.CreationTime, y.CreationTime)) * -1);
 
         StateHasChanged();
     }

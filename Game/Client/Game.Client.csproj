@@ -25,49 +25,49 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\images\buildings\barracks.svg">
+    <Content Update="wwwroot\images\buildings\Barrack.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\cityHall.svg">
+    <Content Update="wwwroot\images\buildings\CityHall.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\farm.svg">
+    <Content Update="wwwroot\images\buildings\Farm.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\lumber.svg">
+    <Content Update="wwwroot\images\buildings\Lumber.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\silver.svg">
+    <Content Update="wwwroot\images\buildings\SilverMine.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\stone.svg">
+    <Content Update="wwwroot\images\buildings\StoneMine.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\buildings\wall.svg">
+    <Content Update="wwwroot\images\buildings\CityWall.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\images\buildings\warehouse.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\DefensiveUnits\Archer.svg">
+    <Content Update="wwwroot\images\Units\Archer.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\DefensiveUnits\Heavy cavalry.svg">
+    <Content Update="wwwroot\images\Units\Heavy cavalry.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\DefensiveUnits\Spearman.svg">
+    <Content Update="wwwroot\images\Units\Spearman.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\DefensiveUnits\Swordsman.svg">
+    <Content Update="wwwroot\images\Units\Swordsman.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\OffensiveUnits\Axe fighter.svg">
+    <Content Update="wwwroot\images\Units\Axe fighter.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\OffensiveUnits\Light cavalry.svg">
+    <Content Update="wwwroot\images\Units\Light cavalry.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\images\OffensiveUnits\Mounted archer.svg">
+    <Content Update="wwwroot\images\Units\Mounted archer.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

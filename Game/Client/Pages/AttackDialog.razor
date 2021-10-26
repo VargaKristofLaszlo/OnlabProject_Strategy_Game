@@ -3,7 +3,7 @@
 @inject Helpers.CityIndexState CityIndexState
 @inject ISnackbar Snackbar
 
-<MudDialog Style="overflow-y: scroll">
+<MudDialog Style="overflow-y: scroll;">
     <DialogContent>
         <MudContainer>
             <MudSimpleTable Style="overflow-x: auto;">
@@ -16,59 +16,49 @@
                 </thead>
                 <tbody>
                     <MudTr>
-                        <MudTd><img src="/images/DefensiveUnits/Spearman.svg" width="34" height="34" class="mb-2" /></MudTd>
+                        <MudTd><img src="/images/Units/Spearman.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Swordsman.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Archer.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Axe Fighter.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Light Cavalry.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Mounted Archer.svg" width="34" height="34" /></MudTd>
+                        <MudTd><img src="/images/Units/Heavy Cavalry.svg" width="34" height="34" /></MudTd>
+
+                    </MudTr>
+                    <MudTr>
                         <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Spearmans</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Swordsmans</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Archers</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.AxeFighers</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.LightCavalry</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.MountedArcher</MudTd>
+                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Noble</MudTd>
+
+                    </MudTr>
+                    <MudTr>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedSpearman" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/DefensiveUnits/Swordsman.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Swordsmans</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedSwordsman" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/DefensiveUnits/Archer.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Archers</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.HeavyCavalry</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedHeavyCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/OffensiveUnits/Axe Fighter.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.AxeFighers</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedAxeFighter" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/OffensiveUnits/Light Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.LightCavalry</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedLightCavalry" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/OffensiveUnits/Mounted Archer.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.MountedArcher</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedMountedArcher" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
-                    </MudTr>
-                    <MudTr>
-                        <MudTd><img src="/images/DefensiveUnits/Heavy Cavalry.svg" width="34" height="34" class="mb-2" /></MudTd>
-                        <MudTd>@UnitsOfTheCity.UnitsOfTheCity.Noble</MudTd>
                         <MudTd>
                             <MudTextField @bind-Value="SelectedNoble" Immediate="true" T="int" Variant="Variant.Filled" />
                         </MudTd>
