@@ -22,7 +22,7 @@ namespace BackEnd.Repositories.Implementations
             var previousMaxStage = await _db.MaxBuildingStages
                 .FirstOrDefaultAsync(cost => cost.BuildingName.Equals(upgradeCost.BuildingName));
 
-            if (previousMaxStage != null) 
+            if (previousMaxStage != null)
             {
                 previousMaxStage.MaxStage += 1;
                 switch (upgradeCost.BuildingName)
@@ -107,11 +107,31 @@ namespace BackEnd.Repositories.Implementations
                             stoneMine.UpgradeCost = upgradeCost;
                         }
                         break;
+                    case "Castle":
+                        var castles = await _db.Castles
+                            .Where(x => x.BuildingCostId == null && x.BuildingName.Equals("Castle"))
+                            .ToListAsync();
+                        foreach (var castle in castles)
+                        {
+                            castle.BuildingCostId = upgradeCost.Id;
+                            castle.UpgradeCost = upgradeCost;
+                        }
+                        break;
+                    case "Tavern":
+                        var taverns = await _db.Taverns
+                            .Where(x => x.BuildingCostId == null && x.BuildingName.Equals("Tavern"))
+                            .ToListAsync();
+                        foreach (var tavern in taverns)
+                        {
+                            tavern.BuildingCostId = upgradeCost.Id;
+                            tavern.UpgradeCost = upgradeCost;
+                        }
+                        break;
                     default:
                         break;
                 }
             }
-               
+
 
             else
             {
@@ -137,14 +157,14 @@ namespace BackEnd.Repositories.Implementations
 
         public async Task<BuildingUpgradeCost> FindUpgradeCost(string buildingName, int buildingStage)
         {
-            return await _db.BuildingUpgradeCosts 
+            return await _db.BuildingUpgradeCosts
                 .Include(cost => cost.UpgradeCost)
                 .FirstOrDefaultAsync(cost => cost.BuildingName.Equals(buildingName) && cost.BuildingStage == buildingStage);
         }
 
-        public async Task<List<BuildingUpgradeCost>> FindBuildingUpgradeCostsByName(string buildingName) 
+        public async Task<List<BuildingUpgradeCost>> FindBuildingUpgradeCostsByName(string buildingName)
         {
-            return  await _db.BuildingUpgradeCosts
+            return await _db.BuildingUpgradeCosts
                 .Where(x => x.BuildingName.Equals(buildingName))
                 .ToListAsync();
         }

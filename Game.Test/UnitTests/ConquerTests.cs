@@ -1,8 +1,8 @@
 ﻿using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Test.Data;
 using Game.Test.Data.Seed;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands;
@@ -25,6 +25,11 @@ namespace Game.Test.Tests
         public ConquerTests(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public ConquerTests()
+        {
+
         }
 
         [Fact]

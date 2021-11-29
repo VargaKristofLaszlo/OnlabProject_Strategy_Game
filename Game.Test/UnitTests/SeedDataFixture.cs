@@ -1,16 +1,12 @@
 ﻿using BackEnd.Models.Models;
-using BackEnd.Repositories.Implementations;
-using BackEnd.Repositories.Interfaces;
 using Game.Test.Data.Seed;
 using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Moq;
 using System;
 using System.Threading.Tasks;
 
-namespace Game.Test.Data
+namespace Game.Test.UnitTests
 {
     public class SeedDataFixture : IDisposable
     {

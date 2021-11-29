@@ -9,7 +9,7 @@ namespace Game.Client.Helpers
 {
     public class UpgradeQueueState
     {
-        private  BuildingQueue _buildingQueue = new BuildingQueue();       
+        private BuildingQueue _buildingQueue = new BuildingQueue();
         public event Action OnChange;
         private readonly CityIndexState _cityIndexState;
         private readonly CityDetailsState _cityDetailsState;
@@ -17,7 +17,11 @@ namespace Game.Client.Helpers
         private readonly IGameService _gameService;
         public System.Timers.Timer Timer { get; private set; }
 
-        public UpgradeQueueState(CityIndexState cityIndexState, CityDetailsState cityDetailsState, IViewService viewService, IGameService gameService)
+        public UpgradeQueueState(
+            CityIndexState cityIndexState,
+            CityDetailsState cityDetailsState,
+            IViewService viewService,
+            IGameService gameService)
         {
             _cityIndexState = cityIndexState;
             _cityDetailsState = cityDetailsState;
@@ -31,7 +35,7 @@ namespace Game.Client.Helpers
 
         private async void OnTimerCallback()
         {
-            if(_buildingQueue.Queue.Count == 0)
+            if (_buildingQueue.Queue.Count == 0)
             {
                 Timer.Stop();
                 return;
@@ -52,12 +56,12 @@ namespace Game.Client.Helpers
                 upgradeCosts.ElementAt(item.NewStage - 1).UpgradeCost,
                 item.NewStage,
                 _cityIndexState.Index);
-            }          
+            }
 
             NotifyStateChanged();
         }
 
-        public async Task InitBuildingQueue(string userId) 
+        public async Task InitBuildingQueue(string userId)
         {
             _buildingQueue = await _viewService.GetBuildingQueueById(userId);
 
@@ -89,17 +93,17 @@ namespace Game.Client.Helpers
             Timer.Start();
             NotifyStateChanged();
         }
-        public List<QueueData> GetUpgradeQueueOfCity(int cityIndex) 
+        public List<QueueData> GetUpgradeQueueOfCity(int cityIndex)
         {
-            return _buildingQueue.Queue.Where(x => x.CityIndex == cityIndex).ToList();          
-        }
-            
-        public bool QueueIsFull(int cityIndeex) 
-        {
-            return _buildingQueue.Queue.Where(x => x.CityIndex == cityIndeex).Count() >= 3;
+            return _buildingQueue.Queue.Where(x => x.CityIndex == cityIndex).ToList();
         }
 
-        public async Task RemoveFromQueue(string jobId) 
+        public bool IsQueueFull(int cityIndeex)
+        {
+            return _buildingQueue.Queue.Where(x => x.CityIndex == cityIndeex).Count() > 3;
+        }
+
+        public async Task RemoveFromQueue(string jobId)
         {
             var job = _buildingQueue.Queue.FirstOrDefault(x => x.JobId.Equals(jobId));
 
@@ -114,7 +118,7 @@ namespace Game.Client.Helpers
         }
 
 
-        public int GetUpgradeStage(string buildingName) 
+        public int GetUpgradeStage(string buildingName)
         {
             var jobs = GetUpgradeQueueOfCity(_cityIndexState.Index);
 

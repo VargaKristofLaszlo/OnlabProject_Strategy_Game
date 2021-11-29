@@ -6,30 +6,49 @@
 @inject Helpers.MessageStorage MessageStorage
 
 
-<div class="form-group">
-    @if (string.IsNullOrEmpty(errorMessage) == false)
+
+@if (string.IsNullOrEmpty(errorMessage) == false)
+{
+    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+}
+<row>
+    <MudRadioGroup @bind-SelectedOption="_everyoneSelected">
+        <MudRadio Option="true" Color="Color.Primary" Dense="true">Broadcast</MudRadio>
+        <MudRadio Option="false" Color="Color.Secondary" Dense="false">Send private message</MudRadio>
+    </MudRadioGroup>
+    @if (_everyoneSelected == false)
     {
-        <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+        <MudItem Class="w-25">
+            <MudTextField @bind-Value="targetUserName" Label="Target" Variant="Variant.Text" Disabled=@(string.IsNullOrEmpty(errorMessage) == false)></MudTextField>
+        </MudItem>
     }
-    <label>
-        Target:
-        <input @bind="targetUserName" size="50" disabled=@(string.IsNullOrEmpty(errorMessage) == false) />
-    </label>
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" disabled=@(string.IsNullOrEmpty(errorMessage) == false) />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!HubListener.IsConnected)">Send</button>
+</row>
+<MudItem Class="w-25">
+    <MudTextField @bind-Value="messageInput" Label="Message" Variant="Variant.Text" Disabled=@(string.IsNullOrEmpty(errorMessage) == false)></MudTextField>
+</MudItem>
+<MudButton Class="mt-3" Variant="Variant.Filled" Disabled=@(!HubListener.IsConnected) OnClick="Send">Send</MudButton>
+
 
 <hr>
 
-<ul id="messagesList">
+<div class="w-25">
     @foreach (var message in MessageStorage.Messages)
     {
-        <li>@message</li>
+        @if (senderUserName != null && senderUserName.Equals(message.senderName))
+        {
+            <div class="message-sender font-weight-light text-secondary">
+                <MudText Align="Align.Right">@message.text</MudText>
+            </div>
+        }
+        else
+        {
+            <MudText Align="Align.Left">@string.Format(message.senderName + ": " + @message.text)</MudText>
+        }
     }
-</ul>
+</div>
+
+
+
 
 @code {
 
@@ -37,6 +56,7 @@
     private string senderUserName;
     private string targetUserName = string.Empty;
     private string errorMessage = string.Empty;
+    private bool _everyoneSelected = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,7 +67,11 @@
             await HubListener.StartAsync();
     }
 
-    async Task Send() => await HubListener.Send(messageInput, targetUserName);
+    async Task Send()
+    {
+        await HubListener.Send(messageInput, targetUserName);
+        messageInput = string.Empty;
+    }
 
     protected override void OnInitialized()
     {

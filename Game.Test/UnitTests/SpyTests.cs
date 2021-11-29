@@ -1,9 +1,8 @@
 ﻿using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Shared.Models;
-using Game.Test.Data;
 using Game.Test.Data.Seed;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands;
@@ -12,7 +11,6 @@ using Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -29,6 +27,11 @@ namespace Game.Test.Tests
         public SpyTests(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public SpyTests()
+        {
+
         }
 
         [Fact]

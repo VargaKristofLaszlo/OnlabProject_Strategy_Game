@@ -11,9 +11,6 @@ namespace Game.Shared.IServices
         [Get("/Credentials")]
         Task<CollectionResponse<Credentials>> GetUserCredentials(int pageNumber, int pageSize);
 
-        [Get("/Building/UpgradeCost")]
-        Task<CollectionResponse<Credentials>> GetBuildingUpgradeCost(string buildingName, int buildingStage);
-
         [Get("/CityNames")]
         Task<IEnumerable<string>> GetCityNamesOfLoggedInUser();
 

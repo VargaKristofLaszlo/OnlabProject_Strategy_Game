@@ -13,7 +13,7 @@ namespace Repositories.Interfaces
             int newStage, int cityIndex);
         Task AddNewUnitProductionJob(string userId, DateTime startingTime, DateTime finishTime, string unitName,
             int amount, int cityIndex);
-        Task<DateTime> GetBuildingFinishTime(string userId);
+        Task<DateTime> GetBuildingFinishTime(string userId, int cityIndex);
         Task<DateTime> GetUnitFinishTime(string userId);
         Task<UpgradeQueueItem> GetBuildingJobByFinishTime(DateTime FinishTime, int cityIndex, string userId);
         Task<UnitProductionQueueItem> GetUnitJobByFinishTime(DateTime finishTime, int cityIndex, string userId);

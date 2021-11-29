@@ -18,7 +18,12 @@ namespace Game.Client.Helpers
         private readonly UnitsOfCityState _unitsOfCityState;
         public System.Timers.Timer Timer { get; private set; }
 
-        public UnitProductionQueueState(CityIndexState cityIndexState, CityDetailsState cityDetailsState, IViewService viewService, IGameService gameService, UnitsOfCityState unitsOfCityState)
+        public UnitProductionQueueState(
+            CityIndexState cityIndexState,
+            CityDetailsState cityDetailsState,
+            IViewService viewService,
+            IGameService gameService,
+            UnitsOfCityState unitsOfCityState)
         {
             _cityIndexState = cityIndexState;
             _cityDetailsState = cityDetailsState;
@@ -44,7 +49,7 @@ namespace Game.Client.Helpers
             item.RecruitTime -= TimeSpan.FromSeconds(1);
 
             if (item.RecruitTime.TotalSeconds == 0)
-            {              
+            {
                 _unitQueue.Queue.Remove(item);
                 _unitsOfCityState.IncreaseUnitAmount(item.UnitName, item.Amount);
             }

@@ -53,8 +53,7 @@ namespace Game.Client.Helpers
             Connection.On<string, string, string>
             ("ReceiveMessage", (senderUser, targetUser, message) =>
             {
-                var encodedMsg = $"{senderUser}: {message}";
-                MessageStorage.AddMessage(encodedMsg);
+                MessageStorage.AddMessage(senderUser, message);
                 if (_navManager.Uri.Contains("chat") == false)
                     HasUnreadMessage = true;
 
@@ -65,7 +64,7 @@ namespace Game.Client.Helpers
             ("ReceiveSystemMessage", (senderUser, targetUser, message) =>
             {
                 var encodedMsg = $"{senderUser}: {message}";
-                MessageStorage.AddMessage(encodedMsg);
+                MessageStorage.AddMessage(senderUser, message);
                 if (_navManager.Uri.Contains("chat") == false)
                     HasUnreadMessage = true;
 
@@ -102,8 +101,6 @@ namespace Game.Client.Helpers
                 await Connection.SendAsync("SendMessage", targetUsername, messageInput);
                 NotifyStateChanged();
             }
-
-
         }
 
         public async Task SendSystemMessage(string targetUsername, string messageInput)

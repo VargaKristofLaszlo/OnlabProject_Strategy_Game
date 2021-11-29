@@ -22,13 +22,13 @@ namespace Repositories.Implementations
         public async Task AddNewBuildingJob(string userId, DateTime startingTime, DateTime finishTime, string buildingName,
             int newStage, int cityIndex)
         {
-            
+
 
             await _db.UpgradeQueueItems
-                .AddAsync(new UpgradeQueueItem() 
+                .AddAsync(new UpgradeQueueItem()
                 {
                     CreationTime = startingTime,
-                    FinishTime = finishTime,                    
+                    FinishTime = finishTime,
                     UserId = userId,
                     BuildingName = buildingName,
                     CityIndex = cityIndex,
@@ -36,11 +36,11 @@ namespace Repositories.Implementations
                 });
         }
 
-        public async Task AddNewUnitProductionJob(string userId, DateTime startingTime, DateTime finishTime, string unitName, 
+        public async Task AddNewUnitProductionJob(string userId, DateTime startingTime, DateTime finishTime, string unitName,
             int amount, int cityIndex)
         {
             await _db.UnitProductionQueueItems
-                .AddAsync(new UnitProductionQueueItem() 
+                .AddAsync(new UnitProductionQueueItem()
                 {
                     CreationTime = startingTime,
                     FinishTime = finishTime,
@@ -51,7 +51,7 @@ namespace Repositories.Implementations
                 });
         }
 
-        
+
 
         public async Task<UpgradeQueueItem> GetBuildingJobByFinishTime(DateTime FinishTime, int cityIndex, string userId)
         {
@@ -80,18 +80,18 @@ namespace Repositories.Implementations
         {
             return await _db.UpgradeQueueItems.FirstOrDefaultAsync(x => x.JobId.Equals(jobId));
         }
-        public async Task<UnitProductionQueueItem> GetRecruitmentJobByJobId(string jobId) 
+        public async Task<UnitProductionQueueItem> GetRecruitmentJobByJobId(string jobId)
         {
             return await _db.UnitProductionQueueItems.FirstOrDefaultAsync(x => x.JobId.Equals(jobId));
         }
 
-        public async Task<DateTime> GetBuildingFinishTime(string userId)
+        public async Task<DateTime> GetBuildingFinishTime(string userId, int cityIndex)
         {
             var timeNow = DateTime.Now;
             var finishTime = new DateTime(timeNow.Year, timeNow.Month, timeNow.Day, timeNow.Hour, timeNow.Minute, timeNow.Second);
 
             var query = _db.UpgradeQueueItems
-                .Where(x => x.UserId.Equals(userId));
+                .Where(x => x.UserId.Equals(userId) && x.CityIndex == cityIndex);
 
             if (await query.AnyAsync() == false)
                 return finishTime;
@@ -123,7 +123,7 @@ namespace Repositories.Implementations
         public async Task<List<UpgradeQueueItem>> GetUserBuildingQueue(string userId, int cityIndex)
         {
             return await _db.UpgradeQueueItems
-                .Where(x => x.UserId.Equals(userId) &&x.CityIndex == cityIndex)
+                .Where(x => x.UserId.Equals(userId) && x.CityIndex == cityIndex)
                 .ToListAsync();
         }
 
@@ -164,16 +164,16 @@ namespace Repositories.Implementations
     }
     internal static class DateTimeExtensions
     {
-        public static IQueryable<UnitProductionQueueItem> EqualsUpToSeconds(this IQueryable<UnitProductionQueueItem> jobs, DateTime finishTime) 
+        public static IQueryable<UnitProductionQueueItem> EqualsUpToSeconds(this IQueryable<UnitProductionQueueItem> jobs, DateTime finishTime)
         {
-             return jobs
-                .Where(x =>
-                    x.FinishTime.Year == finishTime.Year &&
-                    x.FinishTime.Month == finishTime.Month &&
-                    x.FinishTime.Day == finishTime.Day &&
-                    x.FinishTime.Hour == finishTime.Hour &&
-                    x.FinishTime.Minute == finishTime.Minute &&
-                    x.FinishTime.Second == finishTime.Second);
+            return jobs
+               .Where(x =>
+                   x.FinishTime.Year == finishTime.Year &&
+                   x.FinishTime.Month == finishTime.Month &&
+                   x.FinishTime.Day == finishTime.Day &&
+                   x.FinishTime.Hour == finishTime.Hour &&
+                   x.FinishTime.Minute == finishTime.Minute &&
+                   x.FinishTime.Second == finishTime.Second);
         }
         public static IQueryable<UpgradeQueueItem> EqualsUpToSeconds(this IQueryable<UpgradeQueueItem> jobs, DateTime finishTime)
         {

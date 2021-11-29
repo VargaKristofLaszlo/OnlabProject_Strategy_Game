@@ -124,7 +124,7 @@
         parameters.Add("CityIndex", cityIndex);
         parameters.Add("UpgradeTime", upgradeTime);
 
-        if (UpgradeQueueState.QueueIsFull(cityIndex) == true)
+        if (UpgradeQueueState.IsQueueFull(cityIndex) == true)
         {
             Snackbar.Add("Your building slots are full", Severity.Error);
             return;

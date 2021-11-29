@@ -50,6 +50,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The upgrade cost could not be found")]
         [SwaggerResponse(200, "The request was successful", typeof(BuildingUpgradeCost))]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBuildingUpgradeCost([FromQuery] string buildingName, [FromQuery] int buildingStage)
         {
             var response = await _mediator.Send(new GetBuildingUpgradeCost.Query(buildingName, buildingStage));
@@ -83,6 +84,7 @@ namespace Game.Server.Controllers
         [SwaggerResponse(404, "The user could not be found")]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
         [SwaggerResponse(200, "The request was successful", typeof(IEnumerable<string>))]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCityNamesOfUserById(string id)
         {
             var response = await _mediator.Send(new GetCityNamesOfUser.Query(id));
@@ -98,6 +100,7 @@ namespace Game.Server.Controllers
         )]
         [SwaggerResponse(200, "The request was successful", typeof(CollectionResponse<Shared.Models.Unit>))]
         [SwaggerResponse(401, "Only a logged in user can use this endpoint")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUnitTypes([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             var response = await _mediator.Send(new GetUnitTypes.Query(pageNumber, pageSize));
@@ -124,7 +127,7 @@ namespace Game.Server.Controllers
 
 
         [HttpGet("Units/{unitName}")]
-
+        [AllowAnonymous]
         public async Task<IActionResult> GetUnitByName(string unitName)
         {
             var response = await _mediator.Send(new GetUnitByName.Query(unitName));
@@ -171,6 +174,7 @@ namespace Game.Server.Controllers
         }
 
         [HttpGet("Users/Others/Cities")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCitiesOfOtherUsers([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
             var response = await _mediator.Send(new GetOtherUsersCities.Query(pageNumber, pageSize));

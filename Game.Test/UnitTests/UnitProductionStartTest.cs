@@ -1,14 +1,11 @@
-﻿using BackEnd.Infrastructure;
-using BackEnd.Repositories.Interfaces;
+﻿using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Test.Data;
-using Game.Test.Data.Seed;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands.Game;
 using Services.Exceptions;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,6 +22,11 @@ namespace Game.Test.Tests
         public UnitProductionStartTest(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public UnitProductionStartTest()
+        {
+
         }
 
         [Theory]

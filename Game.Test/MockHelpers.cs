@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using BackEnd.Infrastructure;
 using BackEnd.Repositories.Interfaces;
 using Game.Shared.Models;
-using Game.Test.Data;
 using Game.Test.Data.Seed;
-using Microsoft.AspNetCore.Builder;
+using Game.Test.UnitTests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Game.Test

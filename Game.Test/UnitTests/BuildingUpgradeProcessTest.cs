@@ -1,8 +1,8 @@
 ﻿using BackEnd.Infrastructure;
 using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Test.Data;
 using Game.Test.Data.Seed;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands.Buildings;
@@ -27,6 +27,11 @@ namespace Game.Test.Tests
         public BuildingUpgradeProcessTest(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public BuildingUpgradeProcessTest()
+        {
+
         }
 
         [Fact]

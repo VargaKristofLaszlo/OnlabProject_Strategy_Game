@@ -1,16 +1,12 @@
-﻿using BackEnd.Infrastructure;
-using BackEnd.Repositories.Interfaces;
+﻿using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Test.Data;
-using Game.Test.Data.Seed;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands.Buildings;
 using Services.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -28,6 +24,11 @@ namespace Game.Test.Tests
         public BuildingUpgradeStartTest(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public BuildingUpgradeStartTest()
+        {
+
         }
 
         [Fact]
@@ -99,7 +100,7 @@ namespace Game.Test.Tests
                 .First(x => x.BuildingName.Equals("Barrack")).MaxStage);
 
 
-            mockedUnitOfWork.Setup(x => x.HangFire.GetBuildingFinishTime(It.IsAny<string>()))
+            mockedUnitOfWork.Setup(x => x.HangFire.GetBuildingFinishTime(It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(DateTime.Now);
 
             mockedUnitOfWork.Setup(x => x.HangFire.AddNewBuildingJob(

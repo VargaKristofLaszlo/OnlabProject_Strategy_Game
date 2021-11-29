@@ -1,10 +1,8 @@
-﻿using BackEnd.Infrastructure;
-using BackEnd.Models.Models;
+﻿using BackEnd.Models.Models;
 using BackEnd.Repositories.Interfaces;
 using FluentAssertions;
-using Game.Test.Data;
 using Game.Test.Data.Seed;
-using Microsoft.AspNetCore.Identity;
+using Game.Test.UnitTests;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Services.Commands;
@@ -13,7 +11,6 @@ using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -30,6 +27,11 @@ namespace Game.Test.Tests
         public LootingTest(SeedDataFixture fixture)
         {
             Fixture = fixture;
+        }
+
+        public LootingTest()
+        {
+
         }
 
         [Fact]

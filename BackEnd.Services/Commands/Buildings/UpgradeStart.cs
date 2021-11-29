@@ -38,8 +38,11 @@ namespace Services.Commands.Buildings
 
                 ResourceCostRemoval.PayTheCost(city, upgradeCost.UpgradeCost);
 
-                var finishTime = await _unitOfWork.HangFire.GetBuildingFinishTime(request.IdentityContext.UserId);
-                var newFinishTime = finishTime.Add(upgradeCost.UpgradeTime);
+                var finishTime = await _unitOfWork.HangFire.GetBuildingFinishTime(request.IdentityContext.UserId, request.CityIndex);
+
+                int upgradeTimeInSeconds = (int)Math.Ceiling(upgradeCost.UpgradeTime.TotalSeconds * ((100 - city.CityHall.UpgradeTimeReductionPercent) / 100));
+
+                var newFinishTime = finishTime.Add(new TimeSpan(0, 0, upgradeTimeInSeconds));
                 await _unitOfWork.HangFire.AddNewBuildingJob(request.IdentityContext.UserId, finishTime, newFinishTime,
                     request.BuildingName, request.NewStage, request.CityIndex);
 

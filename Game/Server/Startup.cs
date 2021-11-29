@@ -30,6 +30,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using Infrastructure.Hubs;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Game.Server
 {
@@ -90,6 +91,10 @@ namespace Game.Server
             });
 
             services.AddIdentityConfig();
+
+            ConfigureAuthentication(services);
+
+
             services.AddIdentityContextConfig();
             services.AddAutoMapperConfig();
             services.AddProblemDetailsConfig();
@@ -143,6 +148,13 @@ namespace Game.Server
 
 
         }
+
+        public virtual void ConfigureAuthentication(IServiceCollection services)
+        {
+            services.AddAuthentication()
+              .AddIdentityServerJwt();
+        }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IUnitOfWork unitOfWork, IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IMediator mediatr, IWebHostEnvironment env)

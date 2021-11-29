@@ -25,8 +25,7 @@ namespace Game.Client.Helpers
 
         public CityDetailsState(
             CityResourceState cityResourceState,
-            Game.Shared.IServices.IViewService viewService
-            )
+            Game.Shared.IServices.IViewService viewService)
         {
             _cityResourceState = cityResourceState;
             _viewService = viewService;

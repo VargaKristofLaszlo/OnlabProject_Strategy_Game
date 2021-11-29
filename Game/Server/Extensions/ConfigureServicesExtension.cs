@@ -126,8 +126,7 @@ namespace Game.Server.Extensions
                     options.IdentityResources["openid"].UserClaims.Add(ClaimTypes.Email);
                 });
 
-            services.AddAuthentication()
-               .AddIdentityServerJwt();
+
 
             return services;
         }
